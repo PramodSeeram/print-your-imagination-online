@@ -27,12 +27,34 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
 import Logo from '@/components/Logo';
 import AdminMobileNavigation from '@/components/AdminMobileNavigation';
 import { useToast } from "@/hooks/use-toast";
 
+// Order status types
+type OrderStatus = 'Processing' | 'Printing' | 'Shipped' | 'Delivered';
+type PaymentStatus = 'Paid' | 'Pending' | 'Failed';
+
+interface Order {
+  id: string;
+  customer: string;
+  amount: string;
+  items: number;
+  status: OrderStatus;
+  paymentStatus: PaymentStatus;
+  date: string;
+}
+
 // Mock data for orders
-const ORDERS = [
+const INITIAL_ORDERS: Order[] = [
   {
     id: "#ORD-2305",
     customer: "Rahul Mehta",
@@ -84,6 +106,8 @@ const AdminOrders = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
+  const [orders, setOrders] = useState<Order[]>(INITIAL_ORDERS);
+  const [filterStatus, setFilterStatus] = useState<string>("all");
   const { toast } = useToast();
   
   const toggleOrderSelection = (id: string) => {
@@ -95,17 +119,27 @@ const AdminOrders = () => {
   };
 
   const toggleSelectAll = () => {
-    if (selectedOrders.length === ORDERS.length) {
+    if (selectedOrders.length === filteredOrders.length) {
       setSelectedOrders([]);
     } else {
-      setSelectedOrders(ORDERS.map(order => order.id));
+      setSelectedOrders(filteredOrders.map(order => order.id));
     }
   };
   
-  const filteredOrders = ORDERS.filter(order => 
-    order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    order.customer.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Apply filters to orders
+  const filteredOrders = orders.filter(order => {
+    // First apply search filter
+    const matchesSearch = 
+      order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.customer.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    // Then apply status filter
+    const matchesStatus = 
+      filterStatus === "all" || 
+      order.status.toLowerCase() === filterStatus.toLowerCase();
+    
+    return matchesSearch && matchesStatus;
+  });
 
   const handleExportOrders = () => {
     toast({
@@ -114,7 +148,14 @@ const AdminOrders = () => {
     });
   };
 
-  const handleUpdateOrderStatus = (id: string, newStatus: string) => {
+  const handleUpdateOrderStatus = (id: string, newStatus: OrderStatus) => {
+    // Update the order status in the state
+    const updatedOrders = orders.map(order => 
+      order.id === id ? { ...order, status: newStatus } : order
+    );
+    
+    setOrders(updatedOrders);
+    
     toast({
       title: "Status updated",
       description: `Order ${id} status changed to ${newStatus}`,
@@ -130,6 +171,10 @@ const AdminOrders = () => {
       return;
     }
 
+    // Remove the selected orders from the state
+    const updatedOrders = orders.filter(order => !selectedOrders.includes(order.id));
+    setOrders(updatedOrders);
+    
     toast({
       title: "Orders deleted",
       description: `Successfully deleted ${selectedOrders.length} orders`,
@@ -162,6 +207,22 @@ const AdminOrders = () => {
         return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  // Get next status options based on current status
+  const getNextStatusOptions = (currentStatus: OrderStatus) => {
+    switch(currentStatus) {
+      case 'Processing':
+        return ['Printing', 'Shipped', 'Delivered'];
+      case 'Printing':
+        return ['Shipped', 'Delivered'];
+      case 'Shipped':
+        return ['Delivered'];
+      case 'Delivered':
+        return [];
+      default:
+        return [];
     }
   };
 
@@ -297,19 +358,36 @@ const AdminOrders = () => {
                 />
               </div>
               <div className="flex gap-3 flex-wrap">
-                <Button 
-                  variant="outline" 
-                  className="flex items-center gap-2"
-                  onClick={() => {
-                    toast({
-                      title: "Filter applied",
-                      description: "Showing filtered order results"
-                    });
-                  }}
-                >
-                  <Filter className="h-4 w-4" />
-                  Filter
-                </Button>
+                {/* Status filter dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="flex items-center gap-2">
+                      <Filter className="h-4 w-4" />
+                      Filter by Status
+                      <Badge className="ml-1" variant="outline">
+                        {filterStatus === 'all' ? 'All' : filterStatus}
+                      </Badge>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onClick={() => setFilterStatus("all")}>
+                      All
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setFilterStatus("processing")}>
+                      Processing
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setFilterStatus("printing")}>
+                      Printing
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setFilterStatus("shipped")}>
+                      Shipped
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setFilterStatus("delivered")}>
+                      Delivered
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
                 <Button 
                   variant="outline" 
                   className="flex items-center gap-2"
@@ -330,7 +408,7 @@ const AdminOrders = () => {
                   <tr>
                     <th className="px-4 py-3 font-medium">
                       <Checkbox
-                        checked={selectedOrders.length === ORDERS.length}
+                        checked={selectedOrders.length === filteredOrders.length && filteredOrders.length > 0}
                         onCheckedChange={toggleSelectAll}
                       />
                     </th>
@@ -385,25 +463,34 @@ const AdminOrders = () => {
                           >
                             <Eye className="h-4 w-4" />
                           </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-8 w-8"
-                            onClick={() => {
-                              if (order.status === "Processing") {
-                                handleUpdateOrderStatus(order.id, "Printing");
-                              } else if (order.status === "Printing") {
-                                handleUpdateOrderStatus(order.id, "Shipped");
-                              } else if (order.status === "Shipped") {
-                                handleUpdateOrderStatus(order.id, "Delivered");
-                              }
-                            }}
-                          >
-                            {order.status === "Processing" && <PackageIcon className="h-4 w-4 text-purple-500" />}
-                            {order.status === "Printing" && <Truck className="h-4 w-4 text-blue-500" />}
-                            {order.status === "Shipped" && <CheckCircle className="h-4 w-4 text-green-500" />}
-                            {order.status === "Delivered" && <Edit className="h-4 w-4" />}
-                          </Button>
+                          
+                          {/* Status update dropdown menu */}
+                          {getNextStatusOptions(order.status).length > 0 && (
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon" 
+                                  className="h-8 w-8"
+                                >
+                                  {order.status === "Processing" && <PackageIcon className="h-4 w-4 text-purple-500" />}
+                                  {order.status === "Printing" && <Truck className="h-4 w-4 text-blue-500" />}
+                                  {order.status === "Shipped" && <CheckCircle className="h-4 w-4 text-green-500" />}
+                                  {order.status === "Delivered" && <Edit className="h-4 w-4" />}
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                {getNextStatusOptions(order.status).map((status) => (
+                                  <DropdownMenuItem 
+                                    key={status}
+                                    onClick={() => handleUpdateOrderStatus(order.id, status as OrderStatus)}
+                                  >
+                                    Update to {status}
+                                  </DropdownMenuItem>
+                                ))}
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          )}
                           <Button 
                             variant="ghost" 
                             size="icon" 
@@ -463,19 +550,13 @@ const AdminOrders = () => {
             <div className="px-6 py-3 flex items-center justify-between border-t">
               <p className="text-sm text-gray-500">
                 Showing <span className="font-medium">{filteredOrders.length}</span> of{" "}
-                <span className="font-medium">{ORDERS.length}</span> orders
+                <span className="font-medium">{orders.length}</span> orders
               </p>
               <div className="flex items-center gap-2">
                 <Button 
                   variant="outline" 
                   size="sm" 
                   disabled
-                  onClick={() => {
-                    toast({
-                      title: "Previous page",
-                      description: "Loading previous page of orders"
-                    });
-                  }}
                 >
                   Previous
                 </Button>
@@ -483,12 +564,6 @@ const AdminOrders = () => {
                   variant="outline" 
                   size="sm" 
                   disabled
-                  onClick={() => {
-                    toast({
-                      title: "Next page",
-                      description: "Loading next page of orders"
-                    });
-                  }}
                 >
                   Next
                 </Button>

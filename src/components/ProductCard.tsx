@@ -3,6 +3,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 interface ProductCardProps {
   id: number;
@@ -13,6 +15,9 @@ interface ProductCardProps {
   imageUrl: string;
   isNew?: boolean;
   isBestSeller?: boolean;
+  isWishlisted?: boolean;
+  onAddToCart?: () => void;
+  onToggleWishlist?: () => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -23,10 +28,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
   rating,
   imageUrl,
   isNew,
-  isBestSeller
+  isBestSeller,
+  isWishlisted = false,
+  onAddToCart,
+  onToggleWishlist
 }) => {
   return (
-    <div className="bg-white rounded-lg overflow-hidden shadow card-hover">
+    <div className="bg-white rounded-lg overflow-hidden shadow card-hover transform transition-all hover:-translate-y-1 hover:shadow-lg">
       <div className="relative">
         <Link to={`/product/${id}`}>
           <img 
@@ -38,15 +46,24 @@ const ProductCard: React.FC<ProductCardProps> = ({
         
         <div className="absolute top-2 left-2 flex flex-col gap-2">
           {isNew && (
-            <span className="badge-primary">New</span>
+            <span className="inline-block px-2 py-1 bg-indigo-100 text-indigo-800 text-xs font-medium rounded-full">New</span>
           )}
           {isBestSeller && (
-            <span className="badge-accent">Best Seller</span>
+            <span className="inline-block px-2 py-1 bg-teal-100 text-teal-800 text-xs font-medium rounded-full">Best Seller</span>
           )}
         </div>
         
-        <button className="absolute top-2 right-2 bg-white/80 p-1.5 rounded-full hover:bg-white transition-colors">
-          <Heart className="h-5 w-5 text-gray-600 hover:text-red-500 transition-colors" />
+        <button 
+          className={cn(
+            "absolute top-2 right-2 bg-white/80 p-1.5 rounded-full transition-colors",
+            isWishlisted ? "hover:bg-red-50" : "hover:bg-white"
+          )}
+          onClick={onToggleWishlist}
+        >
+          <Heart className={cn(
+            "h-5 w-5 transition-colors",
+            isWishlisted ? "text-red-500 fill-red-500" : "text-gray-600 hover:text-red-500"
+          )} />
         </button>
       </div>
       
@@ -74,7 +91,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
             )}
           </div>
           
-          <Button className="bg-teal hover:bg-teal-600">
+          <Button 
+            className="bg-teal hover:bg-teal-600"
+            onClick={onAddToCart}
+          >
             Add to Cart
           </Button>
         </div>
