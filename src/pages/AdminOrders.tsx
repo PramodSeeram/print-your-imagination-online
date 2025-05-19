@@ -12,17 +12,16 @@ import {
   Menu,
   Bell,
   ChevronDown,
-  PlusCircle,
   Search,
   Filter,
   Edit,
   Trash,
   Download,
-  Upload,
   Eye,
-  CheckCircle,
+  Check,
   Truck,
-  Package as PackageIcon
+  Package as PackageIcon,
+  AlertTriangle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -39,8 +38,8 @@ import Logo from '@/components/Logo';
 import AdminMobileNavigation from '@/components/AdminMobileNavigation';
 import { useToast } from "@/hooks/use-toast";
 
-// Order status types
-type OrderStatus = 'Processing' | 'Printing' | 'Shipped' | 'Delivered';
+// Order status types - added Confirming as the first status
+type OrderStatus = 'Confirming' | 'Processing' | 'Printing' | 'Shipped' | 'Delivered';
 type PaymentStatus = 'Paid' | 'Pending' | 'Failed';
 
 interface Order {
@@ -53,7 +52,7 @@ interface Order {
   date: string;
 }
 
-// Mock data for orders
+// Updated mock data for orders to include Confirming status
 const INITIAL_ORDERS: Order[] = [
   {
     id: "#ORD-2305",
@@ -87,7 +86,7 @@ const INITIAL_ORDERS: Order[] = [
     customer: "Anish Varma",
     amount: "₹899",
     items: 1,
-    status: "Delivered",
+    status: "Confirming",
     paymentStatus: "Paid",
     date: "15 May 2023"
   },
@@ -148,7 +147,38 @@ const AdminOrders = () => {
     });
   };
 
+  // Status order for enforcing the flow
+  const statusOrder: OrderStatus[] = ['Confirming', 'Processing', 'Printing', 'Shipped', 'Delivered'];
+  
+  // Define the next status for each current status
+  const getNextStatus = (currentStatus: OrderStatus): OrderStatus => {
+    const currentIndex = statusOrder.indexOf(currentStatus);
+    if (currentIndex < statusOrder.length - 1) {
+      return statusOrder[currentIndex + 1];
+    }
+    return currentStatus; // Already at the final status
+  };
+
   const handleUpdateOrderStatus = (id: string, newStatus: OrderStatus) => {
+    // Get the order
+    const order = orders.find(order => order.id === id);
+    
+    if (!order) return;
+    
+    // Check if the new status is valid for the current status
+    const currentStatusIndex = statusOrder.indexOf(order.status);
+    const newStatusIndex = statusOrder.indexOf(newStatus);
+    
+    // Only allow moving forward in the flow, not backward
+    if (newStatusIndex <= currentStatusIndex) {
+      toast({
+        title: "Invalid status update",
+        description: "You can only move forward in the order status flow",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     // Update the order status in the state
     const updatedOrders = orders.map(order => 
       order.id === id ? { ...order, status: newStatus } : order
@@ -192,6 +222,8 @@ const AdminOrders = () => {
         return 'bg-yellow-100 text-yellow-800';
       case 'Printing':
         return 'bg-purple-100 text-purple-800';
+      case 'Confirming':
+        return 'bg-orange-100 text-orange-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -212,17 +244,29 @@ const AdminOrders = () => {
 
   // Get next status options based on current status
   const getNextStatusOptions = (currentStatus: OrderStatus) => {
-    switch(currentStatus) {
+    const currentIndex = statusOrder.indexOf(currentStatus);
+    // Only allow moving to the next status in the flow
+    if (currentIndex < statusOrder.length - 1) {
+      return [statusOrder[currentIndex + 1]];
+    }
+    return []; // Already at the final status
+  };
+
+  // Get status icon based on status
+  const getStatusIcon = (status: OrderStatus) => {
+    switch(status) {
+      case 'Confirming':
+        return <AlertTriangle className="h-4 w-4 text-orange-500" />;
       case 'Processing':
-        return ['Printing', 'Shipped', 'Delivered'];
+        return <PackageIcon className="h-4 w-4 text-yellow-500" />;
       case 'Printing':
-        return ['Shipped', 'Delivered'];
+        return <PackageIcon className="h-4 w-4 text-purple-500" />;
       case 'Shipped':
-        return ['Delivered'];
+        return <Truck className="h-4 w-4 text-blue-500" />;
       case 'Delivered':
-        return [];
+        return <Check className="h-4 w-4 text-green-500" />;
       default:
-        return [];
+        return <Edit className="h-4 w-4" />;
     }
   };
 
@@ -373,6 +417,9 @@ const AdminOrders = () => {
                     <DropdownMenuItem onClick={() => setFilterStatus("all")}>
                       All
                     </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setFilterStatus("confirming")}>
+                      Confirming
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => setFilterStatus("processing")}>
                       Processing
                     </DropdownMenuItem>
@@ -464,33 +511,19 @@ const AdminOrders = () => {
                             <Eye className="h-4 w-4" />
                           </Button>
                           
-                          {/* Status update dropdown menu */}
+                          {/* Status update button that shows next status only */}
                           {getNextStatusOptions(order.status).length > 0 && (
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button 
-                                  variant="ghost" 
-                                  size="icon" 
-                                  className="h-8 w-8"
-                                >
-                                  {order.status === "Processing" && <PackageIcon className="h-4 w-4 text-purple-500" />}
-                                  {order.status === "Printing" && <Truck className="h-4 w-4 text-blue-500" />}
-                                  {order.status === "Shipped" && <CheckCircle className="h-4 w-4 text-green-500" />}
-                                  {order.status === "Delivered" && <Edit className="h-4 w-4" />}
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                {getNextStatusOptions(order.status).map((status) => (
-                                  <DropdownMenuItem 
-                                    key={status}
-                                    onClick={() => handleUpdateOrderStatus(order.id, status as OrderStatus)}
-                                  >
-                                    Update to {status}
-                                  </DropdownMenuItem>
-                                ))}
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-8 w-8"
+                              onClick={() => handleUpdateOrderStatus(order.id, getNextStatus(order.status))}
+                              title={`Update to ${getNextStatus(order.status)}`}
+                            >
+                              {getStatusIcon(getNextStatus(order.status))}
+                            </Button>
                           )}
+
                           <Button 
                             variant="ghost" 
                             size="icon" 
