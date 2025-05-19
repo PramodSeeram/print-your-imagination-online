@@ -8,7 +8,7 @@ import FeaturesSection from "@/components/FeaturesSection";
 import TestimonialSection from "@/components/TestimonialSection";
 import CategoryBanner from "@/components/CategoryBanner";
 import { Button } from "@/components/ui/button";
-import { Heart, Play, ChevronDown, ShoppingCart, Star } from 'lucide-react';
+import { Heart, Play, ChevronDown, ShoppingCart, Star, Check } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
 // Mock data for products
@@ -334,7 +334,7 @@ const Index = () => {
                   <div className="space-y-4">
                     <div className="flex items-start">
                       <div className="bg-white/20 p-2 rounded-full mr-4">
-                        <CheckCircle className="h-5 w-5 text-white" />
+                        <Check className="h-5 w-5 text-white" />
                       </div>
                       <div>
                         <h3 className="font-medium">Expert Design Consultation</h3>
@@ -343,7 +343,7 @@ const Index = () => {
                     </div>
                     <div className="flex items-start">
                       <div className="bg-white/20 p-2 rounded-full mr-4">
-                        <CheckCircle className="h-5 w-5 text-white" />
+                        <Check className="h-5 w-5 text-white" />
                       </div>
                       <div>
                         <h3 className="font-medium">Rapid Prototyping</h3>
@@ -352,7 +352,7 @@ const Index = () => {
                     </div>
                     <div className="flex items-start">
                       <div className="bg-white/20 p-2 rounded-full mr-4">
-                        <CheckCircle className="h-5 w-5 text-white" />
+                        <Check className="h-5 w-5 text-white" />
                       </div>
                       <div>
                         <h3 className="font-medium">Premium Materials</h3>
