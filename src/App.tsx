@@ -16,6 +16,7 @@ import AdminSettings from "./pages/AdminSettings";
 import AdminTickets from "./pages/AdminTickets";
 import CategoryPage from "./pages/CategoryPage";
 import ProductDetails from "./pages/ProductDetails";
+import SearchResults from "./pages/SearchResults";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Payment from "./pages/Payment";
@@ -34,6 +35,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/account" element={<Account />} />
+          <Route path="/search" element={<SearchResults />} />
           <Route path="/category/:categoryId" element={<CategoryPage />} />
           <Route path="/category/:categoryId/subcategory/:subcategoryId" element={<CategoryPage />} />
           <Route path="/product/:productId" element={<ProductDetails />} />

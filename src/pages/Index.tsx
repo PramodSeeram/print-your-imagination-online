@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from "@/components/Header";
@@ -7,6 +8,7 @@ import CategoryBanner from "@/components/CategoryBanner";
 import FeaturesSection from "@/components/FeaturesSection";
 import TestimonialSection from "@/components/TestimonialSection";
 import ProductGrid from "@/components/ProductGrid";
+import SearchBar from "@/components/SearchBar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -21,6 +23,7 @@ interface Product {
   imageUrl: string;
   isNew?: boolean;
   isBestSeller?: boolean;
+  keywords?: string[];
 }
 
 const Index = () => {
@@ -31,6 +34,7 @@ const Index = () => {
   const [loyaltyPoints, setLoyaltyPoints] = useState<number>(0);
   const [recentlyViewedProducts, setRecentlyViewedProducts] = useState<Product[]>([]);
   const [browsingHistory, setBrowsingHistory] = useState<{category: string, items: Product[]}[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -67,7 +71,8 @@ const Index = () => {
         offerPrice: 1499,
         rating: 4.5,
         imageUrl: "https://images.unsplash.com/photo-1614955849439-67066da241ca?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-        isNew: true
+        isNew: true,
+        keywords: ["wooden", "wall", "decor", "handcrafted", "home"]
       },
       {
         id: 2,
@@ -75,7 +80,8 @@ const Index = () => {
         price: 899,
         rating: 4.8,
         imageUrl: "https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-        isBestSeller: true
+        isBestSeller: true,
+        keywords: ["ceramic", "vase", "hand-painted", "decor", "pottery"]
       },
       {
         id: 3,
@@ -84,6 +90,7 @@ const Index = () => {
         offerPrice: 1999,
         rating: 4.2,
         imageUrl: "https://images.unsplash.com/photo-1615529482396-63f8b0d0944b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+        keywords: ["cotton", "rug", "handwoven", "floor", "covering"]
       },
       {
         id: 4,
@@ -92,7 +99,8 @@ const Index = () => {
         offerPrice: 999,
         rating: 4.6,
         imageUrl: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-        isNew: true
+        isNew: true,
+        keywords: ["terracotta", "pot", "plant", "garden", "set"]
       },
       {
         id: 5,
@@ -101,7 +109,8 @@ const Index = () => {
         offerPrice: 2399,
         rating: 4.7,
         imageUrl: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-        isBestSeller: true
+        isBestSeller: true,
+        keywords: ["brass", "decor", "metal", "luxurious", "set"]
       },
       {
         id: 6,
@@ -109,6 +118,7 @@ const Index = () => {
         price: 699,
         rating: 4.3,
         imageUrl: "https://images.unsplash.com/photo-1526434426615-1abe81efcb0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+        keywords: ["bamboo", "storage", "basket", "organization", "eco-friendly"]
       },
       {
         id: 7,
@@ -117,7 +127,8 @@ const Index = () => {
         offerPrice: 899,
         rating: 4.4,
         imageUrl: "https://images.unsplash.com/photo-1545304787-d9d3229f4e3a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-        isNew: true
+        isNew: true,
+        keywords: ["macrame", "wall", "hanging", "boho", "decor"]
       },
       {
         id: 8,
@@ -126,9 +137,13 @@ const Index = () => {
         offerPrice: 599,
         rating: 4.1,
         imageUrl: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-        isBestSeller: true
+        isBestSeller: true,
+        keywords: ["marble", "coaster", "drink", "tableware", "set"]
       }
     ];
+    
+    // Set all products for search functionality
+    setAllProducts(mockProducts);
     
     // Set new arrivals (products with isNew flag)
     setNewArrivals(mockProducts.filter(p => p.isNew));
@@ -154,6 +169,7 @@ const Index = () => {
             price: 45999,
             rating: 4.3,
             imageUrl: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+            keywords: ["laptop", "dell", "inspiron", "computer", "electronics"]
           },
           {
             id: 102,
@@ -162,6 +178,7 @@ const Index = () => {
             offerPrice: 49999,
             rating: 4.5,
             imageUrl: "https://images.unsplash.com/photo-1544731612-de7f96afe55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+            keywords: ["laptop", "hp", "pavilion", "computer", "electronics"]
           }
         ]
       },
@@ -175,6 +192,7 @@ const Index = () => {
             offerPrice: 2499,
             rating: 4.6,
             imageUrl: "https://images.unsplash.com/photo-1507914997799-a3d0222c403a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+            keywords: ["blender", "phillips", "kitchen", "appliance", "cooking"]
           }
         ]
       }
@@ -238,6 +256,13 @@ const Index = () => {
       <Header />
       
       <main className="flex-grow bg-gray-50">
+        {/* Add search bar above HeroBanner */}
+        <div className="bg-indigo-700 py-4">
+          <div className="container-avirva">
+            <SearchBar allProducts={allProducts} className="max-w-2xl mx-auto" />
+          </div>
+        </div>
+        
         <HeroBanner />
         
         <div className="container-avirva py-6">

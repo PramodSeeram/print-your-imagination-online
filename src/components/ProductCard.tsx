@@ -52,7 +52,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
     }
   };
   
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (onAddToCart) {
       onAddToCart(quantity);
       setQuantity(1); // Reset quantity after adding to cart
@@ -92,6 +94,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <button 
           onClick={(e) => {
             e.preventDefault();
+            e.stopPropagation();
             if (onToggleWishlist) onToggleWishlist();
           }}
           className={`absolute top-2 right-2 p-1.5 rounded-full 
