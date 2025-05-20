@@ -1,153 +1,165 @@
 
 import type { Config } from "tailwindcss";
+import { fontFamily } from "tailwindcss/defaultTheme";
+import plugin from "tailwindcss/plugin";
+import animatePlugin from "tailwindcss-animate";
 
-export default {
-	darkMode: ["class"],
-	content: [
-		"./pages/**/*.{ts,tsx}",
-		"./components/**/*.{ts,tsx}",
-		"./app/**/*.{ts,tsx}",
-		"./src/**/*.{ts,tsx}",
-	],
-	prefix: "",
-	theme: {
-		container: {
-			center: true,
-			padding: '2rem',
-			screens: {
-				'2xl': '1400px'
-			}
-		},
-		extend: {
-			colors: {
-				border: 'hsl(var(--border))',
-				input: 'hsl(var(--input))',
-				ring: 'hsl(var(--ring))',
-				background: 'hsl(var(--background))',
-				foreground: 'hsl(var(--foreground))',
-				primary: {
-					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
-				},
-				secondary: {
-					DEFAULT: 'hsl(var(--secondary))',
-					foreground: 'hsl(var(--secondary-foreground))'
-				},
-				destructive: {
-					DEFAULT: 'hsl(var(--destructive))',
-					foreground: 'hsl(var(--destructive-foreground))'
-				},
-				muted: {
-					DEFAULT: 'hsl(var(--muted))',
-					foreground: 'hsl(var(--muted-foreground))'
-				},
-				accent: {
-					DEFAULT: 'hsl(var(--accent))',
-					foreground: 'hsl(var(--accent-foreground))'
-				},
-				popover: {
-					DEFAULT: 'hsl(var(--popover))',
-					foreground: 'hsl(var(--popover-foreground))'
-				},
-				card: {
-					DEFAULT: 'hsl(var(--card))',
-					foreground: 'hsl(var(--card-foreground))'
-				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
-				},
-				// AVIRVA brand colors
-				teal: {
-					DEFAULT: '#00B4D8',
-					50: '#E0F7FB',
-					100: '#B3EBF6',
-					200: '#80DDEE',
-					300: '#4DCFE7',
-					400: '#26C7E1',
-					500: '#00B4D8',
-					600: '#0091AD',
-					700: '#006E82',
-					800: '#004B58',
-					900: '#00282D',
-				},
-				indigo: {
-					DEFAULT: '#0077B6',
-					50: '#E1F1FC',
-					100: '#B3D8F6',
-					200: '#80BCF0',
-					300: '#4D9FE9',
-					400: '#268BE4',
-					500: '#0077B6',
-					600: '#005F92',
-					700: '#00476E',
-					800: '#002F4A',
-					900: '#001826',
-				},
-				saffron: {
-					DEFAULT: '#FF9E00',
-					50: '#FFF1E0',
-					100: '#FFDCB3',
-					200: '#FFC680',
-					300: '#FFB04D',
-					400: '#FFA726',
-					500: '#FF9E00',
-					600: '#CC7E00',
-					700: '#995F00',
-					800: '#663F00',
-					900: '#332000',
-				},
-			},
-			borderRadius: {
-				lg: 'var(--radius)',
-				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
-			},
-			keyframes: {
-				'accordion-down': {
-					from: { height: '0' },
-					to: { height: 'var(--radix-accordion-content-height)' }
-				},
-				'accordion-up': {
-					from: { height: 'var(--radix-accordion-content-height)' },
-					to: { height: '0' }
-				},
-				'fade-in': {
-					'0%': { opacity: '0' },
-					'100%': { opacity: '1' }
-				},
-				'fade-out': {
-					'0%': { opacity: '1' },
-					'100%': { opacity: '0' }
-				},
-				'spin': {
-					'0%': { transform: 'rotate(0deg)' },
-					'100%': { transform: 'rotate(360deg)' }
-				},
-				'bounce-limited': {
-					'0%, 100%': { transform: 'translateY(-5%)' },
-					'50%': { transform: 'translateY(0)' }
-				}
-			},
-			animation: {
-				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out',
-				'fade-in': 'fade-in 0.3s ease-in-out',
-				'fade-out': 'fade-out 0.3s ease-in-out',
-				'spin-slow': 'spin 3s linear infinite',
-				'bounce-limited': 'bounce-limited 1s ease-in-out infinite'
-			},
-			fontFamily: {
-				'poppins': ['Poppins', 'sans-serif'],
-				'inter': ['Inter', 'sans-serif'],
-			},
-		}
-	},
-	plugins: [require("tailwindcss-animate")],
-} satisfies Config;
+const config: Config = {
+  darkMode: ["class"],
+  content: [
+    './src/pages/**/*.{ts,tsx}',
+    './src/components/**/*.{ts,tsx}',
+    './src/app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
+  ],
+  theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
+    extend: {
+      colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        // Custom colors for AVIRVA
+        indigo: {
+          DEFAULT: "#0A2463",
+          50: "#E6EAF2",
+          100: "#C1C9DF",
+          200: "#93A2C5",
+          300: "#677DAC",
+          400: "#455C8E",
+          500: "#0A2463",
+          600: "#08205A",
+          700: "#071B51",
+          800: "#061748",
+          900: "#04113F"
+        },
+        teal: {
+          DEFAULT: "#3AAFA9",
+          50: "#EBF7F7",
+          100: "#C4E8E6",
+          200: "#9CD9D5",
+          300: "#74CAC5",
+          400: "#4CBBB5",
+          500: "#3AAFA9",
+          600: "#34A19B",
+          700: "#2E938D",
+          800: "#28867F",
+          900: "#227871"
+        }
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+      fontFamily: {
+        sans: ["Inter", ...fontFamily.sans],
+        poppins: ["Poppins", ...fontFamily.sans],
+      },
+      keyframes: {
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        "spin-slow": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
+        "fade-in": {
+          "0%": { opacity: "0", transform: "translateY(-10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+        "spin-slow": "spin-slow 10s linear infinite",
+        "fade-in": "fade-in 0.2s ease-out"
+      },
+    },
+  },
+  plugins: [
+    animatePlugin,
+    plugin(({ addUtilities }) => {
+      addUtilities({
+        ".container-avirva": {
+          width: "100%",
+          marginLeft: "auto",
+          marginRight: "auto",
+          paddingLeft: "1rem",
+          paddingRight: "1rem",
+          "@screen sm": {
+            maxWidth: "640px",
+          },
+          "@screen md": {
+            maxWidth: "768px",
+          },
+          "@screen lg": {
+            maxWidth: "1024px",
+          },
+          "@screen xl": {
+            maxWidth: "1280px",
+          },
+        },
+        ".section-title": {
+          fontSize: "1.875rem",
+          fontWeight: "700",
+          marginBottom: "1.5rem",
+          position: "relative",
+          paddingBottom: "0.75rem",
+        },
+        ".section-title::after": {
+          content: '""',
+          position: "absolute",
+          left: "0",
+          bottom: "0",
+          height: "3px",
+          width: "60px",
+          backgroundColor: "#3AAFA9",
+        },
+      });
+    }),
+  ],
+};
+
+export default config;

@@ -1,10 +1,14 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { useToast } from '@/hooks/use-toast';
+import { Badge } from '@/components/ui/badge';
+import { 
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@/components/ui/popover';
+import { ShoppingCart, Heart, Star, Plus, Minus } from 'lucide-react';
 
 interface ProductCardProps {
   id: number;
@@ -15,88 +19,145 @@ interface ProductCardProps {
   imageUrl: string;
   isNew?: boolean;
   isBestSeller?: boolean;
-  isWishlisted?: boolean;
-  onAddToCart?: () => void;
+  onAddToCart?: (quantity: number) => void;
   onToggleWishlist?: () => void;
+  isWishlisted?: boolean;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({
-  id,
-  name,
-  price,
-  offerPrice,
-  rating,
-  imageUrl,
+const ProductCard: React.FC<ProductCardProps> = ({ 
+  id, 
+  name, 
+  price, 
+  offerPrice, 
+  rating, 
+  imageUrl, 
   isNew,
   isBestSeller,
-  isWishlisted = false,
   onAddToCart,
-  onToggleWishlist
+  onToggleWishlist,
+  isWishlisted = false
 }) => {
+  const [quantity, setQuantity] = useState(1);
+  
+  const handleIncreaseQuantity = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setQuantity(prev => prev + 1);
+  };
+  
+  const handleDecreaseQuantity = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (quantity > 1) {
+      setQuantity(prev => prev - 1);
+    }
+  };
+  
+  const handleAddToCart = () => {
+    if (onAddToCart) {
+      onAddToCart(quantity);
+      setQuantity(1); // Reset quantity after adding to cart
+    }
+  };
+  
   return (
-    <div className="bg-white rounded-lg overflow-hidden shadow card-hover transform transition-all hover:-translate-y-1 hover:shadow-lg">
+    <div className="group bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
       <div className="relative">
-        <Link to={`/product/${id}`}>
+        <Link to={`/product/${id}`} className="block aspect-square">
           <img 
             src={imageUrl} 
             alt={name} 
-            className="w-full h-64 object-cover"
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </Link>
         
-        <div className="absolute top-2 left-2 flex flex-col gap-2">
+        {/* Badges */}
+        <div className="absolute top-2 left-2 space-y-1">
           {isNew && (
-            <span className="inline-block px-2 py-1 bg-indigo-100 text-indigo-800 text-xs font-medium rounded-full">New</span>
+            <Badge className="bg-indigo text-white">New</Badge>
           )}
           {isBestSeller && (
-            <span className="inline-block px-2 py-1 bg-teal-100 text-teal-800 text-xs font-medium rounded-full">Best Seller</span>
+            <Badge className="bg-amber-500 text-white">Best Seller</Badge>
           )}
         </div>
         
+        {/* Wishlist button */}
         <button 
-          className={cn(
-            "absolute top-2 right-2 bg-white/80 p-1.5 rounded-full transition-colors",
-            isWishlisted ? "hover:bg-red-50" : "hover:bg-white"
-          )}
-          onClick={onToggleWishlist}
+          onClick={(e) => {
+            e.preventDefault();
+            if (onToggleWishlist) onToggleWishlist();
+          }}
+          className={`absolute top-2 right-2 p-1.5 rounded-full 
+            ${isWishlisted ? 'bg-red-500 text-white' : 'bg-white/80 text-gray-600 hover:bg-gray-100'}
+            transition-colors`}
         >
-          <Heart className={cn(
-            "h-5 w-5 transition-colors",
-            isWishlisted ? "text-red-500 fill-red-500" : "text-gray-600 hover:text-red-500"
-          )} />
+          <Heart className="h-4 w-4" fill={isWishlisted ? "#ef4444" : "none"} />
         </button>
       </div>
       
       <div className="p-4">
-        <Link to={`/product/${id}`}>
-          <h3 className="font-medium text-lg text-gray-800 hover:text-teal transition-colors mb-1">{name}</h3>
-        </Link>
-        
-        <div className="flex items-center mb-3">
-          <div className="flex items-center text-yellow-400">
-            <Star className="h-4 w-4 fill-current" />
-            <span className="ml-1 text-sm text-gray-600">{rating}</span>
-          </div>
-        </div>
-        
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            {offerPrice ? (
-              <>
-                <span className="font-semibold text-lg">₹{offerPrice}</span>
-                <span className="text-gray-400 line-through text-sm">₹{price}</span>
-              </>
-            ) : (
-              <span className="font-semibold text-lg">₹{price}</span>
-            )}
+        <Link to={`/product/${id}`} className="block">
+          <h3 className="font-medium text-gray-900 mb-1 line-clamp-2">{name}</h3>
+          <div className="flex items-center mb-2">
+            <div className="flex items-center">
+              <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500 mr-1" />
+              <span className="text-sm text-gray-600">{rating}</span>
+            </div>
           </div>
           
-          <Button 
-            className="bg-teal hover:bg-teal-600"
-            onClick={onAddToCart}
-          >
-            Add to Cart
-          </Button>
+          <div className="flex items-center gap-2 mb-3">
+            <span className="font-medium text-gray-900">₹{offerPrice || price}</span>
+            {offerPrice && (
+              <span className="text-sm text-gray-400 line-through">₹{price}</span>
+            )}
+            {offerPrice && (
+              <span className="text-xs text-green-600 font-medium">
+                {Math.round(((price - offerPrice) / price) * 100)}% off
+              </span>
+            )}
+          </div>
+        </Link>
+        
+        <div className="flex space-x-2">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button 
+                className="flex-1 bg-indigo hover:bg-indigo-600" 
+                onClick={e => e.preventDefault()}
+              >
+                <ShoppingCart className="h-4 w-4 mr-1" /> Add to Cart
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent side="top" className="w-48 p-0" align="center">
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-medium text-sm">Select Quantity</span>
+                </div>
+                <div className="flex items-center justify-between border border-gray-200 rounded-md mb-3">
+                  <button 
+                    className="py-2 px-3 text-gray-600 hover:bg-gray-50"
+                    onClick={handleDecreaseQuantity}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </button>
+                  <span className="font-medium">{quantity}</span>
+                  <button 
+                    className="py-2 px-3 text-gray-600 hover:bg-gray-50"
+                    onClick={handleIncreaseQuantity}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </button>
+                </div>
+                <div className="text-xs text-gray-500 mb-3 text-center">
+                  Total: ₹{(offerPrice || price) * quantity}
+                </div>
+                <Button 
+                  className="w-full bg-indigo hover:bg-indigo-600"
+                  onClick={handleAddToCart}
+                >
+                  Add to Cart
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
     </div>

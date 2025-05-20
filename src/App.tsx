@@ -13,10 +13,13 @@ import AdminOrders from "./pages/AdminOrders";
 import AdminCustomers from "./pages/AdminCustomers";
 import AdminAnalytics from "./pages/AdminAnalytics";
 import AdminSettings from "./pages/AdminSettings";
+import AdminTickets from "./pages/AdminTickets";
+import CategoryPage from "./pages/CategoryPage";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Payment from "./pages/Payment";
 import OrderConfirmation from "./pages/OrderConfirmation";
+import Tickets from "./pages/Tickets";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,10 +33,13 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/account" element={<Account />} />
+          <Route path="/category/:categoryId" element={<CategoryPage />} />
+          <Route path="/category/:categoryId/subcategory/:subcategoryId" element={<CategoryPage />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
+          <Route path="/tickets" element={<Tickets />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/products" element={<AdminProducts />} />
           <Route path="/admin/categories" element={<AdminCategories />} />
@@ -41,6 +47,7 @@ const App = () => (
           <Route path="/admin/customers" element={<AdminCustomers />} />
           <Route path="/admin/analytics" element={<AdminAnalytics />} />
           <Route path="/admin/settings" element={<AdminSettings />} />
+          <Route path="/admin/tickets" element={<AdminTickets />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
