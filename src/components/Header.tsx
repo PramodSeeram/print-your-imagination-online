@@ -1,7 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
-  Search, 
   ShoppingCart, 
   Menu, 
   X, 
@@ -12,7 +12,9 @@ import {
   ChevronDown,
   ChevronRight,
   Bell,
-  MessageSquare
+  MessageSquare,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import {
@@ -35,8 +37,10 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import Logo from '@/components/Logo';
+import SearchBar from '@/components/SearchBar';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useMobileMenu } from '@/hooks/use-mobile-menu';
+import { useTheme } from '@/hooks/use-theme';
 
 // Mock data for categories
 const CATEGORIES = [
@@ -69,27 +73,25 @@ const CATEGORIES = [
   }
 ];
 
+// Mock products for initial search state - real search happens in SearchBar component
+const PRODUCTS = [
+  { id: 1, name: "Geometric Plant Holder", category: "Home Decor" },
+  { id: 2, name: "Wall Mounted Shelf", category: "Home Decor" },
+  { id: 3, name: "Desk Lamp", category: "Home Decor" },
+  { id: 4, name: "Miniature Car", category: "Miniatures" },
+  { id: 5, name: "Phone Stand", category: "Tech Gadgets" },
+  { id: 6, name: "Cable Organizer", category: "Tech Gadgets" },
+  { id: 7, name: "Wall Art Panels", category: "Home Decor" },
+  { id: 8, name: "Desk Organizer", category: "Tech Gadgets" }
+];
+
 const Header = () => {
   const { isMenuOpen, toggleMenu, closeMenu } = useMobileMenu();
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [searchResults, setSearchResults] = useState<any[]>([]);
-  const [showSearchResults, setShowSearchResults] = useState<boolean>(false);
   const [cartCount, setCartCount] = useState<number>(0);
   const [wishlistCount, setWishlistCount] = useState<number>(0);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const navigate = useNavigate();
-
-  // Mock product data for search
-  const PRODUCTS = [
-    { id: 1, name: "Geometric Plant Holder", category: "Home Decor" },
-    { id: 2, name: "Wall Mounted Shelf", category: "Home Decor" },
-    { id: 3, name: "Desk Lamp", category: "Home Decor" },
-    { id: 4, name: "Miniature Car", category: "Miniatures" },
-    { id: 5, name: "Phone Stand", category: "Tech Gadgets" },
-    { id: 6, name: "Cable Organizer", category: "Tech Gadgets" },
-    { id: 7, name: "Wall Art Panels", category: "Home Decor" },
-    { id: 8, name: "Desk Organizer", category: "Tech Gadgets" }
-  ];
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     // Load cart items count from localStorage
@@ -127,54 +129,14 @@ const Header = () => {
     };
   }, []);
 
-  const handleSearch = () => {
-    if (searchQuery.trim() === '') {
-      setSearchResults([]);
-      setShowSearchResults(false);
-      return;
-    }
-    
-    const query = searchQuery.toLowerCase();
-    const results = PRODUCTS.filter(product => 
-      product.name.toLowerCase().includes(query) || 
-      product.category.toLowerCase().includes(query)
-    );
-    
-    setSearchResults(results);
-    setShowSearchResults(true);
-  };
-
-  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-    if (e.target.value.length > 2) {
-      handleSearch();
-    } else {
-      setShowSearchResults(false);
-    }
-  };
-
-  const handleSearchInputFocus = () => {
-    if (searchQuery.length > 2) {
-      setShowSearchResults(true);
-    }
-  };
-
-  const handleSearchResultClick = (productId: number) => {
-    setShowSearchResults(false);
-    navigate(`/product/${productId}`);
-  };
-
-  const handleOnBlur = () => {
-    // Delay hiding the search results to allow for clicking
-    setTimeout(() => {
-      setShowSearchResults(false);
-    }, 200);
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
   return (
-    <header className="border-b bg-white">
+    <header className="border-b bg-background">
       {/* Top Bar */}
-      <div className="bg-indigo text-white py-2 text-center text-sm">
+      <div className="bg-indigo text-white py-2 text-center text-sm dark:bg-indigo-800">
         <p>Free shipping on all orders above ₹999. Use code FREESHIP at checkout.</p>
       </div>
       
@@ -188,42 +150,7 @@ const Header = () => {
           
           {/* Search - Hidden on mobile, shown on desktop */}
           <div className="hidden md:block relative flex-1 max-w-md mx-8">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                type="search"
-                placeholder="Search for products..."
-                className="pl-10 pr-4 py-2 w-full"
-                value={searchQuery}
-                onChange={handleSearchInputChange}
-                onFocus={handleSearchInputFocus}
-                onBlur={handleOnBlur}
-              />
-            </div>
-            
-            {/* Search Results Dropdown */}
-            {showSearchResults && (
-              <div className="absolute z-20 mt-1 bg-white shadow-lg rounded-md w-full max-h-80 overflow-y-auto">
-                {searchResults.length > 0 ? (
-                  <ul className="py-2">
-                    {searchResults.map(product => (
-                      <li 
-                        key={product.id} 
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => handleSearchResultClick(product.id)}
-                      >
-                        <div className="font-medium">{product.name}</div>
-                        <div className="text-xs text-gray-500">{product.category}</div>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <div className="p-4 text-center text-gray-500">
-                    No products found
-                  </div>
-                )}
-              </div>
-            )}
+            <SearchBar allProducts={PRODUCTS} className="w-full" />
           </div>
           
           {/* Navigation */}
@@ -238,7 +165,7 @@ const Header = () => {
               <DropdownMenuContent className="w-64">
                 {CATEGORIES.map(category => (
                   <DropdownMenu key={category.id}>
-                    <DropdownMenuTrigger className="w-full flex justify-between items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                    <DropdownMenuTrigger className="w-full flex justify-between items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer">
                       <span>{category.name}</span>
                       <ChevronRight className="h-4 w-4" />
                     </DropdownMenuTrigger>
@@ -266,6 +193,10 @@ const Header = () => {
             <Link to="/tickets">
               <Button variant="ghost">Support</Button>
             </Link>
+
+            <Link to="/collections">
+              <Button variant="ghost">Collections</Button>
+            </Link>
             
             {isLoggedIn && (
               <Link to="/orders">
@@ -275,15 +206,20 @@ const Header = () => {
                 </Button>
               </Link>
             )}
+            
+            {/* Theme toggle button */}
+            <Button variant="ghost" size="icon" onClick={toggleTheme}>
+              {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
           </nav>
           
           {/* Icons */}
           <div className="flex items-center space-x-4">
-            {/* Mobile Search Dialog */}
+            {/* Mobile Search Dialog (removed duplicate search) */}
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="ghost" size="icon" className="md:hidden">
-                  <Search className="h-5 w-5" />
+                  <Menu className="h-5 w-5" />
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-md">
@@ -293,38 +229,12 @@ const Header = () => {
                     Find the perfect 3D printed product for your needs.
                   </DialogDescription>
                 </DialogHeader>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <Input
-                    type="search"
-                    placeholder="Search for products..."
-                    className="pl-10 pr-4 py-2 w-full"
-                    value={searchQuery}
-                    onChange={handleSearchInputChange}
-                  />
-                </div>
-                {searchResults.length > 0 && (
-                  <ul className="py-2">
-                    {searchResults.map(product => (
-                      <li 
-                        key={product.id} 
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => {
-                          handleSearchResultClick(product.id);
-                          closeMenu();
-                        }}
-                      >
-                        <div className="font-medium">{product.name}</div>
-                        <div className="text-xs text-gray-500">{product.category}</div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                <SearchBar allProducts={PRODUCTS} className="w-full" />
               </DialogContent>
             </Dialog>
             
-            {/* Wishlist */}
-            <Link to="/account" className="relative hidden sm:flex">
+            {/* Wishlist - Fixed navigation to wishlist page */}
+            <Link to="/wishlist" className="relative hidden sm:flex">
               <Button variant="ghost" size="icon">
                 <Heart className="h-5 w-5" />
                 {wishlistCount > 0 && (
@@ -347,19 +257,29 @@ const Header = () => {
               </Button>
             </Link>
             
-            {/* Account Dropdown */}
+            {/* Account Dropdown - Fixed navigation to account */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 {isLoggedIn ? (
-                  <Button variant="ghost" size="icon" className="relative hidden sm:flex">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="relative hidden sm:flex"
+                    onClick={() => navigate('/account')}
+                  >
                     <Avatar className="h-8 w-8 border">
                       <AvatarImage src="https://randomuser.me/api/portraits/men/32.jpg" />
                       <AvatarFallback>JD</AvatarFallback>
                     </Avatar>
-                    <span className="absolute -top-1 -right-1 bg-teal-400 border-2 border-white w-3 h-3 rounded-full"></span>
+                    <span className="absolute -top-1 -right-1 bg-teal-400 border-2 border-white dark:border-gray-800 w-3 h-3 rounded-full"></span>
                   </Button>
                 ) : (
-                  <Button variant="ghost" size="icon" className="hidden sm:flex">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="hidden sm:flex"
+                    onClick={() => navigate('/account')}
+                  >
                     <User className="h-5 w-5" />
                   </Button>
                 )}
@@ -372,6 +292,7 @@ const Header = () => {
                     <DropdownMenuItem onClick={() => navigate('/account')}>Profile</DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate('/orders')}>Orders</DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate('/wishlist')}>Wishlist</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/browsing-history')}>Browsing History</DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate('/tickets')}>Support Tickets</DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
@@ -411,22 +332,13 @@ const Header = () => {
         
         {/* Mobile Search - shown below header on mobile */}
         <div className="mt-4 mb-2 md:hidden">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              type="search"
-              placeholder="Search for products..."
-              className="pl-10 pr-4 py-2 w-full"
-              value={searchQuery}
-              onChange={handleSearchInputChange}
-            />
-          </div>
+          <SearchBar allProducts={PRODUCTS} className="w-full" />
         </div>
       </div>
       
       {/* Mobile menu */}
       <div className={`fixed inset-0 bg-gray-800 bg-opacity-50 z-40 transition-opacity duration-300 ${isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-        <div className={`fixed inset-y-0 left-0 w-64 bg-white transform transition-transform duration-300 ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className={`fixed inset-y-0 left-0 w-64 bg-background transform transition-transform duration-300 ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
           <div className="p-4 overflow-y-auto h-full flex flex-col">
             {/* Close button */}
             <Button 
@@ -441,14 +353,20 @@ const Header = () => {
             {/* User Section */}
             <div className="py-4 border-b mb-4">
               {isLoggedIn ? (
-                <div className="flex items-center space-x-3">
+                <div 
+                  className="flex items-center space-x-3 cursor-pointer" 
+                  onClick={() => {
+                    navigate('/account');
+                    closeMenu();
+                  }}
+                >
                   <Avatar>
                     <AvatarImage src="https://randomuser.me/api/portraits/men/32.jpg" />
                     <AvatarFallback>JD</AvatarFallback>
                   </Avatar>
                   <div>
                     <p className="font-medium">John Doe</p>
-                    <p className="text-xs text-gray-500">john.doe@example.com</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">john.doe@example.com</p>
                   </div>
                 </div>
               ) : (
@@ -476,14 +394,14 @@ const Header = () => {
             
             {/* Navigation Links */}
             <nav className="flex-1">
-              <p className="text-sm font-medium text-gray-500 mb-2">Shop By Category</p>
+              <p className="text-sm font-medium text-gray-500 mb-2 dark:text-gray-400">Shop By Category</p>
               <ul className="space-y-1">
                 {CATEGORIES.map(category => (
                   <li key={category.id}>
                     <Link
                       to={`/category/${category.id}`}
                       onClick={closeMenu}
-                      className="block text-gray-900 hover:bg-gray-100 rounded-md px-3 py-2"
+                      className="block text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md px-3 py-2"
                     >
                       {category.name}
                     </Link>
@@ -498,7 +416,7 @@ const Header = () => {
                   <Link
                     to="/cart"
                     onClick={closeMenu}
-                    className="block text-gray-900 hover:bg-gray-100 rounded-md px-3 py-2 flex items-center justify-between"
+                    className="block text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md px-3 py-2 flex items-center justify-between"
                   >
                     <div className="flex items-center">
                       <ShoppingCart className="h-4 w-4 mr-2" />
@@ -512,9 +430,9 @@ const Header = () => {
                 
                 <li>
                   <Link
-                    to="/account"
+                    to="/wishlist"
                     onClick={closeMenu}
-                    className="block text-gray-900 hover:bg-gray-100 rounded-md px-3 py-2 flex items-center justify-between"
+                    className="block text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md px-3 py-2 flex items-center justify-between"
                   >
                     <div className="flex items-center">
                       <Heart className="h-4 w-4 mr-2" />
@@ -525,13 +443,35 @@ const Header = () => {
                     )}
                   </Link>
                 </li>
+
+                <li>
+                  <Link
+                    to="/browsing-history"
+                    onClick={closeMenu}
+                    className="block text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md px-3 py-2 flex items-center"
+                  >
+                    <User className="h-4 w-4 mr-2" />
+                    <span>Browsing History</span>
+                  </Link>
+                </li>
+
+                <li>
+                  <Link
+                    to="/collections"
+                    onClick={closeMenu}
+                    className="block text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md px-3 py-2 flex items-center"
+                  >
+                    <User className="h-4 w-4 mr-2" />
+                    <span>Collections</span>
+                  </Link>
+                </li>
                 
                 {isLoggedIn && (
                   <li>
                     <Link
                       to="/orders"
                       onClick={closeMenu}
-                      className="block text-gray-900 hover:bg-gray-100 rounded-md px-3 py-2 flex items-center"
+                      className="block text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md px-3 py-2 flex items-center"
                     >
                       <Package className="h-4 w-4 mr-2" />
                       <span>My Orders</span>
@@ -543,11 +483,22 @@ const Header = () => {
                   <Link
                     to="/tickets"
                     onClick={closeMenu}
-                    className="block text-gray-900 hover:bg-gray-100 rounded-md px-3 py-2 flex items-center"
+                    className="block text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md px-3 py-2 flex items-center"
                   >
                     <MessageSquare className="h-4 w-4 mr-2" />
                     <span>Support</span>
                   </Link>
+                </li>
+
+                <li className="px-3 py-2">
+                  <Button 
+                    variant="outline" 
+                    className="w-full flex items-center justify-center"
+                    onClick={toggleTheme}
+                  >
+                    {theme === 'dark' ? <Sun className="h-4 w-4 mr-2" /> : <Moon className="h-4 w-4 mr-2" />}
+                    {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                  </Button>
                 </li>
               </ul>
             </nav>

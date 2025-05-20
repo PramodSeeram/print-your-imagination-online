@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 import { fontFamily } from "tailwindcss/defaultTheme";
 import plugin from "tailwindcss/plugin";
@@ -54,32 +55,34 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Custom colors for AVIRVA
+        // Modern color palette for dark/light mode
         indigo: {
-          DEFAULT: "#0A2463",
-          50: "#E6EAF2",
-          100: "#C1C9DF",
-          200: "#93A2C5",
-          300: "#677DAC",
-          400: "#455C8E",
-          500: "#0A2463",
-          600: "#08205A",
-          700: "#071B51",
-          800: "#061748",
-          900: "#04113F"
+          DEFAULT: "#6366F1",
+          50: "#EEF2FF",
+          100: "#E0E7FF",
+          200: "#C7D2FE",
+          300: "#A5B4FC",
+          400: "#818CF8",
+          500: "#6366F1",
+          600: "#4F46E5",
+          700: "#4338CA",
+          800: "#3730A3",
+          900: "#312E81",
+          950: "#1E1B4B",
         },
-        teal: {
-          DEFAULT: "#3AAFA9",
-          50: "#EBF7F7",
-          100: "#C4E8E6",
-          200: "#9CD9D5",
-          300: "#74CAC5",
-          400: "#4CBBB5",
-          500: "#3AAFA9",
-          600: "#34A19B",
-          700: "#2E938D",
-          800: "#28867F",
-          900: "#227871"
+        emerald: {
+          DEFAULT: "#10B981",
+          50: "#ECFDF5",
+          100: "#D1FAE5",
+          200: "#A7F3D0",
+          300: "#6EE7B7",
+          400: "#34D399",
+          500: "#10B981",
+          600: "#059669",
+          700: "#047857",
+          800: "#065F46",
+          900: "#064E3B",
+          950: "#022C22",
         }
       },
       borderRadius: {
@@ -90,7 +93,8 @@ const config: Config = {
       fontFamily: {
         sans: ["Inter", ...fontFamily.sans],
         poppins: ["Poppins", ...fontFamily.sans],
-        inter: ["Inter", ...fontFamily.sans], // Add this line to define the font-inter class
+        inter: ["Inter", ...fontFamily.sans],
+        mont: ["Montserrat", ...fontFamily.sans],
       },
       keyframes: {
         "accordion-down": {
@@ -155,7 +159,7 @@ const config: Config = {
           bottom: "0",
           height: "3px",
           width: "60px",
-          backgroundColor: "#3AAFA9",
+          backgroundColor: "#6366F1",
         },
       });
     }),
