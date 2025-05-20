@@ -17,7 +17,8 @@ import {
   Calendar,
   Percent,
   Upload,
-  Download
+  Download,
+  MessageSquare
 } from 'lucide-react';
 import Logo from '@/components/Logo';
 import AdminMobileNavigation from '@/components/AdminMobileNavigation';
@@ -155,6 +156,12 @@ const Admin = () => {
             Customers
           </Link>
           
+          <p className="text-xs text-gray-400 font-medium mt-6 mb-3 uppercase">Support</p>
+          <Link to="/admin/tickets" className="flex items-center py-2 px-3 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white mb-1">
+            <MessageSquare className="h-5 w-5 mr-3" />
+            Tickets
+          </Link>
+          
           <p className="text-xs text-gray-400 font-medium mt-6 mb-3 uppercase">Analytics</p>
           <Link to="/admin/analytics" className="flex items-center py-2 px-3 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white mb-1">
             <BarChart3 className="h-5 w-5 mr-3" />
@@ -279,12 +286,12 @@ const Admin = () => {
               iconColorClass="text-saffron-600"
             />
             <AdminStatCard
-              title="Customers"
-              value="2,156"
-              trendValue="186"
-              trend="new this month"
-              trendIsPositive={true}
-              icon={Users}
+              title="Tickets"
+              value="42"
+              trendValue="7"
+              trend="open tickets"
+              trendIsPositive={false}
+              icon={MessageSquare}
               iconBgClass="bg-purple-100"
               iconColorClass="text-purple-600"
             />

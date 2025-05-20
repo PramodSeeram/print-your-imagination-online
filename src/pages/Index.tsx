@@ -1,137 +1,17 @@
 
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import ProductGrid from "@/components/ProductGrid";
+import HeroBanner from "@/components/HeroBanner";
+import CategoryBanner from "@/components/CategoryBanner";
 import FeaturesSection from "@/components/FeaturesSection";
 import TestimonialSection from "@/components/TestimonialSection";
-import CategoryBanner from "@/components/CategoryBanner";
+import ProductGrid from "@/components/ProductGrid";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart, Play, ChevronDown, ShoppingCart, Star, Check } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-
-// Mock data for products
-const NEW_LAUNCHES = [
-  {
-    id: 1,
-    name: "Geometric Plant Holder",
-    price: 599,
-    rating: 4.8,
-    imageUrl: "https://images.unsplash.com/photo-1545194445-dddb8f4487c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-    isNew: true
-  },
-  {
-    id: 2,
-    name: "Phone Stand with Wireless Charger",
-    price: 899,
-    offerPrice: 799,
-    rating: 4.5,
-    imageUrl: "https://images.unsplash.com/photo-1661347998426-1a1a8cbb6ad4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-    isNew: true
-  },
-  {
-    id: 3,
-    name: "Customizable Desk Organizer",
-    price: 699,
-    rating: 4.7,
-    imageUrl: "https://images.unsplash.com/photo-1544376798-76d0953d1506?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-    isNew: true
-  },
-  {
-    id: 4,
-    name: "Mandala Wall Art",
-    price: 1299,
-    offerPrice: 999,
-    rating: 4.9,
-    imageUrl: "https://images.unsplash.com/photo-1557672172-298e090bd0f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-    isNew: true
-  }
-];
-
-const BEST_SELLERS = [
-  {
-    id: 5,
-    name: "Miniature Taj Mahal",
-    price: 799,
-    rating: 4.9,
-    imageUrl: "https://images.unsplash.com/photo-1564507592333-c60657eea523?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-    isBestSeller: true
-  },
-  {
-    id: 6,
-    name: "Cable Management System",
-    price: 499,
-    rating: 4.7,
-    imageUrl: "https://images.unsplash.com/photo-1470350576089-539d5a852bf7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-    isBestSeller: true
-  },
-  {
-    id: 7,
-    name: "Family Name Plate",
-    price: 999,
-    rating: 4.8,
-    imageUrl: "https://images.unsplash.com/photo-1557180295-76eee20ae8aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-    isBestSeller: true
-  },
-  {
-    id: 8,
-    name: "Geometric Lamp Shade",
-    price: 1499,
-    offerPrice: 1299,
-    rating: 4.6,
-    imageUrl: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-    isBestSeller: true
-  }
-];
-
-// Category banners
-const FEATURED_CATEGORIES = [
-  {
-    id: 1,
-    name: "Home Decor",
-    description: "Transform your living space with unique 3D printed decor items",
-    imageUrl: "https://images.unsplash.com/photo-1538944495092-48fff71fbb5d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-  },
-  {
-    id: 3,
-    name: "Tech Gadgets",
-    description: "Practical and stylish accessories for your everyday tech",
-    imageUrl: "https://images.unsplash.com/photo-1573148195900-7845dcb9b127?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-  },
-  {
-    id: 4,
-    name: "Seasonal Collections",
-    description: "Special items for festivals and celebrations",
-    imageUrl: "https://images.unsplash.com/photo-1607344645866-009c320c5ab8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-  }
-];
-
-// Featured products
-const FEATURED_PRODUCTS = [
-  {
-    id: 9,
-    name: "Modern Desk Lamp",
-    price: 1299,
-    rating: 4.8,
-    imageUrl: "https://images.unsplash.com/photo-1507146153580-69a1fe6d8aa1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 10,
-    name: "Architectural Vase",
-    price: 899,
-    offerPrice: 749,
-    rating: 4.7,
-    imageUrl: "https://images.unsplash.com/photo-1576426863848-c21f53c60b19?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 11,
-    name: "Designer Book Ends",
-    price: 699,
-    rating: 4.5,
-    imageUrl: "https://images.unsplash.com/photo-1544375111-bb23ba6652f9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-  }
-];
+import { ChevronRight, Search } from 'lucide-react';
 
 interface Product {
   id: number;
@@ -145,344 +25,340 @@ interface Product {
 }
 
 const Index = () => {
-  const [cart, setCart] = useState<Product[]>([]);
-  const [wishlist, setWishlist] = useState<number[]>([]);
+  const [newArrivals, setNewArrivals] = useState<Product[]>([]);
+  const [bestSellers, setBestSellers] = useState<Product[]>([]);
+  const [deals, setDeals] = useState<Product[]>([]);
+  const [wishlistedIds, setWishlistedIds] = useState<number[]>([]);
+  const [loyaltyPoints, setLoyaltyPoints] = useState<number>(0);
+  const [recentlyViewedProducts, setRecentlyViewedProducts] = useState<Product[]>([]);
+  const [browsingHistory, setBrowsingHistory] = useState<{category: string, items: Product[]}[]>([]);
+  const navigate = useNavigate();
   const { toast } = useToast();
 
-  const addToCart = (product: Product) => {
-    setCart([...cart, product]);
+  useEffect(() => {
+    // Load wishlisted item ids from localStorage
+    const storedWishlist = localStorage.getItem('wishlist');
+    if (storedWishlist) {
+      setWishlistedIds(JSON.parse(storedWishlist));
+    }
+    
+    // Load loyalty points if available
+    const storedUser = localStorage.getItem('userProfile');
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      setLoyaltyPoints(user.loyaltyPoints || Math.floor(Math.random() * 500) + 100); // Mock loyalty points
+    } else {
+      // Create a mock user profile if it doesn't exist
+      const mockUser = {
+        id: 'user-1',
+        name: 'John Doe',
+        email: 'john@example.com',
+        loyaltyPoints: Math.floor(Math.random() * 500) + 100
+      };
+      localStorage.setItem('userProfile', JSON.stringify(mockUser));
+      setLoyaltyPoints(mockUser.loyaltyPoints);
+    }
+
+    // Mock products fetch from API
+    const mockProducts = [
+      {
+        id: 1,
+        name: "Handcrafted Wooden Wall Decor",
+        price: 1999,
+        offerPrice: 1499,
+        rating: 4.5,
+        imageUrl: "https://images.unsplash.com/photo-1614955849439-67066da241ca?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+        isNew: true
+      },
+      {
+        id: 2,
+        name: "Hand-painted Ceramic Vase",
+        price: 899,
+        rating: 4.8,
+        imageUrl: "https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+        isBestSeller: true
+      },
+      {
+        id: 3,
+        name: "Handwoven Cotton Rug",
+        price: 2499,
+        offerPrice: 1999,
+        rating: 4.2,
+        imageUrl: "https://images.unsplash.com/photo-1615529482396-63f8b0d0944b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+      },
+      {
+        id: 4,
+        name: "Terracotta Plant Pot Set",
+        price: 1299,
+        offerPrice: 999,
+        rating: 4.6,
+        imageUrl: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+        isNew: true
+      },
+      {
+        id: 5,
+        name: "Brass Decor Set",
+        price: 2999,
+        offerPrice: 2399,
+        rating: 4.7,
+        imageUrl: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+        isBestSeller: true
+      },
+      {
+        id: 6,
+        name: "Bamboo Storage Baskets",
+        price: 699,
+        rating: 4.3,
+        imageUrl: "https://images.unsplash.com/photo-1526434426615-1abe81efcb0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+      },
+      {
+        id: 7,
+        name: "Macrame Wall Hanging",
+        price: 1199,
+        offerPrice: 899,
+        rating: 4.4,
+        imageUrl: "https://images.unsplash.com/photo-1545304787-d9d3229f4e3a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+        isNew: true
+      },
+      {
+        id: 8,
+        name: "Marble Coaster Set",
+        price: 799,
+        offerPrice: 599,
+        rating: 4.1,
+        imageUrl: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+        isBestSeller: true
+      }
+    ];
+    
+    // Set new arrivals (products with isNew flag)
+    setNewArrivals(mockProducts.filter(p => p.isNew));
+    
+    // Set best sellers (products with isBestSeller flag)
+    setBestSellers(mockProducts.filter(p => p.isBestSeller));
+    
+    // Set deals (products with offerPrice)
+    setDeals(mockProducts.filter(p => p.offerPrice));
+    
+    // Generate some recently viewed products
+    const viewedProducts = [...mockProducts].sort(() => 0.5 - Math.random()).slice(0, 5);
+    setRecentlyViewedProducts(viewedProducts);
+    
+    // Generate browsing history by categories
+    setBrowsingHistory([
+      {
+        category: 'Laptops',
+        items: [
+          {
+            id: 101,
+            name: "Dell Inspiron Laptop",
+            price: 45999,
+            rating: 4.3,
+            imageUrl: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+          },
+          {
+            id: 102,
+            name: "HP Pavilion Laptop",
+            price: 52999,
+            offerPrice: 49999,
+            rating: 4.5,
+            imageUrl: "https://images.unsplash.com/photo-1544731612-de7f96afe55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+          }
+        ]
+      },
+      {
+        category: 'Hand Blenders',
+        items: [
+          {
+            id: 201,
+            name: "Phillips Hand Blender",
+            price: 2999,
+            offerPrice: 2499,
+            rating: 4.6,
+            imageUrl: "https://images.unsplash.com/photo-1507914997799-a3d0222c403a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+          }
+        ]
+      }
+    ]);
+
+  }, []);
+
+  const handleAddToCart = (product: Product) => {
+    const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+    const existingItemIndex = cartItems.findIndex((item: any) => item.id === product.id);
+    
+    if (existingItemIndex !== -1) {
+      cartItems[existingItemIndex].quantity += 1;
+    } else {
+      cartItems.push({
+        ...product,
+        quantity: 1
+      });
+    }
+    
+    // Calculate cart total
+    const total = cartItems.reduce((sum: number, item: any) => 
+      sum + ((item.offerPrice || item.price) * item.quantity), 0
+    );
+    
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    localStorage.setItem('cartTotal', total.toString());
+    
     toast({
       title: "Added to cart",
-      description: `${product.name} has been added to your cart`,
+      description: `${product.name} has been added to your cart.`
     });
   };
 
-  const toggleWishlist = (productId: number) => {
-    if (wishlist.includes(productId)) {
-      setWishlist(wishlist.filter(id => id !== productId));
+  const handleToggleWishlist = (productId: number) => {
+    const currentWishlist = [...wishlistedIds];
+    const index = currentWishlist.indexOf(productId);
+    
+    if (index !== -1) {
+      // Remove from wishlist
+      currentWishlist.splice(index, 1);
       toast({
         title: "Removed from wishlist",
-        description: `Item has been removed from your wishlist`,
+        description: "Product has been removed from your wishlist."
       });
     } else {
-      setWishlist([...wishlist, productId]);
+      // Add to wishlist
+      currentWishlist.push(productId);
       toast({
         title: "Added to wishlist",
-        description: `Item has been added to your wishlist`,
+        description: "Product has been added to your wishlist."
       });
     }
+    
+    setWishlistedIds(currentWishlist);
+    localStorage.setItem('wishlist', JSON.stringify(currentWishlist));
   };
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-grow">
-        {/* Hero section with improved design */}
-        <section className="bg-gradient-to-b from-gray-50 to-white">
-          <div className="container-avirva py-16 px-4 md:px-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-              <div className="order-2 lg:order-1">
-                <span className="inline-block px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm font-medium mb-4">
-                  Premium 3D Printing
-                </span>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 text-gray-900">
-                  Print Your <span className="text-indigo bg-clip-text">Imagination</span>
-                </h1>
-                <p className="text-lg text-gray-600 mb-8 max-w-lg">
-                  Discover our collection of premium 3D printed products that combine creativity, functionality and sustainability.
-                </p>
-                
-                <div className="flex flex-wrap gap-4">
-                  <Button className="bg-indigo hover:bg-indigo-600 text-lg py-6 px-8 rounded-full shadow-lg transition-transform hover:scale-105">
-                    <Link to="/products">Shop Collection</Link>
-                  </Button>
-                  <Button variant="outline" className="text-indigo border-indigo hover:bg-indigo-50 text-lg py-6 px-8 rounded-full">
-                    <Link to="/custom-order" className="flex items-center">
-                      <Play className="mr-2 h-5 w-5 fill-indigo" /> How It Works
-                    </Link>
-                  </Button>
-                </div>
-                
-                <div className="mt-10 flex items-center gap-6">
-                  <div className="flex -space-x-2">
-                    <img src="https://randomuser.me/api/portraits/women/12.jpg" alt="Customer" className="h-8 w-8 rounded-full border-2 border-white" />
-                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Customer" className="h-8 w-8 rounded-full border-2 border-white" />
-                    <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Customer" className="h-8 w-8 rounded-full border-2 border-white" />
-                    <span className="flex items-center justify-center h-8 w-8 rounded-full border-2 border-white bg-indigo text-white text-xs font-medium">+2k</span>
-                  </div>
-                  <div>
-                    <div className="flex items-center">
-                      <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                      <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                      <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                      <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                      <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                    </div>
-                    <p className="text-sm text-gray-600">Rated 4.9 by our customers</p>
-                  </div>
-                </div>
-              </div>
-              <div className="order-1 lg:order-2 relative">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-r from-teal-300/20 to-indigo-300/20 rounded-full blur-3xl"></div>
-                <div className="relative z-10">
-                  <div className="grid grid-cols-2 gap-4">
-                    <img src={NEW_LAUNCHES[0].imageUrl} alt="3D Printed Product" className="rounded-lg shadow-lg transform translate-y-8" />
-                    <img src={BEST_SELLERS[0].imageUrl} alt="3D Printed Product" className="rounded-lg shadow-lg" />
-                    <img src={NEW_LAUNCHES[3].imageUrl} alt="3D Printed Product" className="rounded-lg shadow-lg" />
-                    <img src={BEST_SELLERS[2].imageUrl} alt="3D Printed Product" className="rounded-lg shadow-lg transform translate-y-8" />
-                  </div>
-                  <div className="absolute -bottom-6 -right-6 bg-white rounded-lg shadow-xl p-4 max-w-[200px]">
-                    <div className="flex items-center mb-2">
-                      <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                      <span className="text-xs font-medium text-green-600">Now Printing</span>
-                    </div>
-                    <p className="text-sm font-medium">Geometric Lamp Shade</p>
-                    <div className="w-full bg-gray-200 rounded-full h-1.5 mt-2">
-                      <div className="bg-indigo h-1.5 rounded-full w-3/4"></div>
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1">75% Complete</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+      <main className="flex-grow bg-gray-50">
+        <HeroBanner />
         
-        {/* Featured categories */}
-        <section className="py-16 bg-gray-50">
-          <div className="container-avirva">
-            <div className="flex justify-between items-center mb-8">
+        <div className="container-avirva py-6">
+          {/* Loyalty Points Card */}
+          <div className="mb-8 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg p-5 text-white">
+            <div className="flex justify-between items-center">
               <div>
-                <h2 className="text-3xl font-bold mb-2">Featured Categories</h2>
-                <p className="text-gray-600">Browse our most popular categories</p>
+                <h3 className="text-xl font-bold">Your Loyalty Points</h3>
+                <p className="text-sm opacity-90 mb-2">Collect points with every purchase</p>
+                <div className="text-3xl font-bold">{loyaltyPoints} points</div>
               </div>
-              <Button variant="outline" asChild>
-                <Link to="/categories" className="flex items-center">
-                  View All Categories <ChevronDown className="ml-2 h-4 w-4 rotate-[-90deg]" />
-                </Link>
+              <Button className="bg-white text-indigo-600 hover:bg-gray-100">
+                View Rewards
               </Button>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {FEATURED_CATEGORIES.map((category) => (
-                <CategoryBanner key={category.id} {...category} />
-              ))}
-            </div>
           </div>
-        </section>
-        
-        {/* New launches */}
-        <section className="py-16">
-          <div className="container-avirva">
-            <div className="flex justify-between items-center mb-8">
-              <div>
-                <h2 className="text-3xl font-bold mb-2">New Launches</h2>
-                <p className="text-gray-600">Our latest innovative designs</p>
+          
+          {/* Continue Shopping Section - based on Amazon-like layout */}
+          {recentlyViewedProducts.length > 0 && (
+            <div className="mb-8">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">Pick up where you left off</h2>
+                <Button variant="link" className="text-indigo-600" onClick={() => navigate('/account')}>
+                  See more <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
               </div>
-              <Button variant="outline" asChild>
-                <Link to="/new-launches" className="flex items-center">
-                  View All <ChevronDown className="ml-2 h-4 w-4 rotate-[-90deg]" />
-                </Link>
-              </Button>
-            </div>
-            <ProductGrid 
-              products={NEW_LAUNCHES} 
-              onAddToCart={addToCart} 
-              onToggleWishlist={toggleWishlist} 
-              wishlistedIds={wishlist}
-            />
-          </div>
-        </section>
-        
-        {/* Features section */}
-        <FeaturesSection />
-        
-        {/* Best sellers */}
-        <section className="py-16 bg-gray-50">
-          <div className="container-avirva">
-            <div className="flex justify-between items-center mb-8">
-              <div>
-                <h2 className="text-3xl font-bold mb-2">Best Sellers</h2>
-                <p className="text-gray-600">Our most popular products</p>
-              </div>
-              <Button variant="outline" asChild>
-                <Link to="/best-sellers" className="flex items-center">
-                  View All <ChevronDown className="ml-2 h-4 w-4 rotate-[-90deg]" />
-                </Link>
-              </Button>
-            </div>
-            <ProductGrid 
-              products={BEST_SELLERS} 
-              onAddToCart={addToCart} 
-              onToggleWishlist={toggleWishlist} 
-              wishlistedIds={wishlist}
-            />
-          </div>
-        </section>
-        
-        {/* Custom design CTA */}
-        <section className="py-16">
-          <div className="container-avirva">
-            <div className="bg-gradient-to-r from-indigo to-indigo-600 text-white rounded-2xl overflow-hidden shadow-xl">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="p-8 md:p-12">
-                  <h2 className="text-3xl font-bold mb-4">Customized 3D Printing Solutions</h2>
-                  <p className="text-white/90 mb-8 max-w-lg">
-                    Need something special? Our designers can bring your ideas to life with custom designs tailored to your needs. From prototypes to final products, we're here to help.
-                  </p>
-                  <div className="space-y-4">
-                    <div className="flex items-start">
-                      <div className="bg-white/20 p-2 rounded-full mr-4">
-                        <Check className="h-5 w-5 text-white" />
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                {recentlyViewedProducts.slice(0, 5).map(product => (
+                  <Card key={product.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate(`/product/${product.id}`)}>
+                    <CardContent className="p-3">
+                      <div className="aspect-square mb-2">
+                        <img 
+                          src={product.imageUrl} 
+                          alt={product.name} 
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                      <div>
-                        <h3 className="font-medium">Expert Design Consultation</h3>
-                        <p className="text-white/80 text-sm">Get professional help with your ideas</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start">
-                      <div className="bg-white/20 p-2 rounded-full mr-4">
-                        <Check className="h-5 w-5 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="font-medium">Rapid Prototyping</h3>
-                        <p className="text-white/80 text-sm">Quick iterations to perfect your design</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start">
-                      <div className="bg-white/20 p-2 rounded-full mr-4">
-                        <Check className="h-5 w-5 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="font-medium">Premium Materials</h3>
-                        <p className="text-white/80 text-sm">High-quality, durable materials for lasting results</p>
-                      </div>
-                    </div>
-                  </div>
-                  <Button className="mt-8 bg-white text-indigo hover:bg-gray-100 text-lg py-6 px-8 rounded-full shadow-lg">
-                    <Link to="/custom-order">Request Custom Order</Link>
-                  </Button>
-                </div>
-                <div className="relative hidden md:block">
-                  <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
-                  <img 
-                    src="https://images.unsplash.com/photo-1612812166620-a72266183c2f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
-                    alt="Custom 3D printing" 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        
-        {/* Testimonials */}
-        <TestimonialSection />
-        
-        {/* Featured products mosaic */}
-        <section className="py-16 bg-gray-50">
-          <div className="container-avirva">
-            <h2 className="text-3xl font-bold mb-8">Trending Now</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="md:col-span-2 relative group overflow-hidden rounded-lg shadow-lg">
-                <img 
-                  src={FEATURED_PRODUCTS[0].imageUrl} 
-                  alt={FEATURED_PRODUCTS[0].name} 
-                  className="w-full h-[400px] object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-6">
-                  <div className="flex items-center mb-2">
-                    <div className="flex items-center text-yellow-400">
-                      <Star className="h-4 w-4 fill-current" />
-                      <span className="ml-1 text-sm text-white">{FEATURED_PRODUCTS[0].rating}</span>
-                    </div>
-                  </div>
-                  <h3 className="text-white text-xl font-bold">{FEATURED_PRODUCTS[0].name}</h3>
-                  <p className="text-white/80 mb-4">₹{FEATURED_PRODUCTS[0].price}</p>
-                  <div className="flex gap-2">
-                    <Button 
-                      className="bg-white text-indigo hover:bg-gray-100 gap-1"
-                      onClick={() => addToCart(FEATURED_PRODUCTS[0])}
-                    >
-                      <ShoppingCart className="h-4 w-4" /> Add to Cart
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="border-white text-white hover:bg-white/20"
-                      onClick={() => toggleWishlist(FEATURED_PRODUCTS[0].id)}
-                    >
-                      <Heart className={`h-4 w-4 ${wishlist.includes(FEATURED_PRODUCTS[0].id) ? 'fill-white' : ''}`} />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-6">
-                {FEATURED_PRODUCTS.slice(1).map((product) => (
-                  <div key={product.id} className="relative group overflow-hidden rounded-lg shadow-lg">
-                    <img 
-                      src={product.imageUrl} 
-                      alt={product.name} 
-                      className="w-full h-[190px] object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-6">
-                      <h3 className="text-white font-bold">{product.name}</h3>
-                      <div className="flex items-center justify-between">
-                        <p className="text-white/80">
-                          {product.offerPrice ? (
-                            <>
-                              <span className="text-white">₹{product.offerPrice}</span>
-                              <span className="line-through ml-2 text-sm">₹{product.price}</span>
-                            </>
-                          ) : (
-                            <>₹{product.price}</>
-                          )}
-                        </p>
-                        <Button 
-                          variant="outline" 
-                          size="icon"
-                          className="border-white text-white hover:bg-white/20 h-8 w-8"
-                          onClick={() => toggleWishlist(product.id)}
-                        >
-                          <Heart className={`h-4 w-4 ${wishlist.includes(product.id) ? 'fill-white' : ''}`} />
-                        </Button>
-                      </div>
-                    </div>
-                    <Button 
-                      className="absolute bottom-4 right-4 bg-white text-indigo hover:bg-gray-100"
-                      onClick={() => addToCart(product)}
-                    >
-                      <ShoppingCart className="h-4 w-4" />
-                    </Button>
-                  </div>
+                      <h3 className="text-sm font-medium line-clamp-2">{product.name}</h3>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             </div>
-          </div>
-        </section>
-        
-        {/* Newsletter subscription */}
-        <section className="py-16">
-          <div className="container-avirva max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-2">Join Our Community</h2>
-            <p className="text-gray-600 mb-8 max-w-lg mx-auto">
-              Subscribe to our newsletter for exclusive offers, design inspiration and new product launches
-            </p>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <input 
-                type="email" 
-                placeholder="Enter your email address" 
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo focus:border-transparent"
-              />
-              <Button className="bg-indigo hover:bg-indigo-600 rounded-full py-3 px-6">
-                Subscribe
-              </Button>
+          )}
+          
+          {/* Browsing History - Amazon-like Category Row */}
+          {browsingHistory.length > 0 && (
+            <div className="mb-8">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">Keep shopping for</h2>
+                <Button variant="link" className="text-indigo-600">
+                  View your browsing history <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {browsingHistory.map((category, index) => (
+                  <Card key={index} className="overflow-hidden">
+                    <CardContent className="p-4">
+                      <h3 className="font-medium mb-2">{category.category}</h3>
+                      <div className="grid grid-cols-2 gap-2">
+                        {category.items.map(item => (
+                          <div 
+                            key={item.id} 
+                            className="cursor-pointer"
+                            onClick={() => navigate(`/product/${item.id}`)}
+                          >
+                            <div className="aspect-square bg-gray-100 mb-1">
+                              <img 
+                                src={item.imageUrl} 
+                                alt={item.name} 
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <p className="text-xs text-gray-600">{category.items.length} viewed</p>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
-            <p className="text-xs text-gray-500 mt-4">
-              By subscribing, you agree to our Privacy Policy and consent to receive updates from our company.
-            </p>
-          </div>
-        </section>
+          )}
+          
+          {/* Hero Banner with Categories */}
+          <CategoryBanner />
+          
+          {/* New Arrivals */}
+          <ProductGrid 
+            title="New Arrivals" 
+            products={newArrivals}
+            onAddToCart={handleAddToCart}
+            onToggleWishlist={handleToggleWishlist}
+            wishlistedIds={wishlistedIds}
+          />
+          
+          {/* Best Sellers */}
+          <ProductGrid 
+            title="Best Sellers" 
+            products={bestSellers}
+            onAddToCart={handleAddToCart}
+            onToggleWishlist={handleToggleWishlist}
+            wishlistedIds={wishlistedIds}
+          />
+          
+          {/* Deals */}
+          <ProductGrid 
+            title="Deals of the Week" 
+            products={deals}
+            onAddToCart={handleAddToCart}
+            onToggleWishlist={handleToggleWishlist}
+            wishlistedIds={wishlistedIds}
+          />
+          
+          {/* Features Section */}
+          <FeaturesSection />
+          
+          {/* Testimonials */}
+          <TestimonialSection />
+        </div>
       </main>
       
       <Footer />
