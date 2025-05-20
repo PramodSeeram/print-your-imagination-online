@@ -1,15 +1,41 @@
 
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, Search, ShoppingCart, User, X, Ticket, ChevronDown, ChevronRight } from 'lucide-react';
-import Logo from './Logo';
-import { Button } from '@/components/ui/button';
+import { 
+  Search, 
+  ShoppingCart, 
+  Menu, 
+  X, 
+  User, 
+  Heart,
+  LogIn,
+  Package,
+  ChevronDown,
+  ChevronRight,
+  Bell
+} from 'lucide-react';
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import Logo from '@/components/Logo';
+import { useMobileMenu } from '@/hooks/use-mobile';
 
 // Mock data for categories
 const CATEGORIES = [
@@ -39,480 +65,511 @@ const CATEGORIES = [
       { id: "302", name: "Cable Organizers" },
       { id: "303", name: "Key Holders" }
     ]
-  },
-  {
-    id: "4",
-    name: "Seasonal Collections",
-    subcategories: [
-      { id: "401", name: "Diwali Specials" },
-      { id: "402", name: "Christmas Decor" },
-      { id: "403", name: "Back-to-School" }
-    ]
-  },
-  {
-    id: "5",
-    name: "Gifts & Custom",
-    subcategories: [
-      { id: "501", name: "Personalized Nameplates" },
-      { id: "502", name: "Desk Accessories" }
-    ]
   }
-];
-
-// Mock products for search
-const PRODUCTS = [
-  {
-    id: 1,
-    name: "Geometric Plant Holder",
-    category: "Home Decor",
-    subcategory: "Planters",
-    price: 599,
-    imageUrl: "https://images.unsplash.com/photo-1545194445-dddb8f4487c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 2,
-    name: "Wall Mounted Shelf",
-    category: "Home Decor",
-    subcategory: "Wall Art",
-    price: 799,
-    imageUrl: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 3,
-    name: "Desk Lamp",
-    category: "Home Decor",
-    subcategory: "Lighting",
-    price: 1299,
-    imageUrl: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 4,
-    name: "Miniature Car",
-    category: "Miniatures",
-    subcategory: "Vehicles",
-    price: 699,
-    imageUrl: "https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 5,
-    name: "Phone Stand",
-    category: "Tech Gadgets",
-    subcategory: "Phone Stands",
-    price: 399,
-    imageUrl: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-  }
-];
-
-// Recent popular searches
-const POPULAR_SEARCHES = [
-  "Plant holder",
-  "Desk accessories",
-  "Wall art",
-  "Miniature figurines",
-  "Phone stand"
 ];
 
 const Header = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchMode, setSearchMode] = useState(false);
-  const [cartItemCount, setCartItemCount] = useState(0);
-  const [showSearchResults, setShowSearchResults] = useState(false);
+  const { isMenuOpen, toggleMenu, closeMenu } = useMobileMenu();
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
-  const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
-  const searchRef = useRef<HTMLDivElement>(null);
+  const [showSearchResults, setShowSearchResults] = useState<boolean>(false);
+  const [cartCount, setCartCount] = useState<number>(0);
+  const [wishlistCount, setWishlistCount] = useState<number>(0);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  // Load cart items count from localStorage
+  // Mock product data for search
+  const PRODUCTS = [
+    { id: 1, name: "Geometric Plant Holder", category: "Home Decor" },
+    { id: 2, name: "Wall Mounted Shelf", category: "Home Decor" },
+    { id: 3, name: "Desk Lamp", category: "Home Decor" },
+    { id: 4, name: "Miniature Car", category: "Miniatures" },
+    { id: 5, name: "Phone Stand", category: "Tech Gadgets" },
+    { id: 6, name: "Cable Organizer", category: "Tech Gadgets" },
+    { id: 7, name: "Wall Art Panels", category: "Home Decor" },
+    { id: 8, name: "Desk Organizer", category: "Tech Gadgets" }
+  ];
+
   useEffect(() => {
-    const storedItems = localStorage.getItem('cartItems');
-    if (storedItems) {
-      const items = JSON.parse(storedItems);
-      setCartItemCount(items.length);
-    }
+    // Load cart items count from localStorage
+    const loadCartCount = () => {
+      const cartItems = localStorage.getItem('cartItems');
+      if (cartItems) {
+        const items = JSON.parse(cartItems);
+        setCartCount(items.length);
+      }
+    };
+    
+    // Load wishlist count from localStorage
+    const loadWishlistCount = () => {
+      const wishlist = localStorage.getItem('wishlist');
+      if (wishlist) {
+        const items = JSON.parse(wishlist);
+        setWishlistCount(items.length);
+      }
+    };
+    
+    loadCartCount();
+    loadWishlistCount();
     
     // Listen for cart updates
-    const handleCartUpdate = () => {
-      const updatedItems = localStorage.getItem('cartItems');
-      if (updatedItems) {
-        const items = JSON.parse(updatedItems);
-        setCartItemCount(items.length);
-      } else {
-        setCartItemCount(0);
-      }
-    };
+    window.addEventListener('cartUpdated', loadCartCount);
+    window.addEventListener('wishlistUpdated', loadWishlistCount);
     
-    window.addEventListener('cartUpdated', handleCartUpdate);
+    // Check if user is logged in (mock)
+    const userLoggedIn = localStorage.getItem('userLoggedIn');
+    setIsLoggedIn(userLoggedIn === 'true');
     
     return () => {
-      window.removeEventListener('cartUpdated', handleCartUpdate);
+      window.removeEventListener('cartUpdated', loadCartCount);
+      window.removeEventListener('wishlistUpdated', loadWishlistCount);
     };
   }, []);
 
-  // Close search results when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-        setShowSearchResults(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  // Search functionality
-  useEffect(() => {
-    if (searchQuery.trim().length >= 1) {
-      // Search in products
-      const filtered = PRODUCTS.filter(product =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.subcategory.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      
-      setSearchResults(filtered);
-      
-      // Generate suggestions based on query (product names, categories, subcategories)
-      const allNames = PRODUCTS.map(p => p.name);
-      const allCategories = CATEGORIES.map(c => c.name);
-      const allSubcategories = CATEGORIES.flatMap(c => c.subcategories.map(sc => sc.name));
-      
-      const allOptions = [...allNames, ...allCategories, ...allSubcategories];
-      
-      const suggestions = allOptions
-        .filter(option => 
-          option.toLowerCase().includes(searchQuery.toLowerCase()) &&
-          option.toLowerCase() !== searchQuery.toLowerCase()
-        )
-        .slice(0, 5);
-      
-      setSearchSuggestions(suggestions);
-      setShowSearchResults(true);
-    } else {
-      setSearchSuggestions([]);
+  const handleSearch = () => {
+    if (searchQuery.trim() === '') {
       setSearchResults([]);
       setShowSearchResults(false);
+      return;
     }
-  }, [searchQuery]);
+    
+    const query = searchQuery.toLowerCase();
+    const results = PRODUCTS.filter(product => 
+      product.name.toLowerCase().includes(query) || 
+      product.category.toLowerCase().includes(query)
+    );
+    
+    setSearchResults(results);
+    setShowSearchResults(true);
+  };
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      // In a real app, this would navigate to search results page with query
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    if (e.target.value.length > 2) {
+      handleSearch();
+    } else {
       setShowSearchResults(false);
-      // Navigate to a search page (not implemented in this example)
-      // navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
     }
   };
 
-  const handleSearchItemClick = (productId: number) => {
+  const handleSearchInputFocus = () => {
+    if (searchQuery.length > 2) {
+      setShowSearchResults(true);
+    }
+  };
+
+  const handleSearchResultClick = (productId: number) => {
     setShowSearchResults(false);
-    setSearchQuery("");
-    // Navigate to product page (not fully implemented in this example)
-    // navigate(`/product/${productId}`);
+    navigate(`/product/${productId}`);
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setSearchQuery(suggestion);
-  };
-
-  const toggleMobileSearch = () => {
-    setSearchMode(!searchMode);
-    if (!searchMode) {
-      setTimeout(() => {
-        document.getElementById('mobileSearchInput')?.focus();
-      }, 100);
-    }
+  const handleOnBlur = () => {
+    // Delay hiding the search results to allow for clicking
+    setTimeout(() => {
+      setShowSearchResults(false);
+    }, 200);
   };
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
-      {/* Top announcement bar */}
+    <header className="border-b bg-white">
+      {/* Top Bar */}
       <div className="bg-indigo text-white py-2 text-center text-sm">
-        <p>Free shipping on orders above ₹599! Use code: FREESHIP</p>
+        <p>Free shipping on all orders above ₹999. Use code FREESHIP at checkout.</p>
       </div>
       
-      {/* Main header */}
-      <div className="container-avirva py-3">
-        {searchMode ? (
-          <div className="md:hidden mb-2">
-            <form onSubmit={handleSearch} className="flex items-center gap-2">
+      {/* Main Header */}
+      <div className="container-avirva py-4">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-2">
+            <Logo />
+          </Link>
+          
+          {/* Search - Hidden on mobile, shown on desktop */}
+          <div className="hidden md:block relative flex-1 max-w-md mx-8">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
-                id="mobileSearchInput"
-                type="text"
-                placeholder="Search products..."
-                className="flex-1 bg-gray-100 rounded-full px-4 py-2"
+                type="search"
+                placeholder="Search for products..."
+                className="pl-10 pr-4 py-2 w-full"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={handleSearchInputChange}
+                onFocus={handleSearchInputFocus}
+                onBlur={handleOnBlur}
               />
-              <Button 
-                type="button" 
-                variant="ghost"
-                size="sm"
-                onClick={toggleMobileSearch}
-              >
-                Cancel
-              </Button>
-            </form>
-          </div>
-        ) : (
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 lg:gap-8">
-              <button 
-                className="lg:hidden"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              >
-                <Menu className="h-6 w-6" />
-              </button>
-              <Logo />
-              
-              {/* Desktop Navigation */}
-              <nav className="hidden lg:flex items-center space-x-6">
-                {CATEGORIES.map(category => (
-                  <div key={category.id} className="group relative">
-                    <Link 
-                      to={`/category/${category.id}`}
-                      className="font-medium text-gray-800 hover:text-teal transition-colors py-2"
-                    >
-                      {category.name}
-                    </Link>
-                    {category.subcategories.length > 0 && (
-                      <div className="absolute left-0 top-full mt-1 w-48 bg-white shadow-lg rounded-md p-3 hidden group-hover:block animate-fade-in z-20">
-                        <div className="grid gap-1">
-                          {category.subcategories.map(sub => (
-                            <Link 
-                              key={sub.id}
-                              to={`/category/${category.id}/subcategory/${sub.id}`}
-                              className="text-gray-700 hover:text-teal hover:bg-gray-50 px-3 py-2 rounded-md transition-colors text-sm"
-                            >
-                              {sub.name}
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </nav>
             </div>
             
-            <div className="flex items-center gap-4">
-              {/* Search */}
-              <div className="hidden md:block relative" ref={searchRef}>
-                <form onSubmit={handleSearch} className="relative">
-                  <div className="flex items-center bg-gray-100 rounded-full px-4 py-2">
-                    <input
-                      type="text"
-                      placeholder="Search products..."
-                      className="bg-transparent border-none outline-none text-sm w-40 lg:w-64"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      onFocus={() => {
-                        if (searchQuery.trim().length >= 1) {
-                          setShowSearchResults(true);
-                        }
-                      }}
-                    />
-                    <Button type="submit" variant="ghost" className="p-0 h-auto">
-                      <Search className="h-5 w-5 text-gray-500" />
-                    </Button>
-                  </div>
-                </form>
-                
-                {/* Search Results Dropdown */}
-                {showSearchResults && (
-                  <div className="absolute top-full mt-1 bg-white rounded-md shadow-lg w-full lg:w-96 overflow-hidden z-30">
-                    {/* Search query suggestions */}
-                    {searchSuggestions.length > 0 && (
-                      <div className="p-2 border-b">
-                        <p className="text-xs text-gray-500 px-2 py-1">Suggested searches</p>
-                        <div className="space-y-1">
-                          {searchSuggestions.map((suggestion, index) => (
-                            <button
-                              key={index}
-                              className="flex items-center hover:bg-gray-50 rounded-md px-2 py-1.5 w-full text-left"
-                              onClick={() => handleSuggestionClick(suggestion)}
-                            >
-                              <Search className="h-3.5 w-3.5 text-gray-400 mr-2" />
-                              <span className="text-sm">{suggestion}</span>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    
-                    {/* Product results */}
-                    {searchResults.length > 0 ? (
-                      <div className="max-h-64 overflow-y-auto">
-                        {searchResults.map(product => (
-                          <button
-                            key={product.id}
-                            className="flex items-center gap-3 p-2 hover:bg-gray-50 w-full text-left border-b"
-                            onClick={() => handleSearchItemClick(product.id)}
-                          >
-                            <div className="w-12 h-12 bg-gray-100 rounded flex-shrink-0 overflow-hidden">
-                              <img 
-                                src={product.imageUrl} 
-                                alt={product.name} 
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                            <div>
-                              <p className="font-medium text-sm">{product.name}</p>
-                              <div className="flex items-center gap-1 text-xs text-gray-500">
-                                <span>{product.category}</span>
-                                <ChevronRight className="h-3 w-3" />
-                                <span>{product.subcategory}</span>
-                              </div>
-                              <p className="text-sm">₹{product.price}</p>
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    ) : searchQuery.trim().length > 0 ? (
-                      <div className="p-4 text-center text-gray-500">
-                        <p>No results found for "{searchQuery}"</p>
-                      </div>
-                    ) : (
-                      <div className="p-2 border-b">
-                        <p className="text-xs text-gray-500 px-2 py-1">Popular searches</p>
-                        <div className="space-y-1">
-                          {POPULAR_SEARCHES.map((search, index) => (
-                            <button
-                              key={index}
-                              className="flex items-center hover:bg-gray-50 rounded-md px-2 py-1.5 w-full text-left"
-                              onClick={() => handleSuggestionClick(search)}
-                            >
-                              <Search className="h-3.5 w-3.5 text-gray-400 mr-2" />
-                              <span className="text-sm">{search}</span>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+            {/* Search Results Dropdown */}
+            {showSearchResults && (
+              <div className="absolute z-20 mt-1 bg-white shadow-lg rounded-md w-full max-h-80 overflow-y-auto">
+                {searchResults.length > 0 ? (
+                  <ul className="py-2">
+                    {searchResults.map(product => (
+                      <li 
+                        key={product.id} 
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => handleSearchResultClick(product.id)}
+                      >
+                        <div className="font-medium">{product.name}</div>
+                        <div className="text-xs text-gray-500">{product.category}</div>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="p-4 text-center text-gray-500">
+                    No products found
                   </div>
                 )}
               </div>
-              
-              {/* Icons */}
-              <div className="flex items-center gap-2">
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={toggleMobileSearch}
-                  className="md:hidden"
-                >
+            )}
+          </div>
+          
+          {/* Navigation */}
+          <nav className="hidden md:flex items-center space-x-6">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center space-x-1">
+                  <span>Categories</span>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-64">
+                {CATEGORIES.map(category => (
+                  <DropdownMenu key={category.id}>
+                    <DropdownMenuTrigger className="w-full flex justify-between items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                      <span>{category.name}</span>
+                      <ChevronRight className="h-4 w-4" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent side="right">
+                      <Link to={`/category/${category.id}`}>
+                        <DropdownMenuItem className="font-medium">
+                          All {category.name}
+                        </DropdownMenuItem>
+                      </Link>
+                      <DropdownMenuSeparator />
+                      {category.subcategories.map(subcategory => (
+                        <Link 
+                          key={subcategory.id} 
+                          to={`/category/${category.id}/subcategory/${subcategory.id}`}
+                        >
+                          <DropdownMenuItem>{subcategory.name}</DropdownMenuItem>
+                        </Link>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            
+            <Link to="/tickets">
+              <Button variant="ghost">Support</Button>
+            </Link>
+            
+            {isLoggedIn && (
+              <Link to="/orders">
+                <Button variant="ghost" className="flex items-center">
+                  <Package className="h-4 w-4 mr-1" />
+                  <span>Orders</span>
+                </Button>
+              </Link>
+            )}
+          </nav>
+          
+          {/* Icons */}
+          <div className="flex items-center space-x-4">
+            {/* Mobile Search Dialog */}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden">
                   <Search className="h-5 w-5" />
                 </Button>
-                
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <User className="h-5 w-5" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
-                    <Link to="/account">
-                      <DropdownMenuItem className="cursor-pointer">
-                        Account
-                      </DropdownMenuItem>
-                    </Link>
-                    <Link to="/tickets">
-                      <DropdownMenuItem className="cursor-pointer">
-                        <Ticket className="h-4 w-4 mr-2" />
-                        Support Tickets
-                      </DropdownMenuItem>
-                    </Link>
-                    <Link to="/admin">
-                      <DropdownMenuItem className="cursor-pointer">
-                        Admin Dashboard
-                      </DropdownMenuItem>
-                    </Link>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                
-                <Link to="/cart">
-                  <Button variant="ghost" size="icon" className="relative">
-                    <ShoppingCart className="h-5 w-5" />
-                    {cartItemCount > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-teal text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                        {cartItemCount}
-                      </span>
-                    )}
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden mt-4 pb-4">
-            <form onSubmit={handleSearch} className="flex items-center bg-gray-100 rounded-full px-4 py-2 mb-4">
-              <input
-                type="text"
-                placeholder="Search products..."
-                className="bg-transparent border-none outline-none text-sm flex-1"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <Button type="submit" variant="ghost" className="p-0 h-auto">
-                <Search className="h-5 w-5 text-gray-500" />
-              </Button>
-            </form>
-            <nav className="flex flex-col space-y-4">
-              {CATEGORIES.map(category => (
-                <div key={category.id} className="space-y-2">
-                  <Link 
-                    to={`/category/${category.id}`}
-                    className="font-medium text-gray-800 block"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    {category.name}
-                  </Link>
-                  <div className="pl-4 space-y-1">
-                    {category.subcategories.map(sub => (
-                      <Link 
-                        key={sub.id}
-                        to={`/category/${category.id}/subcategory/${sub.id}`}
-                        className="text-gray-600 block text-sm"
-                        onClick={() => setMobileMenuOpen(false)}
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Search products</DialogTitle>
+                  <DialogDescription>
+                    Find the perfect 3D printed product for your needs.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    type="search"
+                    placeholder="Search for products..."
+                    className="pl-10 pr-4 py-2 w-full"
+                    value={searchQuery}
+                    onChange={handleSearchInputChange}
+                  />
+                </div>
+                {searchResults.length > 0 && (
+                  <ul className="py-2">
+                    {searchResults.map(product => (
+                      <li 
+                        key={product.id} 
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        onClick={() => {
+                          handleSearchResultClick(product.id);
+                          closeMenu();
+                        }}
                       >
-                        {sub.name}
-                      </Link>
+                        <div className="font-medium">{product.name}</div>
+                        <div className="text-xs text-gray-500">{product.category}</div>
+                      </li>
                     ))}
+                  </ul>
+                )}
+              </DialogContent>
+            </Dialog>
+            
+            {/* Wishlist */}
+            <Link to="/account" className="relative hidden sm:flex">
+              <Button variant="ghost" size="icon">
+                <Heart className="h-5 w-5" />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {wishlistCount}
+                  </span>
+                )}
+              </Button>
+            </Link>
+            
+            {/* Cart */}
+            <Link to="/cart" className="relative hidden sm:flex">
+              <Button variant="ghost" size="icon">
+                <ShoppingCart className="h-5 w-5" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </Button>
+            </Link>
+            
+            {/* Account Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                {isLoggedIn ? (
+                  <Button variant="ghost" size="icon" className="relative hidden sm:flex">
+                    <Avatar className="h-8 w-8 border">
+                      <AvatarImage src="https://randomuser.me/api/portraits/men/32.jpg" />
+                      <AvatarFallback>JD</AvatarFallback>
+                    </Avatar>
+                    <span className="absolute -top-1 -right-1 bg-teal-400 border-2 border-white w-3 h-3 rounded-full"></span>
+                  </Button>
+                ) : (
+                  <Button variant="ghost" size="icon" className="hidden sm:flex">
+                    <User className="h-5 w-5" />
+                  </Button>
+                )}
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                {isLoggedIn ? (
+                  <>
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => navigate('/account')}>Profile</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/orders')}>Orders</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/wishlist')}>Wishlist</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/tickets')}>Support Tickets</DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => {
+                        localStorage.setItem('userLoggedIn', 'false');
+                        setIsLoggedIn(false);
+                        navigate('/');
+                      }}
+                    >
+                      Logout
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <>
+                    <DropdownMenuItem onClick={() => navigate('/account')}>
+                      <LogIn className="h-4 w-4 mr-2" /> Login
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/account?register=true')}>
+                      Create Account
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            
+            {/* Mobile menu button */}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="md:hidden"
+              onClick={toggleMenu}
+            >
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
+          </div>
+        </div>
+        
+        {/* Mobile Search - shown below header on mobile */}
+        <div className="mt-4 mb-2 md:hidden">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              type="search"
+              placeholder="Search for products..."
+              className="pl-10 pr-4 py-2 w-full"
+              value={searchQuery}
+              onChange={handleSearchInputChange}
+            />
+          </div>
+        </div>
+      </div>
+      
+      {/* Mobile menu */}
+      <div className={`fixed inset-0 bg-gray-800 bg-opacity-50 z-40 transition-opacity duration-300 ${isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <div className={`fixed inset-y-0 left-0 w-64 bg-white transform transition-transform duration-300 ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+          <div className="p-4 overflow-y-auto h-full flex flex-col">
+            {/* Close button */}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="absolute right-2 top-2"
+              onClick={closeMenu}
+            >
+              <X className="h-5 w-5" />
+            </Button>
+            
+            {/* User Section */}
+            <div className="py-4 border-b mb-4">
+              {isLoggedIn ? (
+                <div className="flex items-center space-x-3">
+                  <Avatar>
+                    <AvatarImage src="https://randomuser.me/api/portraits/men/32.jpg" />
+                    <AvatarFallback>JD</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-medium">John Doe</p>
+                    <p className="text-xs text-gray-500">john.doe@example.com</p>
                   </div>
                 </div>
-              ))}
-              <div className="border-t border-gray-200 pt-4 mt-2">
-                <Link 
-                  to="/tickets"
-                  className="flex items-center text-gray-800 py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Ticket className="h-5 w-5 mr-2" />
-                  Support Tickets
-                </Link>
-              </div>
+              ) : (
+                <div className="flex flex-col space-y-2">
+                  <Button 
+                    onClick={() => {
+                      navigate('/account');
+                      closeMenu();
+                    }}
+                  >
+                    Login
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    onClick={() => {
+                      navigate('/account?register=true');
+                      closeMenu();
+                    }}
+                  >
+                    Create Account
+                  </Button>
+                </div>
+              )}
+            </div>
+            
+            {/* Navigation Links */}
+            <nav className="flex-1">
+              <p className="text-sm font-medium text-gray-500 mb-2">Shop By Category</p>
+              <ul className="space-y-1">
+                {CATEGORIES.map(category => (
+                  <li key={category.id}>
+                    <Link
+                      to={`/category/${category.id}`}
+                      onClick={closeMenu}
+                      className="block text-gray-900 hover:bg-gray-100 rounded-md px-3 py-2"
+                    >
+                      {category.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              
+              <div className="border-t my-4"></div>
+              
+              <ul className="space-y-1">
+                <li>
+                  <Link
+                    to="/cart"
+                    onClick={closeMenu}
+                    className="block text-gray-900 hover:bg-gray-100 rounded-md px-3 py-2 flex items-center justify-between"
+                  >
+                    <div className="flex items-center">
+                      <ShoppingCart className="h-4 w-4 mr-2" />
+                      <span>Cart</span>
+                    </div>
+                    {cartCount > 0 && (
+                      <Badge>{cartCount}</Badge>
+                    )}
+                  </Link>
+                </li>
+                
+                <li>
+                  <Link
+                    to="/account"
+                    onClick={closeMenu}
+                    className="block text-gray-900 hover:bg-gray-100 rounded-md px-3 py-2 flex items-center justify-between"
+                  >
+                    <div className="flex items-center">
+                      <Heart className="h-4 w-4 mr-2" />
+                      <span>Wishlist</span>
+                    </div>
+                    {wishlistCount > 0 && (
+                      <Badge>{wishlistCount}</Badge>
+                    )}
+                  </Link>
+                </li>
+                
+                {isLoggedIn && (
+                  <li>
+                    <Link
+                      to="/orders"
+                      onClick={closeMenu}
+                      className="block text-gray-900 hover:bg-gray-100 rounded-md px-3 py-2 flex items-center"
+                    >
+                      <Package className="h-4 w-4 mr-2" />
+                      <span>My Orders</span>
+                    </Link>
+                  </li>
+                )}
+                
+                <li>
+                  <Link
+                    to="/tickets"
+                    onClick={closeMenu}
+                    className="block text-gray-900 hover:bg-gray-100 rounded-md px-3 py-2 flex items-center"
+                  >
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    <span>Support</span>
+                  </Link>
+                </li>
+              </ul>
             </nav>
+            
+            {/* Logout Button */}
+            {isLoggedIn && (
+              <Button 
+                variant="outline" 
+                className="w-full mt-4"
+                onClick={() => {
+                  localStorage.setItem('userLoggedIn', 'false');
+                  setIsLoggedIn(false);
+                  closeMenu();
+                  navigate('/');
+                }}
+              >
+                Logout
+              </Button>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </header>
-  );
-};
-
-// Add the Input component
-const Input = ({ className = '', ...props }) => {
-  return (
-    <input
-      className={`bg-transparent border-none outline-none text-sm ${className}`}
-      {...props}
-    />
   );
 };
 

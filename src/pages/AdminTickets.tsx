@@ -1,283 +1,280 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  LayoutGrid, 
-  Package, 
-  ShoppingBag, 
-  Users, 
-  Settings, 
-  BarChart3, 
-  Home,
-  Menu,
-  Bell,
-  ChevronDown,
-  Search,
-  Filter,
-  Check,
-  Clock,
-  AlertCircle,
-  Ticket,
-  MessageSquare,
-  BarChart
-} from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter
+} from "@/components/ui/dialog";
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
+import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import {
+  LayoutGrid,
+  Package,
+  ShoppingBag,
+  Users,
+  Settings,
+  BarChart3,
+  Home,
+  Bell,
+  Menu,
+  ChevronDown,
+  Search,
+  CheckCircle2,
+  XCircle,
+  MessageSquare,
+  Clock,
+  Filter,
+  ImageIcon
+} from 'lucide-react';
 import Logo from '@/components/Logo';
 import AdminMobileNavigation from '@/components/AdminMobileNavigation';
-import { useToast } from "@/hooks/use-toast";
-
-// Types for tickets
-interface TicketResponse {
-  id: string;
-  message: string;
-  fromAdmin: boolean;
-  createdAt: string;
-}
 
 interface Ticket {
   id: string;
   subject: string;
-  message: string;
   category: string;
-  status: 'open' | 'in-progress' | 'resolved' | 'closed';
-  createdAt: string;
-  updatedAt: string;
-  responses: TicketResponse[];
+  message: string;
+  status: 'Open' | 'Closed' | 'In Progress';
+  created: string;
+  customer?: {
+    name: string;
+    email: string;
+  };
+  response?: string;
+  images?: {
+    id: string;
+    url: string;
+  }[];
 }
 
 const AdminTickets = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [filteredTickets, setFilteredTickets] = useState<Ticket[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState<string>("all");
-  const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
-  const [responseText, setResponseText] = useState("");
-  const [ticketMetrics, setTicketMetrics] = useState({
-    total: 0,
-    open: 0,
-    inProgress: 0,
-    resolved: 0,
-    closed: 0,
-    avgResponseTime: '2.5 hours'
-  });
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
+  const [viewTicketOpen, setViewTicketOpen] = useState(false);
+  const [responseText, setResponseText] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [imageViewOpen, setImageViewOpen] = useState(false);
   const { toast } = useToast();
 
+  // Load tickets from localStorage on component mount
   useEffect(() => {
-    // Load tickets from localStorage
-    const storedTickets = localStorage.getItem('adminTickets');
-    const ticketsData = storedTickets ? JSON.parse(storedTickets) : [];
-    setTickets(ticketsData);
-    
-    // Calculate metrics
-    const metrics = {
-      total: ticketsData.length,
-      open: ticketsData.filter((t: Ticket) => t.status === 'open').length,
-      inProgress: ticketsData.filter((t: Ticket) => t.status === 'in-progress').length,
-      resolved: ticketsData.filter((t: Ticket) => t.status === 'resolved').length,
-      closed: ticketsData.filter((t: Ticket) => t.status === 'closed').length,
-      avgResponseTime: '2.5 hours' // This would be calculated in a real app
-    };
-    
-    setTicketMetrics(metrics);
+    const storedTickets = localStorage.getItem('supportTickets');
+    if (storedTickets) {
+      const parsedTickets: Ticket[] = JSON.parse(storedTickets);
+      
+      // Add mock customer details if they don't exist
+      const enhancedTickets = parsedTickets.map(ticket => ({
+        ...ticket,
+        customer: ticket.customer || {
+          name: 'John Doe',
+          email: 'customer@example.com'
+        }
+      }));
+      
+      setTickets(enhancedTickets);
+      setFilteredTickets(enhancedTickets);
+    } else {
+      // If no tickets exist, create some mock data
+      const mockTickets: Ticket[] = [
+        {
+          id: 'TKT-1001',
+          subject: 'Order not received',
+          category: 'order',
+          message: 'I placed an order 2 weeks ago but haven\'t received it yet. Order number: #ORD-2305',
+          status: 'Open',
+          created: new Date(Date.now() - 86400000 * 2).toISOString(),
+          customer: {
+            name: 'Rahul Mehta',
+            email: 'rahul.m@example.com'
+          }
+        },
+        {
+          id: 'TKT-1002',
+          subject: 'Wrong item color',
+          category: 'product',
+          message: 'I received my geometric plant holder today but it\'s blue instead of the green I ordered.',
+          status: 'In Progress',
+          created: new Date(Date.now() - 86400000 * 1).toISOString(),
+          customer: {
+            name: 'Sneha Jain',
+            email: 'sneha.j@example.com'
+          },
+          response: 'We apologize for the mix-up. Could you please send us a photo of the item you received?'
+        },
+        {
+          id: 'TKT-1003',
+          subject: 'Refund request',
+          category: 'returns',
+          message: 'I would like to return my desk lamp as it doesn\'t match my decor. It\'s unused and in original packaging.',
+          status: 'Closed',
+          created: new Date(Date.now() - 86400000 * 5).toISOString(),
+          customer: {
+            name: 'Kiran Reddy',
+            email: 'kiran.r@example.com'
+          },
+          response: 'Your refund has been processed. Please allow 3-5 business days for the funds to appear in your account.'
+        }
+      ];
+      
+      setTickets(mockTickets);
+      setFilteredTickets(mockTickets);
+      localStorage.setItem('supportTickets', JSON.stringify(mockTickets));
+    }
   }, []);
 
+  // Filter tickets when filter or search changes
   useEffect(() => {
-    // Filter tickets based on search term and status
-    let filtered = [...tickets];
+    let result = [...tickets];
     
-    if (searchTerm.trim() !== "") {
-      filtered = filtered.filter(ticket => 
-        ticket.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        ticket.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        ticket.id.toLowerCase().includes(searchTerm.toLowerCase())
+    // Apply status filter
+    if (statusFilter !== 'all') {
+      result = result.filter(ticket => ticket.status.toLowerCase() === statusFilter);
+    }
+    
+    // Apply search query
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(ticket => 
+        ticket.subject.toLowerCase().includes(query) ||
+        ticket.message.toLowerCase().includes(query) ||
+        ticket.id.toLowerCase().includes(query) ||
+        (ticket.customer?.name.toLowerCase().includes(query) || false)
       );
     }
     
-    if (filterStatus !== "all") {
-      filtered = filtered.filter(ticket => ticket.status === filterStatus);
-    }
-    
-    // Sort by date, newest first
-    filtered.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
-    
-    setFilteredTickets(filtered);
-  }, [tickets, searchTerm, filterStatus]);
+    setFilteredTickets(result);
+  }, [tickets, statusFilter, searchQuery]);
 
-  const handleStatusChange = (ticketId: string, newStatus: 'open' | 'in-progress' | 'resolved' | 'closed') => {
-    // Update ticket status
-    const updatedTickets = tickets.map(ticket => {
-      if (ticket.id === ticketId) {
-        return {
-          ...ticket,
-          status: newStatus,
-          updatedAt: new Date().toISOString()
-        };
-      }
-      return ticket;
-    });
-    
-    // Save to localStorage
-    localStorage.setItem('adminTickets', JSON.stringify(updatedTickets));
-    
-    // Also update user tickets
-    const userTickets = localStorage.getItem('userTickets') 
-      ? JSON.parse(localStorage.getItem('userTickets') || '[]') 
-      : [];
-    
-    const updatedUserTickets = userTickets.map((ticket: Ticket) => {
-      if (ticket.id === ticketId) {
-        return {
-          ...ticket,
-          status: newStatus,
-          updatedAt: new Date().toISOString()
-        };
-      }
-      return ticket;
-    });
-    
-    localStorage.setItem('userTickets', JSON.stringify(updatedUserTickets));
-    
-    // Update state
-    setTickets(updatedTickets);
-    
-    // Show success toast
-    toast({
-      title: "Status updated",
-      description: `Ticket status changed to ${newStatus.replace('-', ' ')}`
-    });
+  const handleViewTicket = (ticket: Ticket) => {
+    setSelectedTicket(ticket);
+    setResponseText(ticket.response || '');
+    setViewTicketOpen(true);
   };
 
-  const handleSendResponse = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleUpdateTicketStatus = (status: 'Open' | 'In Progress' | 'Closed') => {
+    if (!selectedTicket) return;
     
-    if (!responseText.trim() || !selectedTicketId) {
+    // Update the ticket status
+    const updatedTickets = tickets.map(ticket => {
+      if (ticket.id === selectedTicket.id) {
+        return {
+          ...ticket,
+          status,
+          response: status !== 'Closed' ? responseText : responseText || 'Ticket closed.'
+        };
+      }
+      return ticket;
+    });
+    
+    // Save to localStorage and update state
+    localStorage.setItem('supportTickets', JSON.stringify(updatedTickets));
+    setTickets(updatedTickets);
+    
+    // Show toast and close dialog
+    toast({
+      title: `Ticket ${status.toLowerCase()}`,
+      description: `Ticket #${selectedTicket.id} has been marked as ${status.toLowerCase()}`
+    });
+    
+    setViewTicketOpen(false);
+  };
+
+  const handleReplyToTicket = () => {
+    if (!selectedTicket || !responseText.trim()) {
       toast({
-        title: "Empty response",
-        description: "Please enter your message",
+        title: "Response required",
+        description: "Please enter a response before replying",
         variant: "destructive"
       });
       return;
     }
     
-    // Find the selected ticket
+    // Update the ticket with response
     const updatedTickets = tickets.map(ticket => {
-      if (ticket.id === selectedTicketId) {
-        // If ticket is open, change to in-progress
-        const newStatus = ticket.status === 'open' ? 'in-progress' : ticket.status;
+      if (ticket.id === selectedTicket.id) {
         return {
           ...ticket,
-          status: newStatus,
-          responses: [
-            ...ticket.responses,
-            {
-              id: `response-${Date.now()}`,
-              message: responseText,
-              fromAdmin: true,
-              createdAt: new Date().toISOString()
-            }
-          ],
-          updatedAt: new Date().toISOString()
+          status: 'In Progress',
+          response: responseText
         };
       }
       return ticket;
     });
     
-    // Save to localStorage
-    localStorage.setItem('adminTickets', JSON.stringify(updatedTickets));
-    
-    // Also update user tickets
-    const userTickets = localStorage.getItem('userTickets') 
-      ? JSON.parse(localStorage.getItem('userTickets') || '[]') 
-      : [];
-    
-    const updatedUserTickets = userTickets.map((ticket: Ticket) => {
-      if (ticket.id === selectedTicketId) {
-        const newStatus = ticket.status === 'open' ? 'in-progress' : ticket.status;
-        return {
-          ...ticket,
-          status: newStatus,
-          responses: [
-            ...ticket.responses,
-            {
-              id: `response-${Date.now()}`,
-              message: responseText,
-              fromAdmin: true,
-              createdAt: new Date().toISOString()
-            }
-          ],
-          updatedAt: new Date().toISOString()
-        };
-      }
-      return ticket;
-    });
-    
-    localStorage.setItem('userTickets', JSON.stringify(updatedUserTickets));
-    
-    // Update state
+    // Save to localStorage and update state
+    localStorage.setItem('supportTickets', JSON.stringify(updatedTickets));
     setTickets(updatedTickets);
-    setResponseText('');
     
-    // Show success toast
+    // Show toast and close dialog
     toast({
       title: "Response sent",
-      description: "Your response has been sent to the customer"
+      description: `Reply sent to ticket #${selectedTicket.id}`
     });
+    
+    setViewTicketOpen(false);
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'open':
-        return <AlertCircle className="h-4 w-4 text-blue-500" />;
-      case 'in-progress':
-        return <Clock className="h-4 w-4 text-orange-500" />;
-      case 'resolved':
-        return <Check className="h-4 w-4 text-green-500" />;
-      case 'closed':
-        return <Check className="h-4 w-4 text-gray-500" />;
-      default:
-        return <AlertCircle className="h-4 w-4 text-blue-500" />;
-    }
+  const handleViewImage = (imageUrl: string) => {
+    setSelectedImage(imageUrl);
+    setImageViewOpen(true);
   };
 
   const getCategoryLabel = (category: string) => {
-    switch (category) {
-      case 'order-issue':
-        return 'Order Issue';
-      case 'product-question':
-        return 'Product Question';
-      case 'return-refund':
-        return 'Return/Refund';
-      case 'website-issue':
-        return 'Website Issue';
-      case 'other':
-        return 'Other';
-      default:
-        return category;
-    }
+    const categories: Record<string, string> = {
+      'order': 'Order Issue',
+      'product': 'Product Inquiry',
+      'shipping': 'Shipping & Delivery',
+      'returns': 'Returns & Refunds',
+      'technical': 'Technical Support',
+      'other': 'Other'
+    };
+    
+    return categories[category] || 'Unknown';
   };
 
-  const selectedTicket = selectedTicketId ? tickets.find(ticket => ticket.id === selectedTicketId) : null;
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('en-US', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(date);
+  };
 
   return (
     <div className="min-h-screen flex bg-gray-50">
@@ -321,7 +318,7 @@ const AdminTickets = () => {
           
           <p className="text-xs text-gray-400 font-medium mt-6 mb-3 uppercase">Support</p>
           <Link to="/admin/tickets" className="flex items-center py-2 px-3 rounded-md bg-gray-800 text-white mb-1">
-            <Ticket className="h-5 w-5 mr-3" />
+            <MessageSquare className="h-5 w-5 mr-3" />
             Tickets
           </Link>
           
@@ -385,407 +382,271 @@ const AdminTickets = () => {
                   <ChevronDown className="h-4 w-4 text-gray-500" />
                 </div>
               </div>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => {
-                  toast({
-                    title: "Logged out",
-                    description: "You have been logged out successfully"
-                  });
-                }}
-              >
-                Logout
-              </Button>
             </div>
           </div>
         </header>
 
-        {/* Tickets content */}
+        {/* Admin content */}
         <main className="flex-1 p-6 overflow-y-auto">
-          <Tabs defaultValue="tickets">
-            <TabsList className="mb-6">
-              <TabsTrigger value="tickets">Tickets</TabsTrigger>
-              <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="tickets">
-              {/* Action bar */}
-              <div className="bg-white rounded-lg shadow p-6 mb-6">
-                <div className="flex flex-wrap gap-4 items-center justify-between">
-                  <div className="relative flex-1 min-w-[200px]">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-                    <Input
-                      type="text"
-                      placeholder="Search tickets..."
-                      className="pl-10"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                  </div>
-                  <div className="flex gap-3 flex-wrap">
-                    <Button 
-                      variant="outline" 
-                      className="flex items-center gap-2"
-                      onClick={() => {
-                        // Reset filters
-                        setFilterStatus("all");
-                        setSearchTerm("");
-                      }}
-                    >
-                      <Filter className="h-4 w-4" />
-                      Reset Filters
-                    </Button>
-                    <Select value={filterStatus} onValueChange={setFilterStatus}>
-                      <SelectTrigger className="w-40">
-                        <SelectValue placeholder="Filter by status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Tickets</SelectItem>
-                        <SelectItem value="open">Open</SelectItem>
-                        <SelectItem value="in-progress">In Progress</SelectItem>
-                        <SelectItem value="resolved">Resolved</SelectItem>
-                        <SelectItem value="closed">Closed</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
+          <div className="mb-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder="Search tickets by ID, subject or customer..."
+                  className="pl-10"
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                />
               </div>
               
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Tickets list */}
-                <div className="bg-white rounded-lg shadow overflow-hidden">
-                  <div className="p-4 border-b border-gray-100">
-                    <h2 className="font-semibold">
-                      {filteredTickets.length} {filteredTickets.length === 1 ? 'Ticket' : 'Tickets'}
-                    </h2>
-                  </div>
-                  
-                  <div className="overflow-y-auto" style={{ maxHeight: '600px' }}>
-                    {filteredTickets.length === 0 ? (
-                      <div className="p-4 text-center text-gray-500">
-                        <p>No tickets found.</p>
-                        <p className="text-sm mt-1">Try adjusting your search or filters.</p>
-                      </div>
-                    ) : (
-                      filteredTickets.map(ticket => (
-                        <div 
-                          key={ticket.id}
-                          className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
-                            selectedTicketId === ticket.id ? 'bg-gray-50' : ''
-                          }`}
-                          onClick={() => setSelectedTicketId(ticket.id)}
-                        >
-                          <div className="flex items-center justify-between">
-                            <h3 className="font-medium truncate">{ticket.subject}</h3>
-                            <div className="flex items-center">
-                              {getStatusIcon(ticket.status)}
-                            </div>
-                          </div>
-                          
-                          <p className="text-gray-500 text-sm truncate mt-1">{ticket.message}</p>
-                          
-                          <div className="flex items-center justify-between mt-2">
-                            <span className="text-xs bg-gray-100 px-2 py-1 rounded">
-                              {getCategoryLabel(ticket.category)}
-                            </span>
-                            <span className="text-xs text-gray-500">
-                              {formatDate(ticket.updatedAt)}
-                            </span>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-                
-                {/* Selected ticket */}
-                <div className="lg:col-span-2">
-                  {selectedTicket ? (
-                    <div className="bg-white rounded-lg shadow h-full flex flex-col">
-                      <div className="p-4 border-b border-gray-100">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h2 className="font-semibold">{selectedTicket.subject}</h2>
-                            <div className="flex items-center mt-1 text-sm text-gray-500 space-x-2">
-                              <span>ID: {selectedTicket.id}</span>
-                              <span>•</span>
-                              <span>{getCategoryLabel(selectedTicket.category)}</span>
-                              <span>•</span>
-                              <span>{formatDate(selectedTicket.createdAt)}</span>
-                            </div>
-                          </div>
-                          
-                          <div>
-                            <Select 
-                              value={selectedTicket.status}
-                              onValueChange={(value) => handleStatusChange(
-                                selectedTicket.id, 
-                                value as 'open' | 'in-progress' | 'resolved' | 'closed'
+              <div className="flex items-center">
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-[180px]">
+                    <div className="flex items-center">
+                      <Filter className="mr-2 h-4 w-4" />
+                      <SelectValue placeholder="Filter by status" />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Tickets</SelectItem>
+                    <SelectItem value="open">Open</SelectItem>
+                    <SelectItem value="in progress">In Progress</SelectItem>
+                    <SelectItem value="closed">Closed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+
+          <Tabs defaultValue="list" className="space-y-4">
+            <TabsList>
+              <TabsTrigger value="list">List View</TabsTrigger>
+              <TabsTrigger value="board">Board View</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="list" className="space-y-4">
+              <div className="bg-white shadow rounded-lg overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Ticket ID
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Customer
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Subject
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Category
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Status
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Created
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {filteredTickets.length > 0 ? (
+                        filteredTickets.map(ticket => (
+                          <tr key={ticket.id} className="hover:bg-gray-50">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                              {ticket.id}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              <div>{ticket.customer?.name}</div>
+                              <div className="text-xs text-gray-400">{ticket.customer?.email}</div>
+                            </td>
+                            <td className="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">
+                              {ticket.subject}
+                              {ticket.images && ticket.images.length > 0 && (
+                                <span className="ml-2 inline-flex items-center">
+                                  <ImageIcon size={14} className="text-gray-400" />
+                                </span>
                               )}
-                            >
-                              <SelectTrigger className="w-32">
-                                <SelectValue placeholder="Status" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="open">Open</SelectItem>
-                                <SelectItem value="in-progress">In Progress</SelectItem>
-                                <SelectItem value="resolved">Resolved</SelectItem>
-                                <SelectItem value="closed">Closed</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="flex-grow overflow-y-auto p-4 space-y-4">
-                        <div className="bg-gray-50 p-4 rounded-lg">
-                          <div className="flex justify-between items-start">
-                            <h3 className="font-medium">Customer</h3>
-                            <span className="text-xs text-gray-500">
-                              {formatDate(selectedTicket.createdAt)}
-                            </span>
-                          </div>
-                          <p className="mt-2 text-gray-700 whitespace-pre-wrap">{selectedTicket.message}</p>
-                        </div>
-                        
-                        {selectedTicket.responses.map(response => (
-                          <div 
-                            key={response.id}
-                            className={`p-4 rounded-lg ${
-                              response.fromAdmin ? 'bg-blue-50' : 'bg-gray-50'
-                            }`}
-                          >
-                            <div className="flex justify-between items-start">
-                              <h3 className="font-medium">
-                                {response.fromAdmin ? 'Support Agent' : 'Customer'}
-                              </h3>
-                              <span className="text-xs text-gray-500">
-                                {formatDate(response.createdAt)}
-                              </span>
-                            </div>
-                            <p className="mt-2 text-gray-700 whitespace-pre-wrap">{response.message}</p>
-                          </div>
-                        ))}
-                      </div>
-                      
-                      {selectedTicket.status !== 'closed' && (
-                        <div className="p-4 border-t border-gray-100">
-                          <form onSubmit={handleSendResponse}>
-                            <Textarea 
-                              value={responseText}
-                              onChange={(e) => setResponseText(e.target.value)}
-                              placeholder="Type your response..."
-                              className="min-h-[120px] mb-3"
-                            />
-                            <div className="flex justify-end space-x-2">
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {getCategoryLabel(ticket.category)}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge className={
+                                ticket.status === 'Open' ? 'bg-red-100 text-red-800' :
+                                ticket.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
+                                'bg-green-100 text-green-800'
+                              }>
+                                {ticket.status}
+                              </Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {formatDate(ticket.created)}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                               <Button 
-                                type="submit" 
-                                className="bg-indigo hover:bg-indigo-600"
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => handleViewTicket(ticket)}
                               >
-                                Send Response
+                                View
                               </Button>
-                            </div>
-                          </form>
-                        </div>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={7} className="px-6 py-4 text-center text-gray-500">
+                            No tickets found matching your criteria
+                          </td>
+                        </tr>
                       )}
-                    </div>
-                  ) : (
-                    <div className="bg-white rounded-lg shadow p-8 flex flex-col items-center justify-center h-full">
-                      <MessageSquare className="h-12 w-12 text-gray-300 mb-4" />
-                      <h3 className="text-xl font-medium mb-2">No Ticket Selected</h3>
-                      <p className="text-gray-500 text-center">
-                        Select a ticket from the list to view its details and respond to the customer.
-                      </p>
-                    </div>
-                  )}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </TabsContent>
             
-            <TabsContent value="analytics">
-              {/* Ticket Statistics */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <div className="bg-white p-6 rounded-lg shadow">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-500">Total Tickets</p>
-                      <h3 className="text-2xl font-bold mt-1">{ticketMetrics.total}</h3>
-                    </div>
-                    <div className="w-12 h-12 rounded-full bg-indigo/20 flex items-center justify-center">
-                      <Ticket className="h-6 w-6 text-indigo" />
-                    </div>
+            <TabsContent value="board">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Open Tickets */}
+                <div>
+                  <div className="flex items-center space-x-2 mb-4">
+                    <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                    <h3 className="font-medium">Open</h3>
+                    <Badge variant="outline">{filteredTickets.filter(t => t.status === 'Open').length}</Badge>
                   </div>
-                </div>
-                
-                <div className="bg-white p-6 rounded-lg shadow">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-500">Open Tickets</p>
-                      <h3 className="text-2xl font-bold mt-1">{ticketMetrics.open}</h3>
-                    </div>
-                    <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
-                      <AlertCircle className="h-6 w-6 text-blue-500" />
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="bg-white p-6 rounded-lg shadow">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-500">In Progress</p>
-                      <h3 className="text-2xl font-bold mt-1">{ticketMetrics.inProgress}</h3>
-                    </div>
-                    <div className="w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center">
-                      <Clock className="h-6 w-6 text-orange-500" />
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="bg-white p-6 rounded-lg shadow">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-500">Response Time</p>
-                      <h3 className="text-2xl font-bold mt-1">{ticketMetrics.avgResponseTime}</h3>
-                    </div>
-                    <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
-                      <Clock className="h-6 w-6 text-green-500" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Status Breakdown */}
-                <div className="bg-white p-6 rounded-lg shadow">
-                  <h3 className="text-lg font-semibold mb-6">Tickets by Status</h3>
-                  <div className="flex items-center space-x-8">
-                    <div className="flex-1">
-                      <div className="space-y-4">
-                        <div>
-                          <div className="flex justify-between text-sm mb-1">
-                            <span className="text-gray-600">Open</span>
-                            <span>{ticketMetrics.open} ({
-                              ticketMetrics.total > 0 
-                                ? Math.round((ticketMetrics.open / ticketMetrics.total) * 100)
-                                : 0
-                            }%)</span>
-                          </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-blue-500 h-2 rounded-full" 
-                              style={{ width: `${
-                                ticketMetrics.total > 0 
-                                  ? (ticketMetrics.open / ticketMetrics.total) * 100
-                                  : 0
-                              }%` }}
-                            ></div>
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <div className="flex justify-between text-sm mb-1">
-                            <span className="text-gray-600">In Progress</span>
-                            <span>{ticketMetrics.inProgress} ({
-                              ticketMetrics.total > 0 
-                                ? Math.round((ticketMetrics.inProgress / ticketMetrics.total) * 100)
-                                : 0
-                            }%)</span>
-                          </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-orange-500 h-2 rounded-full" 
-                              style={{ width: `${
-                                ticketMetrics.total > 0 
-                                  ? (ticketMetrics.inProgress / ticketMetrics.total) * 100
-                                  : 0
-                              }%` }}
-                            ></div>
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <div className="flex justify-between text-sm mb-1">
-                            <span className="text-gray-600">Resolved</span>
-                            <span>{ticketMetrics.resolved} ({
-                              ticketMetrics.total > 0 
-                                ? Math.round((ticketMetrics.resolved / ticketMetrics.total) * 100)
-                                : 0
-                            }%)</span>
-                          </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-green-500 h-2 rounded-full" 
-                              style={{ width: `${
-                                ticketMetrics.total > 0 
-                                  ? (ticketMetrics.resolved / ticketMetrics.total) * 100
-                                  : 0
-                              }%` }}
-                            ></div>
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <div className="flex justify-between text-sm mb-1">
-                            <span className="text-gray-600">Closed</span>
-                            <span>{ticketMetrics.closed} ({
-                              ticketMetrics.total > 0 
-                                ? Math.round((ticketMetrics.closed / ticketMetrics.total) * 100)
-                                : 0
-                            }%)</span>
-                          </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-gray-500 h-2 rounded-full" 
-                              style={{ width: `${
-                                ticketMetrics.total > 0 
-                                  ? (ticketMetrics.closed / ticketMetrics.total) * 100
-                                  : 0
-                              }%` }}
-                            ></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="hidden md:block relative w-40 h-40">
-                      {/* This would be a real chart in a production app */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <BarChart className="h-24 w-24 text-gray-300" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Recent Activity */}
-                <div className="bg-white p-6 rounded-lg shadow">
-                  <h3 className="text-lg font-semibold mb-6">Recent Activity</h3>
+                  
                   <div className="space-y-4">
-                    {tickets.slice(0, 5).map(ticket => (
-                      <div 
-                        key={ticket.id}
-                        className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
-                        onClick={() => {
-                          setSelectedTicketId(ticket.id);
-                          document.querySelector('[data-value="tickets"]')?.dispatchEvent(
-                            new MouseEvent('click', { bubbles: true })
-                          );
-                        }}
+                    {filteredTickets.filter(ticket => ticket.status === 'Open').map(ticket => (
+                      <Card 
+                        key={ticket.id} 
+                        className="cursor-pointer hover:shadow-md transition-shadow"
+                        onClick={() => handleViewTicket(ticket)}
                       >
-                        <div className="mt-1">
-                          {getStatusIcon(ticket.status)}
-                        </div>
-                        <div>
-                          <p className="font-medium line-clamp-1">{ticket.subject}</p>
-                          <p className="text-sm text-gray-500 line-clamp-1 mt-0.5">{ticket.message}</p>
-                          <p className="text-xs text-gray-500 mt-1">{formatDate(ticket.updatedAt)}</p>
-                        </div>
-                      </div>
+                        <CardHeader className="pb-2">
+                          <div className="flex items-center justify-between">
+                            <Badge variant="outline">{ticket.id}</Badge>
+                            {ticket.images && ticket.images.length > 0 && (
+                              <span className="inline-flex items-center">
+                                <ImageIcon size={16} className="text-gray-400" />
+                              </span>
+                            )}
+                          </div>
+                          <CardTitle className="text-base">{ticket.subject}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="py-2">
+                          <p className="text-sm text-gray-600 line-clamp-2">{ticket.message}</p>
+                        </CardContent>
+                        <CardFooter className="pt-2 text-xs text-gray-500">
+                          <div className="flex justify-between w-full">
+                            <span>{ticket.customer?.name}</span>
+                            <span>{new Date(ticket.created).toLocaleDateString()}</span>
+                          </div>
+                        </CardFooter>
+                      </Card>
                     ))}
                     
-                    {tickets.length === 0 && (
-                      <div className="text-center text-gray-500 py-4">
-                        <p>No recent activity</p>
+                    {filteredTickets.filter(t => t.status === 'Open').length === 0 && (
+                      <div className="text-center p-6 bg-gray-50 border border-dashed border-gray-200 rounded-lg">
+                        <p className="text-gray-500">No open tickets</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* In Progress Tickets */}
+                <div>
+                  <div className="flex items-center space-x-2 mb-4">
+                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                    <h3 className="font-medium">In Progress</h3>
+                    <Badge variant="outline">{filteredTickets.filter(t => t.status === 'In Progress').length}</Badge>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    {filteredTickets.filter(ticket => ticket.status === 'In Progress').map(ticket => (
+                      <Card 
+                        key={ticket.id} 
+                        className="cursor-pointer hover:shadow-md transition-shadow"
+                        onClick={() => handleViewTicket(ticket)}
+                      >
+                        <CardHeader className="pb-2">
+                          <div className="flex items-center justify-between">
+                            <Badge variant="outline">{ticket.id}</Badge>
+                            {ticket.images && ticket.images.length > 0 && (
+                              <span className="inline-flex items-center">
+                                <ImageIcon size={16} className="text-gray-400" />
+                              </span>
+                            )}
+                          </div>
+                          <CardTitle className="text-base">{ticket.subject}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="py-2">
+                          <p className="text-sm text-gray-600 line-clamp-2">{ticket.message}</p>
+                        </CardContent>
+                        <CardFooter className="pt-2 text-xs text-gray-500">
+                          <div className="flex justify-between w-full">
+                            <span>{ticket.customer?.name}</span>
+                            <span>{new Date(ticket.created).toLocaleDateString()}</span>
+                          </div>
+                        </CardFooter>
+                      </Card>
+                    ))}
+                    
+                    {filteredTickets.filter(t => t.status === 'In Progress').length === 0 && (
+                      <div className="text-center p-6 bg-gray-50 border border-dashed border-gray-200 rounded-lg">
+                        <p className="text-gray-500">No tickets in progress</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Closed Tickets */}
+                <div>
+                  <div className="flex items-center space-x-2 mb-4">
+                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                    <h3 className="font-medium">Closed</h3>
+                    <Badge variant="outline">{filteredTickets.filter(t => t.status === 'Closed').length}</Badge>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    {filteredTickets.filter(ticket => ticket.status === 'Closed').map(ticket => (
+                      <Card 
+                        key={ticket.id} 
+                        className="cursor-pointer hover:shadow-md transition-shadow"
+                        onClick={() => handleViewTicket(ticket)}
+                      >
+                        <CardHeader className="pb-2">
+                          <div className="flex items-center justify-between">
+                            <Badge variant="outline">{ticket.id}</Badge>
+                            {ticket.images && ticket.images.length > 0 && (
+                              <span className="inline-flex items-center">
+                                <ImageIcon size={16} className="text-gray-400" />
+                              </span>
+                            )}
+                          </div>
+                          <CardTitle className="text-base">{ticket.subject}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="py-2">
+                          <p className="text-sm text-gray-600 line-clamp-2">{ticket.message}</p>
+                        </CardContent>
+                        <CardFooter className="pt-2 text-xs text-gray-500">
+                          <div className="flex justify-between w-full">
+                            <span>{ticket.customer?.name}</span>
+                            <span>{new Date(ticket.created).toLocaleDateString()}</span>
+                          </div>
+                        </CardFooter>
+                      </Card>
+                    ))}
+                    
+                    {filteredTickets.filter(t => t.status === 'Closed').length === 0 && (
+                      <div className="text-center p-6 bg-gray-50 border border-dashed border-gray-200 rounded-lg">
+                        <p className="text-gray-500">No closed tickets</p>
                       </div>
                     )}
                   </div>
@@ -795,6 +656,168 @@ const AdminTickets = () => {
           </Tabs>
         </main>
       </div>
+      
+      {/* Ticket Detail Dialog */}
+      <Dialog open={viewTicketOpen} onOpenChange={setViewTicketOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          {selectedTicket && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center justify-between">
+                  <div>Ticket {selectedTicket.id}</div>
+                  <Badge className={
+                    selectedTicket.status === 'Open' ? 'bg-red-100 text-red-800' :
+                    selectedTicket.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
+                    'bg-green-100 text-green-800'
+                  }>
+                    {selectedTicket.status}
+                  </Badge>
+                </DialogTitle>
+                <DialogDescription>
+                  Created on {formatDate(selectedTicket.created)}
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Customer</p>
+                    <p className="font-medium">{selectedTicket.customer?.name}</p>
+                    <p className="text-sm text-gray-500">{selectedTicket.customer?.email}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Category</p>
+                    <p>{getCategoryLabel(selectedTicket.category)}</p>
+                  </div>
+                </div>
+                
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Subject</p>
+                  <p className="font-medium">{selectedTicket.subject}</p>
+                </div>
+                
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Message</p>
+                  <div className="mt-1 p-4 bg-gray-50 rounded-md">
+                    <p className="whitespace-pre-wrap">{selectedTicket.message}</p>
+                  </div>
+                </div>
+                
+                {/* Attached Images */}
+                {selectedTicket.images && selectedTicket.images.length > 0 && (
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Attached Images</p>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {selectedTicket.images.map((image, index) => (
+                        <div 
+                          key={image.id} 
+                          className="w-24 h-24 border rounded-md overflow-hidden cursor-pointer"
+                          onClick={() => handleViewImage(image.url)}
+                        >
+                          <img 
+                            src={image.url} 
+                            alt={`Attachment ${index + 1}`} 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {selectedTicket.response && (
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Previous Response</p>
+                    <div className="mt-1 p-4 bg-blue-50 rounded-md">
+                      <p className="whitespace-pre-wrap">{selectedTicket.response}</p>
+                    </div>
+                  </div>
+                )}
+                
+                {selectedTicket.status !== 'Closed' && (
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Your Response</p>
+                    <Textarea
+                      value={responseText}
+                      onChange={e => setResponseText(e.target.value)}
+                      placeholder="Type your response here..."
+                      className="mt-1"
+                      rows={4}
+                    />
+                  </div>
+                )}
+              </div>
+
+              <DialogFooter className="flex-col sm:flex-row gap-2">
+                {selectedTicket.status !== 'Closed' && (
+                  <>
+                    <Button 
+                      onClick={() => handleReplyToTicket()}
+                      className="bg-indigo hover:bg-indigo-600"
+                    >
+                      <MessageSquare className="h-4 w-4 mr-2" />
+                      Send Response
+                    </Button>
+                    
+                    <Button 
+                      variant="outline"
+                      onClick={() => handleUpdateTicketStatus('Closed')}
+                      className="text-red-500"
+                    >
+                      <CheckCircle2 className="h-4 w-4 mr-2" />
+                      Close Ticket
+                    </Button>
+                  </>
+                )}
+                
+                {selectedTicket.status === 'Closed' && (
+                  <Button 
+                    onClick={() => handleUpdateTicketStatus('Open')}
+                    variant="outline"
+                  >
+                    <Clock className="h-4 w-4 mr-2" />
+                    Reopen Ticket
+                  </Button>
+                )}
+                
+                <Button 
+                  variant="outline" 
+                  onClick={() => setViewTicketOpen(false)}
+                >
+                  <XCircle className="h-4 w-4 mr-2" />
+                  Close
+                </Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+      
+      {/* Image View Dialog */}
+      <Dialog open={imageViewOpen} onOpenChange={setImageViewOpen}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Image Preview</DialogTitle>
+          </DialogHeader>
+          <div className="flex items-center justify-center">
+            {selectedImage && (
+              <img 
+                src={selectedImage} 
+                alt="Full size preview" 
+                className="max-h-[60vh] object-contain"
+              />
+            )}
+          </div>
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => setImageViewOpen(false)}
+            >
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

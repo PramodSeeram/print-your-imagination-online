@@ -1,428 +1,290 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Check, Clock, AlertCircle, MessageCircle } from 'lucide-react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-
-interface Ticket {
-  id: string;
-  subject: string;
-  message: string;
-  category: string;
-  status: 'open' | 'in-progress' | 'resolved' | 'closed';
-  createdAt: string;
-  updatedAt: string;
-  responses: {
-    id: string;
-    message: string;
-    fromAdmin: boolean;
-    createdAt: string;
-  }[];
-}
+import { Upload, Image as ImageIcon, X } from "lucide-react";
 
 const Tickets = () => {
-  const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [showNewTicketForm, setShowNewTicketForm] = useState(false);
-  const [activeTicketId, setActiveTicketId] = useState<string | null>(null);
-  const [newTicket, setNewTicket] = useState({
-    subject: '',
-    message: '',
-    category: 'order-issue'
-  });
-  const [newResponse, setNewResponse] = useState('');
+  const [subject, setSubject] = useState("");
+  const [category, setCategory] = useState("");
+  const [message, setMessage] = useState("");
+  const [ticketSent, setTicketSent] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [images, setImages] = useState<File[]>([]);
+  const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-  
-  useEffect(() => {
-    // Load tickets from localStorage
-    const storedTickets = localStorage.getItem('userTickets');
-    if (storedTickets) {
-      setTickets(JSON.parse(storedTickets));
-    } else {
-      // Initialize with empty array if no tickets exist
-      localStorage.setItem('userTickets', JSON.stringify([]));
-    }
-  }, []);
 
-  const handleTicketSubmit = (e: React.FormEvent) => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     
-    // Validate form
-    if (!newTicket.subject || !newTicket.message || !newTicket.category) {
+    if (!e.target.files) return;
+    
+    const files = Array.from(e.target.files);
+    
+    // Check if user is trying to upload more than 3 images
+    if (files.length + images.length > 3) {
+      toast({
+        title: "Upload limit reached",
+        description: "You can only upload a maximum of 3 images per ticket",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Create previews and add new files
+    const newImageFiles = [...images];
+    const newImagePreviews = [...imagePreviewUrls];
+    
+    files.forEach(file => {
+      if (file.type.match(/^image\/(jpeg|jpg|png|gif)$/)) {
+        newImageFiles.push(file);
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (reader.result) {
+            setImagePreviewUrls(prevUrls => [...prevUrls, reader.result as string]);
+          }
+        };
+        reader.readAsDataURL(file);
+      } else {
+        toast({
+          title: "Unsupported file format",
+          description: "Please upload only image files (JPEG, PNG, GIF)",
+          variant: "destructive"
+        });
+      }
+    });
+    
+    setImages(newImageFiles);
+  };
+
+  const removeImage = (index: number) => {
+    const newImages = [...images];
+    const newImagePreviewUrls = [...imagePreviewUrls];
+    
+    newImages.splice(index, 1);
+    newImagePreviewUrls.splice(index, 1);
+    
+    setImages(newImages);
+    setImagePreviewUrls(newImagePreviewUrls);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Validation
+    if (!subject || !category || !message) {
       toast({
         title: "Missing information",
-        description: "Please fill in all required fields",
+        description: "Please fill in all the required fields",
         variant: "destructive"
       });
+      setIsSubmitting(false);
       return;
     }
     
-    // Create new ticket
-    const ticket: Ticket = {
-      id: `ticket-${Date.now()}`,
-      subject: newTicket.subject,
-      message: newTicket.message,
-      category: newTicket.category,
-      status: 'open',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      responses: []
-    };
-    
-    const updatedTickets = [...tickets, ticket];
-    
-    // Save to localStorage
-    localStorage.setItem('userTickets', JSON.stringify(updatedTickets));
-    
-    // Also save to admin tickets
-    const adminTickets = localStorage.getItem('adminTickets') 
-      ? JSON.parse(localStorage.getItem('adminTickets') || '[]') 
-      : [];
-    
-    localStorage.setItem('adminTickets', JSON.stringify([...adminTickets, ticket]));
-    
-    // Update state
-    setTickets(updatedTickets);
-    setShowNewTicketForm(false);
-    setNewTicket({
-      subject: '',
-      message: '',
-      category: 'order-issue'
-    });
-    
-    // Show success toast
-    toast({
-      title: "Ticket submitted",
-      description: "Your support ticket has been submitted successfully"
-    });
-  };
-
-  const handleResponseSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!newResponse.trim() || !activeTicketId) {
+    // In a real app, this would send data to the server
+    // along with any attached images
+    setTimeout(() => {
+      // Save ticket to localStorage for demo purposes
+      const tickets = JSON.parse(localStorage.getItem('supportTickets') || '[]');
+      const newTicket = {
+        id: `TKT-${Date.now()}`,
+        subject,
+        category,
+        message,
+        status: 'Open',
+        created: new Date().toISOString(),
+        images: imagePreviewUrls.map((url, index) => ({
+          id: `img-${Date.now()}-${index}`,
+          url
+        }))
+      };
+      
+      tickets.push(newTicket);
+      localStorage.setItem('supportTickets', JSON.stringify(tickets));
+      
+      // Display success message
       toast({
-        title: "Empty response",
-        description: "Please enter your message",
-        variant: "destructive"
+        title: "Ticket submitted successfully",
+        description: "We'll get back to you as soon as possible"
       });
-      return;
-    }
-    
-    // Find the active ticket
-    const updatedTickets = tickets.map(ticket => {
-      if (ticket.id === activeTicketId) {
-        return {
-          ...ticket,
-          responses: [
-            ...ticket.responses,
-            {
-              id: `response-${Date.now()}`,
-              message: newResponse,
-              fromAdmin: false,
-              createdAt: new Date().toISOString()
-            }
-          ],
-          updatedAt: new Date().toISOString()
-        };
-      }
-      return ticket;
-    });
-    
-    // Save to localStorage
-    localStorage.setItem('userTickets', JSON.stringify(updatedTickets));
-    
-    // Also update admin tickets
-    const adminTickets = localStorage.getItem('adminTickets') 
-      ? JSON.parse(localStorage.getItem('adminTickets') || '[]') 
-      : [];
-    
-    const updatedAdminTickets = adminTickets.map((ticket: Ticket) => {
-      if (ticket.id === activeTicketId) {
-        return {
-          ...ticket,
-          responses: [
-            ...ticket.responses,
-            {
-              id: `response-${Date.now()}`,
-              message: newResponse,
-              fromAdmin: false,
-              createdAt: new Date().toISOString()
-            }
-          ],
-          updatedAt: new Date().toISOString()
-        };
-      }
-      return ticket;
-    });
-    
-    localStorage.setItem('adminTickets', JSON.stringify(updatedAdminTickets));
-    
-    // Update state
-    setTickets(updatedTickets);
-    setNewResponse('');
-    
-    // Show success toast
-    toast({
-      title: "Response sent",
-      description: "Your response has been submitted"
-    });
+      
+      // Reset form
+      setTicketSent(true);
+      setIsSubmitting(false);
+    }, 1500);
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'open':
-        return <AlertCircle className="h-4 w-4 text-blue-500" />;
-      case 'in-progress':
-        return <Clock className="h-4 w-4 text-orange-500" />;
-      case 'resolved':
-        return <Check className="h-4 w-4 text-green-500" />;
-      case 'closed':
-        return <Check className="h-4 w-4 text-gray-500" />;
-      default:
-        return <AlertCircle className="h-4 w-4 text-blue-500" />;
-    }
+  const startNewTicket = () => {
+    setTicketSent(false);
+    setSubject("");
+    setCategory("");
+    setMessage("");
+    setImages([]);
+    setImagePreviewUrls([]);
   };
-
-  const getCategoryLabel = (category: string) => {
-    switch (category) {
-      case 'order-issue':
-        return 'Order Issue';
-      case 'product-question':
-        return 'Product Question';
-      case 'return-refund':
-        return 'Return/Refund';
-      case 'website-issue':
-        return 'Website Issue';
-      case 'other':
-        return 'Other';
-      default:
-        return category;
-    }
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
-  const activeTicket = activeTicketId ? tickets.find(ticket => ticket.id === activeTicketId) : null;
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-grow pt-8 pb-16">
-        <div className="container-avirva">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-3xl font-bold">Support Tickets</h1>
-            <Button 
-              onClick={() => setShowNewTicketForm(!showNewTicketForm)}
-              className="bg-indigo hover:bg-indigo-600"
-            >
-              {showNewTicketForm ? 'Cancel' : 'New Ticket'}
-            </Button>
-          </div>
+      <main className="flex-grow py-8">
+        <div className="container-avirva max-w-3xl">
+          <h1 className="text-3xl font-bold mb-6">Customer Support</h1>
           
-          {showNewTicketForm ? (
-            <div className="bg-white rounded-lg shadow p-6 mb-6">
-              <h2 className="text-xl font-semibold mb-4">Submit a New Ticket</h2>
-              <form onSubmit={handleTicketSubmit}>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Subject</label>
+          {ticketSent ? (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-center text-teal-500">Ticket Submitted!</CardTitle>
+                <CardDescription className="text-center">
+                  Thank you for contacting us. We have received your support request.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="text-center">
+                <p className="mb-6">
+                  One of our support agents will review your ticket and respond shortly. You can check the status of your tickets in your account dashboard.
+                </p>
+                <Button onClick={startNewTicket}>Submit Another Ticket</Button>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle>Submit a Support Ticket</CardTitle>
+                <CardDescription>
+                  Fill out the form below to get assistance from our team.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="space-y-2">
+                    <label htmlFor="subject" className="text-sm font-medium">
+                      Subject *
+                    </label>
                     <Input
-                      value={newTicket.subject}
-                      onChange={(e) => setNewTicket({...newTicket, subject: e.target.value})}
+                      id="subject"
                       placeholder="Brief description of your issue"
+                      value={subject}
+                      onChange={(e) => setSubject(e.target.value)}
                       required
                     />
                   </div>
                   
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Category</label>
-                    <Select 
-                      value={newTicket.category}
-                      onValueChange={(value) => setNewTicket({...newTicket, category: value})}
+                  <div className="space-y-2">
+                    <label htmlFor="category" className="text-sm font-medium">
+                      Category *
+                    </label>
+                    <Select
+                      value={category}
+                      onValueChange={setCategory}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select a category" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="order-issue">Order Issue</SelectItem>
-                        <SelectItem value="product-question">Product Question</SelectItem>
-                        <SelectItem value="return-refund">Return/Refund</SelectItem>
-                        <SelectItem value="website-issue">Website Issue</SelectItem>
+                        <SelectItem value="order">Order Issue</SelectItem>
+                        <SelectItem value="product">Product Inquiry</SelectItem>
+                        <SelectItem value="shipping">Shipping & Delivery</SelectItem>
+                        <SelectItem value="returns">Returns & Refunds</SelectItem>
+                        <SelectItem value="technical">Technical Support</SelectItem>
                         <SelectItem value="other">Other</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Message</label>
+                  <div className="space-y-2">
+                    <label htmlFor="message" className="text-sm font-medium">
+                      Message *
+                    </label>
                     <Textarea
-                      value={newTicket.message}
-                      onChange={(e) => setNewTicket({...newTicket, message: e.target.value})}
+                      id="message"
                       placeholder="Please describe your issue in detail"
                       rows={5}
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
                       required
                     />
                   </div>
                   
-                  <div className="flex justify-end">
-                    <Button 
-                      type="submit" 
-                      className="bg-indigo hover:bg-indigo-600"
-                    >
-                      Submit Ticket
-                    </Button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="md:col-span-1">
-                <div className="bg-white rounded-lg shadow">
-                  <div className="p-4 border-b border-gray-100">
-                    <h2 className="font-semibold">Your Tickets</h2>
-                  </div>
-                  
-                  <div className="divide-y divide-gray-100">
-                    {tickets.length === 0 ? (
-                      <div className="p-4 text-center text-gray-500">
-                        <p>You don't have any tickets yet.</p>
-                        <p className="text-sm mt-1">Create a new ticket for support.</p>
-                      </div>
-                    ) : (
-                      tickets.map(ticket => (
-                        <div 
-                          key={ticket.id}
-                          className={`p-4 cursor-pointer hover:bg-gray-50 transition-colors ${
-                            activeTicketId === ticket.id ? 'bg-gray-50' : ''
-                          }`}
-                          onClick={() => setActiveTicketId(ticket.id)}
-                        >
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <h3 className="font-medium truncate">{ticket.subject}</h3>
-                              <p className="text-xs text-gray-500 mt-1">
-                                {formatDate(ticket.createdAt)}
-                              </p>
-                            </div>
-                            <div className="flex items-center">
-                              {getStatusIcon(ticket.status)}
-                            </div>
+                  {/* Image upload section */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                      Attach Images (Optional)
+                    </label>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {imagePreviewUrls.map((url, index) => (
+                        <div key={index} className="relative group">
+                          <div className="w-24 h-24 border rounded-md overflow-hidden">
+                            <img 
+                              src={url} 
+                              alt={`Preview ${index}`} 
+                              className="w-full h-full object-cover"
+                            />
                           </div>
-                          
-                          <div className="flex items-center justify-between mt-2">
-                            <span className="text-xs bg-gray-100 px-2 py-1 rounded">
-                              {getCategoryLabel(ticket.category)}
-                            </span>
-                            <span className="text-xs text-gray-500">
-                              {ticket.responses.length > 0 ? `${ticket.responses.length} responses` : 'No responses'}
-                            </span>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="md:col-span-2">
-                {activeTicket ? (
-                  <div className="bg-white rounded-lg shadow h-full flex flex-col">
-                    <div className="p-4 border-b border-gray-100 flex items-center justify-between">
-                      <div>
-                        <h2 className="font-semibold">{activeTicket.subject}</h2>
-                        <div className="flex items-center mt-1 text-sm text-gray-500 space-x-3">
-                          <span>{getCategoryLabel(activeTicket.category)}</span>
-                          <span>•</span>
-                          <span className="flex items-center">
-                            {getStatusIcon(activeTicket.status)}
-                            <span className="ml-1 capitalize">{activeTicket.status.replace('-', ' ')}</span>
-                          </span>
-                        </div>
-                      </div>
-                      {activeTicket.status !== 'closed' && (
-                        <Button variant="outline" className="text-sm" size="sm">
-                          Close Ticket
-                        </Button>
-                      )}
-                    </div>
-                    
-                    <div className="flex-grow overflow-y-auto p-4 space-y-4">
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <div className="flex justify-between items-start">
-                          <h3 className="font-medium">You</h3>
-                          <span className="text-xs text-gray-500">
-                            {formatDate(activeTicket.createdAt)}
-                          </span>
-                        </div>
-                        <p className="mt-2 text-gray-700 whitespace-pre-wrap">{activeTicket.message}</p>
-                      </div>
-                      
-                      {activeTicket.responses.map(response => (
-                        <div 
-                          key={response.id}
-                          className={`p-4 rounded-lg ${
-                            response.fromAdmin ? 'bg-blue-50' : 'bg-gray-50'
-                          }`}
-                        >
-                          <div className="flex justify-between items-start">
-                            <h3 className="font-medium">
-                              {response.fromAdmin ? 'Support Agent' : 'You'}
-                            </h3>
-                            <span className="text-xs text-gray-500">
-                              {formatDate(response.createdAt)}
-                            </span>
-                          </div>
-                          <p className="mt-2 text-gray-700 whitespace-pre-wrap">{response.message}</p>
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-90 hover:opacity-100"
+                          >
+                            <X size={16} />
+                          </button>
                         </div>
                       ))}
-                    </div>
-                    
-                    {activeTicket.status !== 'closed' && (
-                      <div className="p-4 border-t border-gray-100">
-                        <form onSubmit={handleResponseSubmit} className="flex gap-2">
-                          <Textarea 
-                            value={newResponse}
-                            onChange={(e) => setNewResponse(e.target.value)}
-                            placeholder="Type your response..."
-                            className="flex-grow min-h-[80px]"
+                      
+                      {imagePreviewUrls.length < 3 && (
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="w-24 h-24 border-2 border-dashed border-gray-300 rounded-md flex flex-col items-center justify-center text-gray-500 hover:bg-gray-50"
+                        >
+                          <input
+                            ref={fileInputRef}
+                            type="file"
+                            className="hidden"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            multiple
                           />
-                          <Button 
-                            type="submit" 
-                            className="self-end bg-indigo hover:bg-indigo-600"
-                          >
-                            Send
-                          </Button>
-                        </form>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="bg-white rounded-lg shadow p-8 flex flex-col items-center justify-center h-full">
-                    <MessageCircle className="h-12 w-12 text-gray-300 mb-4" />
-                    <h3 className="text-xl font-medium mb-2">No Ticket Selected</h3>
-                    <p className="text-gray-500 text-center">
-                      Select a ticket from the list or create a new one to view its details.
+                          <ImageIcon size={24} className="mb-1" />
+                          <span className="text-xs">Add Image</span>
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      You can upload up to 3 images (JPEG, PNG, GIF)
                     </p>
                   </div>
-                )}
-              </div>
-            </div>
+                  
+                  <Button
+                    type="submit"
+                    className="w-full bg-indigo hover:bg-indigo-600"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Submitting..." : "Submit Ticket"}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
           )}
+          
+          <div className="mt-8 text-center text-gray-600">
+            <p>Need immediate assistance? Contact us directly:</p>
+            <p className="font-medium">support@avirva.com | +1 (800) 123-4567</p>
+          </div>
         </div>
       </main>
       

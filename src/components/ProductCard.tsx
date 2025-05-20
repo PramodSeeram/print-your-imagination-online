@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -38,6 +38,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   isWishlisted = false
 }) => {
   const [quantity, setQuantity] = useState(1);
+  const navigate = useNavigate();
   
   const handleIncreaseQuantity = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -57,17 +58,25 @@ const ProductCard: React.FC<ProductCardProps> = ({
       setQuantity(1); // Reset quantity after adding to cart
     }
   };
+
+  const handleProductClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate(`/product/${id}`);
+  };
   
   return (
     <div className="group bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
       <div className="relative">
-        <Link to={`/product/${id}`} className="block aspect-square">
+        <div 
+          onClick={handleProductClick}
+          className="block aspect-square cursor-pointer"
+        >
           <img 
             src={imageUrl} 
             alt={name} 
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
-        </Link>
+        </div>
         
         {/* Badges */}
         <div className="absolute top-2 left-2 space-y-1">
@@ -94,7 +103,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
       </div>
       
       <div className="p-4">
-        <Link to={`/product/${id}`} className="block">
+        <div 
+          onClick={handleProductClick}
+          className="block cursor-pointer"
+        >
           <h3 className="font-medium text-gray-900 mb-1 line-clamp-2">{name}</h3>
           <div className="flex items-center mb-2">
             <div className="flex items-center">
@@ -114,7 +126,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               </span>
             )}
           </div>
-        </Link>
+        </div>
         
         <div className="flex space-x-2">
           <Popover>
