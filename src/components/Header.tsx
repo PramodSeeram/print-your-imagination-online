@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
@@ -12,7 +11,8 @@ import {
   Package,
   ChevronDown,
   ChevronRight,
-  Bell
+  Bell,
+  MessageSquare
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import {
@@ -35,7 +35,8 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import Logo from '@/components/Logo';
-import { useMobileMenu } from '@/hooks/use-mobile';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { useMobileMenu } from '@/hooks/use-mobile-menu';
 
 // Mock data for categories
 const CATEGORIES = [

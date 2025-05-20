@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -194,7 +193,7 @@ const AdminTickets = () => {
           ...ticket,
           status,
           response: status !== 'Closed' ? responseText : responseText || 'Ticket closed.'
-        };
+        } as Ticket; // Explicitly cast as Ticket type to ensure type safety
       }
       return ticket;
     });
