@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -226,7 +227,7 @@ const AdminTickets = () => {
       if (ticket.id === selectedTicket.id) {
         return {
           ...ticket,
-          status: 'In Progress',
+          status: 'In Progress' as const, // Use const assertion to ensure the literal type
           response: responseText
         };
       }
