@@ -135,7 +135,7 @@ const Header = () => {
   return (
     <header className="border-b bg-background">
       {/* Top Bar */}
-      <div className="bg-teal-600 text-white py-2 text-center text-sm dark:bg-teal-800">
+      <div className="bg-[#5D3FD3] text-white py-2 text-center text-sm dark:bg-[#9400D3]">
         <p>Free shipping on all orders above ₹999. Use code FREESHIP at checkout.</p>
       </div>
       
@@ -272,11 +272,11 @@ const Header = () => {
                 <User className="h-5 w-5" />
               )}
               {isLoggedIn && (
-                <span className="absolute -top-1 -right-1 bg-teal-400 border-2 border-white dark:border-gray-800 w-3 h-3 rounded-full"></span>
+                <span className="absolute -top-1 -right-1 bg-[#5D3FD3] border-2 border-white dark:border-gray-800 w-3 h-3 rounded-full"></span>
               )}
             </Button>
             
-            {/* Mobile menu button */}
+            {/* Mobile menu button - only show on mobile */}
             <Button 
               variant="ghost" 
               size="icon" 
@@ -288,7 +288,7 @@ const Header = () => {
           </div>
         </div>
         
-        {/* Mobile Search - shown below header on mobile */}
+        {/* Mobile Search - only show on mobile BELOW header */}
         <div className="mt-4 mb-2 md:hidden">
           <SearchBar allProducts={PRODUCTS} className="w-full" />
         </div>

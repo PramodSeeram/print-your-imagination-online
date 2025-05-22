@@ -65,6 +65,9 @@ const ProductGrid: React.FC<ProductGridProps> = ({
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
     localStorage.setItem('cartTotal', total.toString());
     
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new Event('cartUpdated'));
+    
     // Show toast notification
     toast({
       title: "Added to cart",
@@ -84,7 +87,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
           <h2 className="text-xl md:text-2xl font-bold">{title}</h2>
           <Button 
             variant="link" 
-            className="text-indigo-600 flex items-center"
+            className="text-[#5D3FD3] flex items-center"
             onClick={() => navigate(`/category/${title.toLowerCase().replace(/\s+/g, '-')}`)}
           >
             View all <ChevronRight className="h-4 w-4 ml-1" />

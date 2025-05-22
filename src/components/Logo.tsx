@@ -22,16 +22,14 @@ const Logo: React.FC<LogoProps> = ({ withText = true, className = "", size = "md
       <div className={`${sizeClass} relative`}>
         {/* AVIRVA logo with updated color scheme */}
         <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-          {/* Stylized A shape in teal */}
-          <path d="M32 8C42 16 42 40 32 48" stroke="#38B2AC" strokeWidth="6" strokeLinecap="round" />
-          {/* Stylized V shape in green */}
-          <path d="M32 16C42 24 42 48 32 56" stroke="#4ADE80" strokeWidth="6" strokeLinecap="round" />
+          <path d="M32 8C42 16 42 40 32 48" stroke="#5D3FD3" strokeWidth="6" strokeLinecap="round" />
+          <path d="M32 16C42 24 42 48 32 56" stroke="#9400D3" strokeWidth="6" strokeLinecap="round" />
         </svg>
       </div>
       {withText && (
         <div className="font-mont font-bold text-xl md:text-2xl tracking-tight">
-          <span className="text-teal-500 dark:text-teal-400">AVI</span>
-          <span className="text-green-500 dark:text-green-400">RVA</span>
+          <span className="text-[#5D3FD3] dark:text-[#5D3FD3]">AVI</span>
+          <span className="text-[#9400D3] dark:text-[#9400D3]">RVA</span>
         </div>
       )}
     </Link>

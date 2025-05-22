@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -118,10 +119,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
         {/* Badges */}
         <div className="absolute top-2 left-2 space-y-1">
           {isNew && (
-            <Badge className="bg-indigo-500 text-white dark:bg-indigo-400">New</Badge>
+            <Badge className="bg-[#5D3FD3] text-white dark:bg-[#5D3FD3]">New</Badge>
           )}
           {isBestSeller && (
-            <Badge className="bg-amber-500 text-white dark:bg-amber-400">Best Seller</Badge>
+            <Badge className="bg-[#9400D3] text-white dark:bg-[#9400D3]">Best Seller</Badge>
           )}
         </div>
         
@@ -170,7 +171,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
             <PopoverTrigger asChild>
               <Button 
-                className="flex-1 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600" 
+                className="flex-1 bg-[#5D3FD3] hover:bg-[#4B32A5] dark:bg-[#5D3FD3] dark:hover:bg-[#4B32A5]" 
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -203,7 +204,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   Total: ₹{(offerPrice || price) * quantity}
                 </div>
                 <Button 
-                  className="w-full bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600"
+                  className="w-full bg-[#5D3FD3] hover:bg-[#4B32A5] dark:bg-[#5D3FD3] dark:hover:bg-[#4B32A5]"
                   onClick={handleAddToCart}
                 >
                   Add to Cart

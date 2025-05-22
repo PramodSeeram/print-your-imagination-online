@@ -44,6 +44,20 @@ const Cart = () => {
     if (storedCartItems) {
       setCartItems(JSON.parse(storedCartItems));
     }
+    
+    // Listen for cart updates from other components
+    const handleCartUpdate = () => {
+      const updatedCart = localStorage.getItem('cartItems');
+      if (updatedCart) {
+        setCartItems(JSON.parse(updatedCart));
+      }
+    };
+    
+    window.addEventListener('cartUpdated', handleCartUpdate);
+    
+    return () => {
+      window.removeEventListener('cartUpdated', handleCartUpdate);
+    };
   }, []);
 
   // Calculate subtotal
@@ -70,6 +84,9 @@ const Cart = () => {
     // Calculate and update total
     const newSubtotal = updatedCart.reduce((total, item) => total + ((item.offerPrice || item.price) * item.quantity), 0);
     localStorage.setItem('cartTotal', (newSubtotal + (newSubtotal >= 599 ? 0 : 99)).toString());
+    
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new Event('cartUpdated'));
   };
 
   const removeItem = (id: number) => {
@@ -82,6 +99,9 @@ const Cart = () => {
     // Calculate and update total
     const newSubtotal = updatedCart.reduce((total, item) => total + ((item.offerPrice || item.price) * item.quantity), 0);
     localStorage.setItem('cartTotal', (newSubtotal + (newSubtotal >= 599 ? 0 : 99)).toString());
+    
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new Event('cartUpdated'));
     
     toast({
       title: "Item removed",
@@ -117,7 +137,7 @@ const Cart = () => {
             <div className="text-center py-16">
               <h2 className="text-2xl font-medium text-gray-600 mb-4">Your cart is empty</h2>
               <p className="text-gray-500 mb-8">Looks like you haven't added anything to your cart yet.</p>
-              <Button asChild className="bg-indigo hover:bg-indigo-600">
+              <Button asChild className="bg-[#5D3FD3] hover:bg-[#4B32A5]">
                 <Link to="/">Continue Shopping</Link>
               </Button>
             </div>
@@ -125,12 +145,12 @@ const Cart = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Cart Items */}
               <div className="lg:col-span-2">
-                <div className="bg-white rounded-lg shadow">
-                  <div className="p-6 border-b border-gray-100">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
+                  <div className="p-6 border-b border-gray-100 dark:border-gray-700">
                     <h2 className="font-semibold text-lg">Cart Items ({cartItems.length})</h2>
                   </div>
                   
-                  <div className="divide-y divide-gray-100">
+                  <div className="divide-y divide-gray-100 dark:divide-gray-700">
                     {cartItems.map((item) => (
                       <div key={item.id} className="flex p-6 gap-4">
                         <div className="w-24 h-24 flex-shrink-0">
@@ -142,27 +162,27 @@ const Cart = () => {
                         </div>
                         
                         <div className="flex-grow">
-                          <h3 className="font-medium text-gray-900">{item.name}</h3>
-                          <p className="text-gray-500 text-sm mb-2">Item #{item.id}</p>
+                          <h3 className="font-medium text-gray-900 dark:text-gray-100">{item.name}</h3>
+                          <p className="text-gray-500 dark:text-gray-400 text-sm mb-2">Item #{item.id}</p>
                           
                           <div className="flex items-center justify-between mt-4">
-                            <div className="flex items-center border border-gray-300 rounded">
+                            <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded">
                               <button 
-                                className="px-3 py-1 text-gray-600 hover:bg-gray-50"
+                                className="px-3 py-1 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
                                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
                               >
                                 <Minus className="h-4 w-4" />
                               </button>
                               <span className="px-3 py-1">{item.quantity}</span>
                               <button 
-                                className="px-3 py-1 text-gray-600 hover:bg-gray-50"
+                                className="px-3 py-1 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
                                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
                               >
                                 <Plus className="h-4 w-4" />
                               </button>
                             </div>
                             
-                            <p className="font-medium text-gray-900">₹{(item.offerPrice || item.price) * item.quantity}</p>
+                            <p className="font-medium text-gray-900 dark:text-gray-100">₹{(item.offerPrice || item.price) * item.quantity}</p>
                             
                             <button 
                               className="text-gray-400 hover:text-red-500 transition-colors"
@@ -180,32 +200,32 @@ const Cart = () => {
               
               {/* Order Summary */}
               <div className="lg:col-span-1">
-                <div className="bg-white rounded-lg shadow sticky top-24">
-                  <div className="p-6 border-b border-gray-100">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow sticky top-24">
+                  <div className="p-6 border-b border-gray-100 dark:border-gray-700">
                     <h2 className="font-semibold text-lg">Order Summary</h2>
                   </div>
                   
                   <div className="p-6">
                     <div className="space-y-4">
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Subtotal</span>
+                        <span className="text-gray-600 dark:text-gray-300">Subtotal</span>
                         <span className="font-medium">₹{subtotal}</span>
                       </div>
                       
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Shipping</span>
+                        <span className="text-gray-600 dark:text-gray-300">Shipping</span>
                         <span className="font-medium">
                           {shipping === 0 ? "Free" : `₹${shipping}`}
                         </span>
                       </div>
                       
                       {shipping === 0 && (
-                        <div className="text-green-600 text-sm">
+                        <div className="text-green-600 dark:text-green-400 text-sm">
                           You've qualified for free shipping!
                         </div>
                       )}
                       
-                      <div className="border-t border-gray-100 pt-4 mt-4">
+                      <div className="border-t border-gray-100 dark:border-gray-700 pt-4 mt-4">
                         <div className="flex justify-between">
                           <span className="font-semibold">Total</span>
                           <span className="font-semibold">₹{total}</span>
@@ -214,7 +234,7 @@ const Cart = () => {
                     </div>
                     
                     <Button 
-                      className="w-full mt-6 bg-indigo hover:bg-indigo-600"
+                      className="w-full mt-6 bg-[#5D3FD3] hover:bg-[#4B32A5] dark:bg-[#5D3FD3] dark:hover:bg-[#4B32A5]"
                       onClick={proceedToCheckout}
                     >
                       Checkout <ArrowRight className="ml-2 h-4 w-4" />
