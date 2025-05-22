@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -29,17 +28,26 @@ interface CartItem {
   id: number;
   name: string;
   price: number;
+  offerPrice?: number;
   quantity: number;
   imageUrl: string;
 }
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState<CartItem[]>(initialCartItems);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  // Load cart items from localStorage on component mount
+  useEffect(() => {
+    const storedCartItems = localStorage.getItem('cartItems');
+    if (storedCartItems) {
+      setCartItems(JSON.parse(storedCartItems));
+    }
+  }, []);
+
   // Calculate subtotal
-  const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+  const subtotal = cartItems.reduce((total, item) => total + ((item.offerPrice || item.price) * item.quantity), 0);
   
   // Shipping is free above ₹599
   const shipping = subtotal >= 599 ? 0 : 99;
@@ -53,12 +61,27 @@ const Cart = () => {
     const updatedCart = cartItems.map(item => 
       item.id === id ? { ...item, quantity: newQuantity } : item
     );
+    
     setCartItems(updatedCart);
+    
+    // Update localStorage
+    localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+    
+    // Calculate and update total
+    const newSubtotal = updatedCart.reduce((total, item) => total + ((item.offerPrice || item.price) * item.quantity), 0);
+    localStorage.setItem('cartTotal', (newSubtotal + (newSubtotal >= 599 ? 0 : 99)).toString());
   };
 
   const removeItem = (id: number) => {
     const updatedCart = cartItems.filter(item => item.id !== id);
     setCartItems(updatedCart);
+    
+    // Update localStorage
+    localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+    
+    // Calculate and update total
+    const newSubtotal = updatedCart.reduce((total, item) => total + ((item.offerPrice || item.price) * item.quantity), 0);
+    localStorage.setItem('cartTotal', (newSubtotal + (newSubtotal >= 599 ? 0 : 99)).toString());
     
     toast({
       title: "Item removed",
@@ -139,7 +162,7 @@ const Cart = () => {
                               </button>
                             </div>
                             
-                            <p className="font-medium text-gray-900">₹{item.price * item.quantity}</p>
+                            <p className="font-medium text-gray-900">₹{(item.offerPrice || item.price) * item.quantity}</p>
                             
                             <button 
                               className="text-gray-400 hover:text-red-500 transition-colors"

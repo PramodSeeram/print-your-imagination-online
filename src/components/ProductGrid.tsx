@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ProductCard from '@/components/ProductCard';
+import { useToast } from "@/hooks/use-toast";
 
 interface ProductGridProps {
   title?: string;
@@ -31,15 +32,48 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   wishlistedIds = [] 
 }) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   
   const handleAddToCart = (product: any, quantity: number = 1) => {
+    // Get existing cart items or initialize empty array
+    const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+    
+    // Check if product already exists in cart
+    const existingItemIndex = cartItems.findIndex((item: any) => item.id === product.id);
+    
+    if (existingItemIndex !== -1) {
+      // Update quantity if product exists
+      cartItems[existingItemIndex].quantity += quantity;
+    } else {
+      // Add new product to cart
+      cartItems.push({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        offerPrice: product.offerPrice,
+        quantity: quantity,
+        imageUrl: product.imageUrl
+      });
+    }
+    
+    // Calculate cart total
+    const total = cartItems.reduce((sum: number, item: any) => 
+      sum + ((item.offerPrice || item.price) * item.quantity), 0
+    );
+    
+    // Update localStorage
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    localStorage.setItem('cartTotal', total.toString());
+    
+    // Show toast notification
+    toast({
+      title: "Added to cart",
+      description: `${product.name} has been added to your cart.`
+    });
+    
+    // If parent component provided onAddToCart callback, call it too
     if (onAddToCart) {
-      // Create a copy of the product with quantity
-      const productWithQuantity = {
-        ...product,
-        quantity
-      };
-      onAddToCart(productWithQuantity);
+      onAddToCart({...product, quantity});
     }
   };
 

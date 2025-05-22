@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -9,6 +8,7 @@ import {
   PopoverTrigger
 } from '@/components/ui/popover';
 import { ShoppingCart, Heart, Star, Plus, Minus } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
 
 interface ProductCardProps {
   id: number;
@@ -40,6 +40,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const [quantity, setQuantity] = useState(1);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
   
   const handleIncreaseQuantity = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -71,8 +72,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     }
   };
 
-  const handleProductClick = (e: React.MouseEvent) => {
-    e.preventDefault();
+  const handleProductClick = () => {
     navigate(`/product/${id}`);
     
     // Add to browsing history

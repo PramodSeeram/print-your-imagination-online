@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from "@/components/Header";
@@ -200,16 +199,25 @@ const Index = () => {
 
   }, []);
 
-  const handleAddToCart = (product: Product) => {
+  const handleAddToCart = (product: any) => {
+    // Get existing cart items or initialize empty array
     const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+    
+    // Check if product already exists in cart
     const existingItemIndex = cartItems.findIndex((item: any) => item.id === product.id);
     
     if (existingItemIndex !== -1) {
-      cartItems[existingItemIndex].quantity += 1;
+      // Update quantity if product exists
+      cartItems[existingItemIndex].quantity += product.quantity || 1;
     } else {
+      // Add new product to cart with the correct structure
       cartItems.push({
-        ...product,
-        quantity: 1
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        offerPrice: product.offerPrice,
+        quantity: product.quantity || 1,
+        imageUrl: product.imageUrl
       });
     }
     
@@ -218,6 +226,7 @@ const Index = () => {
       sum + ((item.offerPrice || item.price) * item.quantity), 0
     );
     
+    // Update localStorage
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
     localStorage.setItem('cartTotal', total.toString());
     
