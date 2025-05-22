@@ -7,7 +7,6 @@ import CategoryBanner from "@/components/CategoryBanner";
 import FeaturesSection from "@/components/FeaturesSection";
 import TestimonialSection from "@/components/TestimonialSection";
 import ProductGrid from "@/components/ProductGrid";
-import SearchBar from "@/components/SearchBar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -71,7 +70,8 @@ const Index = () => {
         rating: 4.5,
         imageUrl: "https://images.unsplash.com/photo-1614955849439-67066da241ca?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
         isNew: true,
-        keywords: ["wooden", "wall", "decor", "handcrafted", "home"]
+        keywords: ["wooden", "wall", "decor", "handcrafted", "home"],
+        category: "Home Decor"
       },
       {
         id: 2,
@@ -80,7 +80,8 @@ const Index = () => {
         rating: 4.8,
         imageUrl: "https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
         isBestSeller: true,
-        keywords: ["ceramic", "vase", "hand-painted", "decor", "pottery"]
+        keywords: ["ceramic", "vase", "hand-painted", "decor", "pottery"],
+        category: "Home Decor"
       },
       {
         id: 3,
@@ -89,7 +90,8 @@ const Index = () => {
         offerPrice: 1999,
         rating: 4.2,
         imageUrl: "https://images.unsplash.com/photo-1615529482396-63f8b0d0944b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-        keywords: ["cotton", "rug", "handwoven", "floor", "covering"]
+        keywords: ["cotton", "rug", "handwoven", "floor", "covering"],
+        category: "Home Decor"
       },
       {
         id: 4,
@@ -99,7 +101,8 @@ const Index = () => {
         rating: 4.6,
         imageUrl: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
         isNew: true,
-        keywords: ["terracotta", "pot", "plant", "garden", "set"]
+        keywords: ["terracotta", "pot", "plant", "garden", "set"],
+        category: "Home Decor"
       },
       {
         id: 5,
@@ -109,7 +112,8 @@ const Index = () => {
         rating: 4.7,
         imageUrl: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
         isBestSeller: true,
-        keywords: ["brass", "decor", "metal", "luxurious", "set"]
+        keywords: ["brass", "decor", "metal", "luxurious", "set"],
+        category: "Home Decor"
       },
       {
         id: 6,
@@ -117,7 +121,8 @@ const Index = () => {
         price: 699,
         rating: 4.3,
         imageUrl: "https://images.unsplash.com/photo-1526434426615-1abe81efcb0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-        keywords: ["bamboo", "storage", "basket", "organization", "eco-friendly"]
+        keywords: ["bamboo", "storage", "basket", "organization", "eco-friendly"],
+        category: "Home Decor"
       },
       {
         id: 7,
@@ -127,7 +132,8 @@ const Index = () => {
         rating: 4.4,
         imageUrl: "https://images.unsplash.com/photo-1545304787-d9d3229f4e3a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
         isNew: true,
-        keywords: ["macrame", "wall", "hanging", "boho", "decor"]
+        keywords: ["macrame", "wall", "hanging", "boho", "decor"],
+        category: "Home Decor"
       },
       {
         id: 8,
@@ -137,7 +143,8 @@ const Index = () => {
         rating: 4.1,
         imageUrl: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
         isBestSeller: true,
-        keywords: ["marble", "coaster", "drink", "tableware", "set"]
+        keywords: ["marble", "coaster", "drink", "tableware", "set"],
+        category: "Home Decor"
       }
     ];
     
@@ -230,6 +237,10 @@ const Index = () => {
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
     localStorage.setItem('cartTotal', total.toString());
     
+    // Dispatch event to update cart count in header
+    const event = new CustomEvent('cartUpdated');
+    window.dispatchEvent(event);
+    
     toast({
       title: "Added to cart",
       description: `${product.name} has been added to your cart.`
@@ -264,26 +275,19 @@ const Index = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-grow bg-gray-50">
-        {/* Add search bar above HeroBanner */}
-        <div className="bg-indigo-700 py-4">
-          <div className="container-avirva">
-            <SearchBar allProducts={allProducts} className="max-w-2xl mx-auto" />
-          </div>
-        </div>
-        
+      <main className="flex-grow bg-background">
         <HeroBanner />
         
         <div className="container-avirva py-6">
           {/* Loyalty Points Card */}
-          <div className="mb-8 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg p-5 text-white">
+          <div className="mb-8 bg-gradient-to-r from-[#4ECDC4] to-[#8FE388] rounded-lg p-5 text-background shadow-lg animate-fade-in-up">
             <div className="flex justify-between items-center">
               <div>
                 <h3 className="text-xl font-bold">Your Loyalty Points</h3>
                 <p className="text-sm opacity-90 mb-2">Collect points with every purchase</p>
-                <div className="text-3xl font-bold">{loyaltyPoints} points</div>
+                <div className="text-3xl font-bold animate-pulse-slow">{loyaltyPoints} points</div>
               </div>
-              <Button className="bg-white text-indigo-600 hover:bg-gray-100">
+              <Button className="bg-white/90 hover:bg-white text-[#4ECDC4] hover:scale-105 transition-transform shadow-md">
                 View Rewards
               </Button>
             </div>
@@ -291,22 +295,27 @@ const Index = () => {
           
           {/* Continue Shopping Section - based on Amazon-like layout */}
           {recentlyViewedProducts.length > 0 && (
-            <div className="mb-8">
+            <div className="mb-8 animate-fade-in-up animate-delayed-1">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">Pick up where you left off</h2>
-                <Button variant="link" className="text-indigo-600" onClick={() => navigate('/account')}>
+                <Button variant="link" className="text-[#4ECDC4]" onClick={() => navigate('/account')}>
                   See more <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                {recentlyViewedProducts.slice(0, 5).map(product => (
-                  <Card key={product.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate(`/product/${product.id}`)}>
+                {recentlyViewedProducts.slice(0, 5).map((product, index) => (
+                  <Card 
+                    key={product.id} 
+                    className="cursor-pointer hover:shadow-md transition-shadow bg-card border-border/50 hover:border-[#4ECDC4]/30 overflow-hidden animate-fade-in-up" 
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                    onClick={() => navigate(`/product/${product.id}`)}
+                  >
                     <CardContent className="p-3">
-                      <div className="aspect-square mb-2">
+                      <div className="aspect-square mb-2 overflow-hidden rounded">
                         <img 
                           src={product.imageUrl} 
                           alt={product.name} 
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
                         />
                       </div>
                       <h3 className="text-sm font-medium line-clamp-2">{product.name}</h3>
@@ -319,33 +328,37 @@ const Index = () => {
           
           {/* Browsing History - Amazon-like Category Row */}
           {browsingHistory.length > 0 && (
-            <div className="mb-8">
+            <div className="mb-8 animate-fade-in-up animate-delayed-2">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">Keep shopping for</h2>
-                <Button variant="link" className="text-indigo-600">
+                <Button variant="link" className="text-[#4ECDC4]">
                   View your browsing history <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {browsingHistory.map((category, index) => (
-                  <Card key={index} className="overflow-hidden">
+                  <Card 
+                    key={index} 
+                    className="overflow-hidden bg-card border-border/50 hover:border-[#4ECDC4]/30 animate-fade-in-up" 
+                    style={{ animationDelay: `${index * 0.15 + 0.3}s` }}
+                  >
                     <CardContent className="p-4">
-                      <h3 className="font-medium mb-2">{category.category}</h3>
+                      <h3 className="font-medium mb-2 text-[#4ECDC4]">{category.category}</h3>
                       <div className="grid grid-cols-2 gap-2">
                         {category.items.map(item => (
                           <div 
                             key={item.id} 
-                            className="cursor-pointer"
+                            className="cursor-pointer group"
                             onClick={() => navigate(`/product/${item.id}`)}
                           >
-                            <div className="aspect-square bg-gray-100 mb-1">
+                            <div className="aspect-square bg-muted mb-1 rounded overflow-hidden">
                               <img 
                                 src={item.imageUrl} 
                                 alt={item.name} 
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                               />
                             </div>
-                            <p className="text-xs text-gray-600">{category.items.length} viewed</p>
+                            <p className="text-xs text-muted-foreground">{category.items.length} viewed</p>
                           </div>
                         ))}
                       </div>
@@ -356,46 +369,55 @@ const Index = () => {
             </div>
           )}
           
-          {/* Hero Banner with Categories */}
-          <CategoryBanner 
-            id={1}
-            name="Home Decor Collection"
-            description="Discover our curated selection of beautiful home decor pieces to elevate your living space."
-            imageUrl="https://images.unsplash.com/photo-1615529482396-63f8b0d0944b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-          />
+          {/* Hero Banner with Categories - with animation */}
+          <div className="animate-fade-in-up animate-delayed-2">
+            <CategoryBanner 
+              id={1}
+              name="Home Decor Collection"
+              description="Discover our curated selection of beautiful home decor pieces to elevate your living space."
+              imageUrl="https://images.unsplash.com/photo-1615529482396-63f8b0d0944b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+            />
+          </div>
           
-          {/* New Arrivals */}
-          <ProductGrid 
-            title="New Arrivals" 
-            products={newArrivals}
-            onAddToCart={handleAddToCart}
-            onToggleWishlist={handleToggleWishlist}
-            wishlistedIds={wishlistedIds}
-          />
-          
-          {/* Best Sellers */}
-          <ProductGrid 
-            title="Best Sellers" 
-            products={bestSellers}
-            onAddToCart={handleAddToCart}
-            onToggleWishlist={handleToggleWishlist}
-            wishlistedIds={wishlistedIds}
-          />
-          
-          {/* Deals */}
-          <ProductGrid 
-            title="Deals of the Week" 
-            products={deals}
-            onAddToCart={handleAddToCart}
-            onToggleWishlist={handleToggleWishlist}
-            wishlistedIds={wishlistedIds}
-          />
+          {/* Product Grids */}
+          <div className="animate-fade-in-up animate-delayed-3">
+            {/* New Arrivals */}
+            <ProductGrid 
+              title="New Arrivals" 
+              products={newArrivals}
+              onAddToCart={handleAddToCart}
+              onToggleWishlist={handleToggleWishlist}
+              wishlistedIds={wishlistedIds}
+            />
+            
+            {/* Best Sellers */}
+            <ProductGrid 
+              title="Best Sellers" 
+              products={bestSellers}
+              onAddToCart={handleAddToCart}
+              onToggleWishlist={handleToggleWishlist}
+              wishlistedIds={wishlistedIds}
+            />
+            
+            {/* Deals */}
+            <ProductGrid 
+              title="Deals of the Week" 
+              products={deals}
+              onAddToCart={handleAddToCart}
+              onToggleWishlist={handleToggleWishlist}
+              wishlistedIds={wishlistedIds}
+            />
+          </div>
           
           {/* Features Section */}
-          <FeaturesSection />
+          <div className="animate-fade-in-up" style={{ animationDelay: '0.9s' }}>
+            <FeaturesSection />
+          </div>
           
           {/* Testimonials */}
-          <TestimonialSection />
+          <div className="animate-fade-in-up" style={{ animationDelay: '1.1s' }}>
+            <TestimonialSection />
+          </div>
         </div>
       </main>
       

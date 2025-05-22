@@ -5,6 +5,9 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductGrid from "@/components/ProductGrid";
 import { useToast } from "@/hooks/use-toast";
+import { MoveLeft, Search } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 interface Product {
   id: number;
@@ -16,20 +19,32 @@ interface Product {
   isNew?: boolean;
   isBestSeller?: boolean;
   keywords?: string[];
+  category?: string;
 }
 
 const SearchResults = () => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('q') || '';
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [wishlistedIds, setWishlistedIds] = useState<number[]>([]);
+  const [categoryFilters, setCategoryFilters] = useState<string[]>([]);
+  const [filteredResults, setFilteredResults] = useState<Product[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
     // Get search results from session storage or use empty array
     const storedResults = sessionStorage.getItem('searchResults');
     if (storedResults) {
-      setSearchResults(JSON.parse(storedResults));
+      const results = JSON.parse(storedResults);
+      setSearchResults(results);
+      setFilteredResults(results);
+      
+      // Extract unique categories for filtering
+      const uniqueCategories = Array.from(
+        new Set(results.map((product: Product) => product.category).filter(Boolean))
+      );
+      setCategoryFilters(uniqueCategories as string[]);
     }
 
     // Get wishlisted items from localStorage
@@ -38,6 +53,14 @@ const SearchResults = () => {
       setWishlistedIds(JSON.parse(storedWishlist));
     }
   }, [searchQuery]);
+
+  const handleFilterByCategory = (category: string) => {
+    if (category === 'all') {
+      setFilteredResults(searchResults);
+    } else {
+      setFilteredResults(searchResults.filter(product => product.category === category));
+    }
+  };
 
   const handleAddToCart = (product: Product) => {
     const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
@@ -99,30 +122,77 @@ const SearchResults = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background animate-fade-in-up">
       <Header />
       
       <main className="flex-grow pt-8 pb-16">
         <div className="container-avirva">
-          <h1 className="text-2xl font-bold mb-6">
-            Search results for: <span className="text-[#5D3FD3]">"{searchQuery}"</span>
-          </h1>
+          {/* Back button and search header */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+            <div>
+              <Button 
+                variant="ghost" 
+                className="mb-2 text-[#4ECDC4] hover:text-[#3DBDB4] hover:bg-[#4ECDC4]/10 -ml-2"
+                onClick={() => navigate(-1)}
+              >
+                <MoveLeft className="mr-2 h-4 w-4" /> Back
+              </Button>
+              <h1 className="text-2xl md:text-3xl font-bold">
+                Search results for: <span className="text-[#4ECDC4]">"{searchQuery}"</span>
+              </h1>
+            </div>
+            
+            {/* Category filters */}
+            {categoryFilters.length > 0 && (
+              <div className="flex flex-wrap gap-2 animate-fade-in-up animate-delayed-1">
+                <Button 
+                  variant="outline" 
+                  className="bg-[#4ECDC4]/10 hover:bg-[#4ECDC4]/20 border-[#4ECDC4]/30"
+                  onClick={() => handleFilterByCategory('all')}
+                >
+                  All Results
+                </Button>
+                {categoryFilters.map(category => (
+                  <Button 
+                    key={category} 
+                    variant="outline" 
+                    className="bg-[#4ECDC4]/10 hover:bg-[#4ECDC4]/20 border-[#4ECDC4]/30"
+                    onClick={() => handleFilterByCategory(category)}
+                  >
+                    {category}
+                  </Button>
+                ))}
+              </div>
+            )}
+          </div>
           
-          {searchResults.length === 0 ? (
-            <div className="bg-white rounded-lg shadow p-8 text-center">
+          {filteredResults.length === 0 ? (
+            <div className="bg-card rounded-lg shadow p-8 text-center animate-fade-in-up animate-delayed-1">
+              <Search className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
               <h2 className="text-xl font-medium mb-2">No products found</h2>
-              <p className="text-gray-500">
+              <p className="text-muted-foreground">
                 We couldn't find any products matching your search query.
                 Try using different keywords or browsing our categories.
               </p>
+              <Button 
+                className="mt-4 bg-[#4ECDC4] hover:bg-[#3DBDB4]" 
+                onClick={() => navigate('/')}
+              >
+                Browse Products
+              </Button>
             </div>
           ) : (
-            <ProductGrid 
-              products={searchResults}
-              onAddToCart={handleAddToCart}
-              onToggleWishlist={handleToggleWishlist}
-              wishlistedIds={wishlistedIds}
-            />
+            <>
+              <p className="text-muted-foreground mb-6 animate-fade-in-up animate-delayed-1">
+                Found {filteredResults.length} product{filteredResults.length !== 1 ? 's' : ''}
+              </p>
+              <ProductGrid 
+                products={filteredResults}
+                onAddToCart={handleAddToCart}
+                onToggleWishlist={handleToggleWishlist}
+                wishlistedIds={wishlistedIds}
+              />
+            </>
           )}
         </div>
       </main>
