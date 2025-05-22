@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
@@ -73,16 +72,16 @@ const CATEGORIES = [
   }
 ];
 
-// Mock products for initial search state - real search happens in SearchBar component
+// Mock products for initial search state with required Product properties
 const PRODUCTS = [
-  { id: 1, name: "Geometric Plant Holder", category: "Home Decor" },
-  { id: 2, name: "Wall Mounted Shelf", category: "Home Decor" },
-  { id: 3, name: "Desk Lamp", category: "Home Decor" },
-  { id: 4, name: "Miniature Car", category: "Miniatures" },
-  { id: 5, name: "Phone Stand", category: "Tech Gadgets" },
-  { id: 6, name: "Cable Organizer", category: "Tech Gadgets" },
-  { id: 7, name: "Wall Art Panels", category: "Home Decor" },
-  { id: 8, name: "Desk Organizer", category: "Tech Gadgets" }
+  { id: 1, name: "Geometric Plant Holder", category: "Home Decor", price: 1299, rating: 4.5, imageUrl: "https://images.unsplash.com/photo-1614955849439-67066da241ca?auto=format&fit=crop&w=300&q=80" },
+  { id: 2, name: "Wall Mounted Shelf", category: "Home Decor", price: 999, rating: 4.2, imageUrl: "https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=300&q=80" },
+  { id: 3, name: "Desk Lamp", category: "Home Decor", price: 799, rating: 4.0, imageUrl: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=300&q=80" },
+  { id: 4, name: "Miniature Car", category: "Miniatures", price: 599, rating: 4.7, imageUrl: "https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?auto=format&fit=crop&w=300&q=80" },
+  { id: 5, name: "Phone Stand", category: "Tech Gadgets", price: 499, rating: 4.3, imageUrl: "https://images.unsplash.com/photo-1533740566848-5f7d3e04e3d7?auto=format&fit=crop&w=300&q=80" },
+  { id: 6, name: "Cable Organizer", category: "Tech Gadgets", price: 299, rating: 4.1, imageUrl: "https://images.unsplash.com/photo-1533654975975-a3d977c294f1?auto=format&fit=crop&w=300&q=80" },
+  { id: 7, name: "Wall Art Panels", category: "Home Decor", price: 1499, rating: 4.8, imageUrl: "https://images.unsplash.com/photo-1545304787-d9d3229f4e3a?auto=format&fit=crop&w=300&q=80" },
+  { id: 8, name: "Desk Organizer", category: "Tech Gadgets", price: 699, rating: 4.4, imageUrl: "https://images.unsplash.com/photo-1526434426615-1abe81efcb0b?auto=format&fit=crop&w=300&q=80" }
 ];
 
 const Header = () => {
@@ -136,7 +135,7 @@ const Header = () => {
   return (
     <header className="border-b bg-background">
       {/* Top Bar */}
-      <div className="bg-indigo text-white py-2 text-center text-sm dark:bg-indigo-800">
+      <div className="bg-teal-600 text-white py-2 text-center text-sm dark:bg-teal-800">
         <p>Free shipping on all orders above ₹999. Use code FREESHIP at checkout.</p>
       </div>
       
@@ -215,7 +214,7 @@ const Header = () => {
           
           {/* Icons */}
           <div className="flex items-center space-x-4">
-            {/* Mobile Search Dialog (removed duplicate search) */}
+            {/* Mobile Search Dialog */}
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="ghost" size="icon" className="md:hidden">
@@ -257,66 +256,25 @@ const Header = () => {
               </Button>
             </Link>
             
-            {/* Account Dropdown - Fixed navigation to account */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                {isLoggedIn ? (
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="relative hidden sm:flex"
-                    onClick={() => navigate('/account')}
-                  >
-                    <Avatar className="h-8 w-8 border">
-                      <AvatarImage src="https://randomuser.me/api/portraits/men/32.jpg" />
-                      <AvatarFallback>JD</AvatarFallback>
-                    </Avatar>
-                    <span className="absolute -top-1 -right-1 bg-teal-400 border-2 border-white dark:border-gray-800 w-3 h-3 rounded-full"></span>
-                  </Button>
-                ) : (
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="hidden sm:flex"
-                    onClick={() => navigate('/account')}
-                  >
-                    <User className="h-5 w-5" />
-                  </Button>
-                )}
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                {isLoggedIn ? (
-                  <>
-                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => navigate('/account')}>Profile</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/orders')}>Orders</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/wishlist')}>Wishlist</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/browsing-history')}>Browsing History</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/tickets')}>Support Tickets</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={() => {
-                        localStorage.setItem('userLoggedIn', 'false');
-                        setIsLoggedIn(false);
-                        navigate('/');
-                      }}
-                    >
-                      Logout
-                    </DropdownMenuItem>
-                  </>
-                ) : (
-                  <>
-                    <DropdownMenuItem onClick={() => navigate('/account')}>
-                      <LogIn className="h-4 w-4 mr-2" /> Login
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/account?register=true')}>
-                      Create Account
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {/* Account - Make sure it navigates to account page */}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="relative hidden sm:flex"
+              onClick={() => navigate('/account')}
+            >
+              {isLoggedIn ? (
+                <Avatar className="h-8 w-8 border">
+                  <AvatarImage src="https://randomuser.me/api/portraits/men/32.jpg" />
+                  <AvatarFallback>JD</AvatarFallback>
+                </Avatar>
+              ) : (
+                <User className="h-5 w-5" />
+              )}
+              {isLoggedIn && (
+                <span className="absolute -top-1 -right-1 bg-teal-400 border-2 border-white dark:border-gray-800 w-3 h-3 rounded-full"></span>
+              )}
+            </Button>
             
             {/* Mobile menu button */}
             <Button 
