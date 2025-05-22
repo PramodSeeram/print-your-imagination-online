@@ -1,8 +1,11 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+
 interface Product {
   id: number;
   name: string;
@@ -14,10 +17,12 @@ interface Product {
   isBestSeller?: boolean;
   keywords?: string[];
 }
+
 interface SearchBarProps {
   className?: string;
   allProducts: Product[];
 }
+
 const SearchBar: React.FC<SearchBarProps> = ({
   className = '',
   allProducts
@@ -96,13 +101,21 @@ const SearchBar: React.FC<SearchBarProps> = ({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-  return <div className={`relative ${className}`} ref={searchInputRef}>
+
+  return (
+    <div className={`relative ${className}`} ref={searchInputRef}>
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <div className="relative">
             <form onSubmit={handleSearchSubmit} className="flex w-full">
-              
-              <Button type="submit" className="bg-indigo hover:bg-indigo-600 text-white px-4 rounded-r-md">
+              <Input
+                type="text"
+                placeholder="Search products..."
+                value={searchTerm}
+                onChange={handleSearchChange}
+                className="rounded-l-md rounded-r-none border-r-0 pl-10"
+              />
+              <Button type="submit" className="bg-[#5D3FD3] hover:bg-[#4B32A5] text-white px-4 rounded-r-md">
                 <Search className="h-4 w-4" />
               </Button>
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -131,7 +144,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                   </div>)}
               </div>
               <div className="px-3 py-2 border-t">
-                <Button className="w-full text-sm" onClick={handleSearchSubmit}>
+                <Button className="w-full text-sm bg-[#5D3FD3] hover:bg-[#4B32A5]" onClick={handleSearchSubmit}>
                   See all results
                 </Button>
               </div>
@@ -140,6 +153,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
               </div>}
         </PopoverContent>
       </Popover>
-    </div>;
+    </div>
+  );
 };
+
 export default SearchBar;

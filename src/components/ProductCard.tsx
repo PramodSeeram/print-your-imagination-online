@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -5,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ShoppingCart, Heart, Star, Plus, Minus } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+
 interface ProductCardProps {
   id: number;
   name: string;
@@ -18,6 +20,7 @@ interface ProductCardProps {
   onToggleWishlist?: () => void;
   isWishlisted?: boolean;
 }
+
 const ProductCard: React.FC<ProductCardProps> = ({
   id,
   name,
@@ -34,19 +37,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const [quantity, setQuantity] = useState(1);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const navigate = useNavigate();
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
+
   const handleIncreaseQuantity = (e: React.MouseEvent) => {
     e.stopPropagation();
     setQuantity(prev => prev + 1);
   };
+
   const handleDecreaseQuantity = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (quantity > 1) {
       setQuantity(prev => prev - 1);
     }
   };
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -56,6 +60,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       setPopoverOpen(false); // Close popover after adding to cart
     }
   };
+
   const handleQuickAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -63,6 +68,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       onAddToCart(1); // Add 1 item quickly without opening popover
     }
   };
+
   const handleProductClick = () => {
     navigate(`/product/${id}`);
 
@@ -89,7 +95,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
     const limitedHistory = filteredHistory.slice(0, 20);
     localStorage.setItem('browsingHistory', JSON.stringify(limitedHistory));
   };
-  return <div className="group bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+
+  return (
+    <div className="group bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
       <div className="relative">
         <div onClick={handleProductClick} className="block aspect-square cursor-pointer">
           <img src={imageUrl} alt={name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
@@ -135,7 +143,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <div className="flex space-x-2">
           <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
             <PopoverTrigger asChild>
-              
+              <Button 
+                variant="default" 
+                className="flex-1 bg-[#5D3FD3] hover:bg-[#4B32A5] text-white flex items-center justify-center"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}>
+                <span>Add to Cart</span>
+              </Button>
             </PopoverTrigger>
             <PopoverContent side="top" className="w-48 p-0" align="center">
               <div className="p-4">
@@ -162,11 +178,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </Popover>
           
           {/* Quick add button */}
-          <Button variant="outline" size="icon" className="bg-white dark:bg-transparent" onClick={handleQuickAddToCart}>
-            <ShoppingCart className="h-4 w-4" />
+          <Button 
+            variant="outline" 
+            size="icon" 
+            className="bg-white dark:bg-transparent border-[#5D3FD3] hover:bg-[#5D3FD3]/10"
+            onClick={handleQuickAddToCart}
+          >
+            <ShoppingCart className="h-4 w-4 text-[#5D3FD3]" />
           </Button>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default ProductCard;

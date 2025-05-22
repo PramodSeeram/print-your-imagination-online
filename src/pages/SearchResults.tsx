@@ -60,6 +60,10 @@ const SearchResults = () => {
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
     localStorage.setItem('cartTotal', total.toString());
     
+    // Dispatch event to update cart count in header
+    const event = new CustomEvent('cartUpdated');
+    window.dispatchEvent(event);
+    
     toast({
       title: "Added to cart",
       description: `${product.name} has been added to your cart.`
@@ -88,6 +92,10 @@ const SearchResults = () => {
     
     setWishlistedIds(currentWishlist);
     localStorage.setItem('wishlist', JSON.stringify(currentWishlist));
+    
+    // Dispatch event for wishlist count update
+    const event = new CustomEvent('wishlistUpdated');
+    window.dispatchEvent(event);
   };
 
   return (
@@ -97,7 +105,7 @@ const SearchResults = () => {
       <main className="flex-grow pt-8 pb-16">
         <div className="container-avirva">
           <h1 className="text-2xl font-bold mb-6">
-            Search results for: <span className="text-indigo-600">"{searchQuery}"</span>
+            Search results for: <span className="text-[#5D3FD3]">"{searchQuery}"</span>
           </h1>
           
           {searchResults.length === 0 ? (
