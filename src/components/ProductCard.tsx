@@ -75,6 +75,31 @@ const ProductCard: React.FC<ProductCardProps> = ({
     if (onToggleWishlist) {
       onToggleWishlist();
       
+      // Get the product details
+      const product = {
+        id,
+        name,
+        price,
+        offerPrice,
+        rating,
+        imageUrl,
+        isNew,
+        isBestSeller
+      };
+      
+      // Get current wishlist
+      const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+      const productIndex = wishlist.indexOf(id);
+      
+      // Update allProducts in localStorage for wishlist page
+      const allProducts = JSON.parse(localStorage.getItem('allProducts') || '[]');
+      const existingProduct = allProducts.find((p: any) => p.id === id);
+      
+      if (!existingProduct) {
+        allProducts.push(product);
+        localStorage.setItem('allProducts', JSON.stringify(allProducts));
+      }
+      
       // Dispatch event for wishlist count update
       const event = new CustomEvent('wishlistUpdated');
       window.dispatchEvent(event);

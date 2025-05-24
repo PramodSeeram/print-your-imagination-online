@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from "@/components/Header";
@@ -148,6 +149,9 @@ const Index = () => {
       }
     ];
     
+    // Store all products in localStorage for wishlist/cart to use
+    localStorage.setItem('allProducts', JSON.stringify(mockProducts));
+    
     // Set all products for search functionality
     setAllProducts(mockProducts);
     
@@ -269,6 +273,10 @@ const Index = () => {
     
     setWishlistedIds(currentWishlist);
     localStorage.setItem('wishlist', JSON.stringify(currentWishlist));
+    
+    // Dispatch event for wishlist count update
+    const event = new CustomEvent('wishlistUpdated');
+    window.dispatchEvent(event);
   };
 
   return (

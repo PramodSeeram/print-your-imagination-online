@@ -45,6 +45,20 @@ const SearchResults = () => {
         new Set(results.map((product: Product) => product.category).filter(Boolean))
       );
       setCategoryFilters(uniqueCategories as string[]);
+      
+      // Store results in allProducts for wishlist functionality
+      const allProducts = JSON.parse(localStorage.getItem('allProducts') || '[]');
+      
+      // Merge search results with existing allProducts
+      const mergedProducts = [...allProducts];
+      
+      results.forEach((product: Product) => {
+        if (!mergedProducts.some((p: Product) => p.id === product.id)) {
+          mergedProducts.push(product);
+        }
+      });
+      
+      localStorage.setItem('allProducts', JSON.stringify(mergedProducts));
     }
 
     // Get wishlisted items from localStorage
