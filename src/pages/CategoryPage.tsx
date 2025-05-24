@@ -151,6 +151,18 @@ const CategoryPage = () => {
         setWishlistedIds(JSON.parse(storedWishlist));
       }
     }
+    
+    // Add event listener for wishlist updates
+    const handleWishlistUpdate = () => {
+      const updatedWishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+      setWishlistedIds(updatedWishlist);
+    };
+    
+    window.addEventListener('wishlistUpdated', handleWishlistUpdate);
+    
+    return () => {
+      window.removeEventListener('wishlistUpdated', handleWishlistUpdate);
+    };
   }, [categoryId, subcategoryId]);
 
   const handleAddToCart = (product: any) => {
@@ -208,17 +220,21 @@ const CategoryPage = () => {
     localStorage.setItem('wishlist', JSON.stringify(newWishlist));
     // Update state
     setWishlistedIds(newWishlist);
+    
+    // Dispatch event for wishlist count update
+    const event = new CustomEvent('wishlistUpdated');
+    window.dispatchEvent(event);
   };
 
   // If category not found, show error
   if (!category) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col bg-background">
         <Header />
         <main className="flex-grow flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">Category not found</h1>
-            <p className="mb-6">The category you're looking for doesn't exist.</p>
+            <h1 className="text-2xl font-bold mb-4 text-foreground">Category not found</h1>
+            <p className="mb-6 text-muted-foreground">The category you're looking for doesn't exist.</p>
             <Button onClick={() => navigate('/')}>Return to Home</Button>
           </div>
         </main>
@@ -233,7 +249,7 @@ const CategoryPage = () => {
     : null;
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
       
       <main className="flex-grow pt-6 pb-16">
@@ -257,23 +273,23 @@ const CategoryPage = () => {
           
           {/* Category header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">
+            <h1 className="text-3xl font-bold mb-2 text-foreground">
               {subcategoryId && currentSubcategory ? currentSubcategory.name : category.name}
             </h1>
-            <p className="text-gray-600">{category.description}</p>
+            <p className="text-muted-foreground">{category.description}</p>
           </div>
           
           {/* Subcategory links - only show when on main category page */}
           {!subcategoryId && (
             <div className="mb-8">
-              <h2 className="text-lg font-medium mb-3">Browse Subcategories</h2>
+              <h2 className="text-lg font-medium mb-3 text-foreground">Browse Subcategories</h2>
               <div className="flex flex-wrap gap-2">
                 {category.subcategories.map((subcategory: any) => (
                   <Button 
                     key={subcategory.id}
                     variant="outline"
                     onClick={() => navigate(`/category/${category.id}/subcategory/${subcategory.id}`)}
-                    className="hover:bg-indigo-50"
+                    className="hover:bg-primary/10"
                   >
                     {subcategory.name} ({subcategory.count})
                   </Button>
@@ -286,10 +302,10 @@ const CategoryPage = () => {
           <div>
             {/* Sort controls */}
             <div className="flex justify-between items-center mb-6">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 Showing {products.length} products
               </p>
-              <select className="text-sm border border-gray-300 rounded-md p-2 bg-white">
+              <select className="text-sm border border-border rounded-md p-2 bg-background text-foreground">
                 <option value="latest">Latest</option>
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
@@ -305,9 +321,9 @@ const CategoryPage = () => {
                 wishlistedIds={wishlistedIds}
               />
             ) : (
-              <div className="bg-white rounded-lg shadow-sm p-8 text-center">
-                <h3 className="text-xl font-medium mb-2">No products found</h3>
-                <p className="text-gray-600 mb-4">Try browsing other categories</p>
+              <div className="bg-card rounded-lg shadow-sm p-8 text-center">
+                <h3 className="text-xl font-medium mb-2 text-card-foreground">No products found</h3>
+                <p className="text-muted-foreground mb-4">Try browsing other categories</p>
                 <Button onClick={() => navigate('/')}>Return to Home</Button>
               </div>
             )}

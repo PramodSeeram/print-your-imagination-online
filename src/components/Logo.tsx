@@ -20,16 +20,16 @@ const Logo: React.FC<LogoProps> = ({ withText = true, className = "", size = "md
   return (
     <Link to="/" className={`flex items-center gap-2 ${className}`}>
       <div className={`${sizeClass} relative`}>
-        <img 
-          src="/lovable-uploads/0786e3b8-331c-4a3a-a439-587cc29642cf.png" 
-          alt="AVIRVA Logo" 
-          className="w-full h-full object-contain"
-        />
+        {/* SVG logo inline */}
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+          <path d="M32 8C42 16 42 40 32 48" stroke="#4ECDC4" strokeWidth="6" strokeLinecap="round" />
+          <path d="M32 16C42 24 42 48 32 56" stroke="#8FE388" strokeWidth="6" strokeLinecap="round" />
+        </svg>
       </div>
       {withText && (
-        <div className="font-mont font-bold text-xl md:text-2xl tracking-tight">
-          <span className="text-[#4ECDC4] dark:text-[#4ECDC4]">AVI</span>
-          <span className="text-[#8FE388] dark:text-[#8FE388]">RVA</span>
+        <div className="font-poppins font-bold text-xl md:text-2xl tracking-tight">
+          <span className="text-primary">AVI</span>
+          <span className="text-secondary">RVA</span>
         </div>
       )}
     </Link>

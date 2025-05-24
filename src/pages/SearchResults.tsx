@@ -52,6 +52,18 @@ const SearchResults = () => {
     if (storedWishlist) {
       setWishlistedIds(JSON.parse(storedWishlist));
     }
+    
+    // Listen for wishlist updates
+    const handleWishlistUpdate = () => {
+      const updatedWishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+      setWishlistedIds(updatedWishlist);
+    };
+    
+    window.addEventListener('wishlistUpdated', handleWishlistUpdate);
+    
+    return () => {
+      window.removeEventListener('wishlistUpdated', handleWishlistUpdate);
+    };
   }, [searchQuery]);
 
   const handleFilterByCategory = (category: string) => {
@@ -132,13 +144,13 @@ const SearchResults = () => {
             <div>
               <Button 
                 variant="ghost" 
-                className="mb-2 text-[#4ECDC4] hover:text-[#3DBDB4] hover:bg-[#4ECDC4]/10 -ml-2"
+                className="mb-2 text-primary hover:text-primary/80 hover:bg-primary/10 -ml-2"
                 onClick={() => navigate(-1)}
               >
                 <MoveLeft className="mr-2 h-4 w-4" /> Back
               </Button>
-              <h1 className="text-2xl md:text-3xl font-bold">
-                Search results for: <span className="text-[#4ECDC4]">"{searchQuery}"</span>
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+                Search results for: <span className="text-primary">"{searchQuery}"</span>
               </h1>
             </div>
             
@@ -147,7 +159,7 @@ const SearchResults = () => {
               <div className="flex flex-wrap gap-2 animate-fade-in-up animate-delayed-1">
                 <Button 
                   variant="outline" 
-                  className="bg-[#4ECDC4]/10 hover:bg-[#4ECDC4]/20 border-[#4ECDC4]/30"
+                  className="bg-primary/10 hover:bg-primary/20 border-primary/30"
                   onClick={() => handleFilterByCategory('all')}
                 >
                   All Results
@@ -156,7 +168,7 @@ const SearchResults = () => {
                   <Button 
                     key={category} 
                     variant="outline" 
-                    className="bg-[#4ECDC4]/10 hover:bg-[#4ECDC4]/20 border-[#4ECDC4]/30"
+                    className="bg-primary/10 hover:bg-primary/20 border-primary/30"
                     onClick={() => handleFilterByCategory(category)}
                   >
                     {category}
@@ -169,13 +181,13 @@ const SearchResults = () => {
           {filteredResults.length === 0 ? (
             <div className="bg-card rounded-lg shadow p-8 text-center animate-fade-in-up animate-delayed-1">
               <Search className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <h2 className="text-xl font-medium mb-2">No products found</h2>
+              <h2 className="text-xl font-medium mb-2 text-foreground">No products found</h2>
               <p className="text-muted-foreground">
                 We couldn't find any products matching your search query.
                 Try using different keywords or browsing our categories.
               </p>
               <Button 
-                className="mt-4 bg-[#4ECDC4] hover:bg-[#3DBDB4]" 
+                className="mt-4 bg-primary hover:bg-primary/90" 
                 onClick={() => navigate('/')}
               >
                 Browse Products

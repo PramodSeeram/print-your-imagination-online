@@ -41,6 +41,14 @@ const WishlistPage = () => {
     };
     
     loadWishlist();
+    
+    // Add event listener for wishlist updates
+    window.addEventListener('wishlistUpdated', loadWishlist);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('wishlistUpdated', loadWishlist);
+    };
   }, []);
   
   const handleRemoveFromWishlist = (productId: number) => {
@@ -55,6 +63,10 @@ const WishlistPage = () => {
       title: "Removed from wishlist",
       description: "Product has been removed from your wishlist."
     });
+    
+    // Dispatch event for wishlist count update
+    const event = new CustomEvent('wishlistUpdated');
+    window.dispatchEvent(event);
   };
   
   const handleAddToCart = (product: Product) => {
@@ -82,28 +94,32 @@ const WishlistPage = () => {
       title: "Added to cart",
       description: `${product.name} has been added to your cart.`
     });
+    
+    // Dispatch event for cart update
+    const event = new CustomEvent('cartUpdated');
+    window.dispatchEvent(event);
   };
   
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
       
       <main className="flex-grow pt-8 pb-16">
         <div className="container-avirva">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-bold">My Wishlist</h1>
+            <h1 className="text-2xl font-bold text-foreground">My Wishlist</h1>
           </div>
           
           {wishlistedItems.length === 0 ? (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8 text-center">
-              <Heart className="mx-auto h-16 w-16 text-gray-300 dark:text-gray-600 mb-4" />
-              <h2 className="text-xl font-medium mb-2">Your wishlist is empty</h2>
-              <p className="text-gray-500 dark:text-gray-400 mb-6">
+            <div className="bg-card rounded-lg shadow p-8 text-center">
+              <Heart className="mx-auto h-16 w-16 text-muted mb-4" />
+              <h2 className="text-xl font-medium mb-2 text-foreground">Your wishlist is empty</h2>
+              <p className="text-muted-foreground mb-6">
                 Add items you love to your wishlist. Review them anytime and easily move them to the cart.
               </p>
               <Button 
                 onClick={() => navigate('/')}
-                className="bg-indigo-600 hover:bg-indigo-700"
+                className="bg-primary hover:bg-primary/90"
               >
                 Continue Shopping
               </Button>
@@ -111,7 +127,7 @@ const WishlistPage = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {wishlistedItems.map(product => (
-                <Card key={product.id} className="overflow-hidden hover:shadow-md transition-shadow">
+                <Card key={product.id} className="overflow-hidden hover:shadow-md transition-shadow bg-card text-card-foreground">
                   <div className="aspect-square relative">
                     <img 
                       src={product.imageUrl} 
@@ -120,13 +136,13 @@ const WishlistPage = () => {
                       onClick={() => navigate(`/product/${product.id}`)}
                     />
                     {product.isNew && (
-                      <Badge className="absolute top-2 left-2 bg-blue-500">New</Badge>
+                      <Badge className="absolute top-2 left-2 bg-primary text-primary-foreground">New</Badge>
                     )}
                     {product.isBestSeller && (
-                      <Badge className="absolute top-2 left-[70px] bg-amber-500">Best Seller</Badge>
+                      <Badge className="absolute top-2 left-[70px] bg-secondary text-secondary-foreground">Best Seller</Badge>
                     )}
                     <button 
-                      className="absolute top-2 right-2 p-2 bg-white/80 dark:bg-black/50 rounded-full text-red-500"
+                      className="absolute top-2 right-2 p-2 bg-background/80 dark:bg-background/50 rounded-full text-red-500"
                       onClick={() => handleRemoveFromWishlist(product.id)}
                     >
                       <Trash2 className="h-5 w-5" />
@@ -134,24 +150,24 @@ const WishlistPage = () => {
                   </div>
                   <CardContent className="p-4">
                     <h3 
-                      className="font-medium text-gray-900 dark:text-gray-100 mb-2 cursor-pointer"
+                      className="font-medium text-foreground mb-2 cursor-pointer"
                       onClick={() => navigate(`/product/${product.id}`)}
                     >
                       {product.name}
                     </h3>
-                    <div className="flex items-center gap-2 mb-4">
-                      <span className="font-medium text-gray-900 dark:text-white">₹{product.offerPrice || product.price}</span>
+                    <div className="flex items-center space-x-2 mb-4">
+                      <span className="font-medium text-foreground">₹{product.offerPrice || product.price}</span>
                       {product.offerPrice && (
-                        <span className="text-sm text-gray-400 line-through">₹{product.price}</span>
+                        <span className="text-sm text-muted-foreground line-through">₹{product.price}</span>
                       )}
                       {product.offerPrice && (
-                        <span className="text-xs text-green-600 dark:text-green-400 font-medium">
+                        <span className="text-xs text-green-500 font-medium">
                           {Math.round(((product.price - product.offerPrice) / product.price) * 100)}% off
                         </span>
                       )}
                     </div>
                     <Button 
-                      className="w-full bg-indigo-600 hover:bg-indigo-700 gap-2"
+                      className="w-full bg-primary hover:bg-primary/90 gap-2"
                       onClick={() => handleAddToCart(product)}
                     >
                       <ShoppingCart className="h-4 w-4" />
