@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -38,28 +37,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleIncreaseQuantity = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setQuantity(prev => prev + 1);
-  };
-
-  const handleDecreaseQuantity = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (quantity > 1) {
-      setQuantity(prev => prev - 1);
-    }
-  };
-
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    // Get cart items from localStorage
+  const updateCartInStorage = (newQuantity: number) => {
     const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
     const existingItemIndex = cartItems.findIndex((item: any) => item.id === id);
     
     if (existingItemIndex !== -1) {
-      cartItems[existingItemIndex].quantity += quantity;
+      cartItems[existingItemIndex].quantity = newQuantity;
     } else {
       cartItems.push({
         id,
@@ -70,7 +53,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         imageUrl,
         isNew,
         isBestSeller,
-        quantity
+        quantity: newQuantity
       });
     }
     
@@ -85,17 +68,22 @@ const ProductCard: React.FC<ProductCardProps> = ({
     // Dispatch event to update cart count in header
     const event = new CustomEvent('cartUpdated');
     window.dispatchEvent(event);
-    
-    toast({
-      title: "Added to cart",
-      description: `${name} has been added to your cart.`,
-    });
-    
-    if (onAddToCart) {
-      onAddToCart(quantity);
+  };
+
+  const handleIncreaseQuantity = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newQuantity = quantity + 1;
+    setQuantity(newQuantity);
+    updateCartInStorage(newQuantity);
+  };
+
+  const handleDecreaseQuantity = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (quantity > 1) {
+      const newQuantity = quantity - 1;
+      setQuantity(newQuantity);
+      updateCartInStorage(newQuantity);
     }
-    
-    setShowQuantityControls(true);
   };
 
   const handleInitialAddToCart = (e: React.MouseEvent) => {
@@ -265,30 +253,22 @@ const ProductCard: React.FC<ProductCardProps> = ({
             Add to Cart
           </Button>
         ) : (
-          <div className="flex items-center gap-2">
-            <div className="flex items-center border border-slate-600 rounded-md flex-1">
-              <button 
-                onClick={handleDecreaseQuantity}
-                className="py-2 px-3 text-slate-300 hover:bg-slate-700 rounded-l-md"
-              >
-                <Minus className="h-4 w-4" />
-              </button>
-              <div className="py-2 px-4 bg-slate-700 text-slate-100 font-medium text-center flex-1">
-                {quantity}
-              </div>
-              <button 
-                onClick={handleIncreaseQuantity}
-                className="py-2 px-3 text-slate-300 hover:bg-slate-700 rounded-r-md"
-              >
-                <Plus className="h-4 w-4" />
-              </button>
-            </div>
-            <Button 
-              className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4"
-              onClick={handleAddToCart}
+          <div className="flex items-center border border-slate-600 rounded-md w-full">
+            <button 
+              onClick={handleDecreaseQuantity}
+              className="py-2 px-3 text-slate-300 hover:bg-slate-700 rounded-l-md"
             >
-              Update
-            </Button>
+              <Minus className="h-4 w-4" />
+            </button>
+            <div className="py-2 px-4 bg-slate-700 text-slate-100 font-medium text-center flex-1">
+              {quantity}
+            </div>
+            <button 
+              onClick={handleIncreaseQuantity}
+              className="py-2 px-3 text-slate-300 hover:bg-slate-700 rounded-r-md"
+            >
+              <Plus className="h-4 w-4" />
+            </button>
           </div>
         )}
       </div>
