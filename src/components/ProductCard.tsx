@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Heart, Star, Plus, Minus } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
@@ -35,7 +34,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   isWishlisted = false
 }) => {
   const [quantity, setQuantity] = useState(1);
-  const [popoverOpen, setPopoverOpen] = useState(false);
+  const [showQuantityControls, setShowQuantityControls] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -96,15 +95,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
       onAddToCart(quantity);
     }
     
-    setQuantity(1);
-    setPopoverOpen(false);
+    setShowQuantityControls(true);
   };
 
-  const handleDirectAddToCart = (e: React.MouseEvent) => {
+  const handleInitialAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
-    // Direct add to cart with quantity 1
+    // Add to cart with quantity 1 first
     const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
     const existingItemIndex = cartItems.findIndex((item: any) => item.id === id);
     
@@ -144,6 +142,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
     if (onAddToCart) {
       onAddToCart(1);
     }
+    
+    setShowQuantityControls(true);
   };
 
   const handleToggleWishlist = (e: React.MouseEvent) => {
@@ -257,38 +257,40 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </div>
         </div>
         
-        {/* Single Add to Cart Button */}
-        <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
-          <PopoverTrigger asChild>
-            <Button 
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2"
-              onClick={handleDirectAddToCart}>
-              <span>Add to Cart</span>
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent side="top" className="w-48 p-0 bg-slate-800 text-slate-100 border-slate-700" align="center">
-            <div className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-medium text-sm">Select Quantity</span>
+        {/* Add to Cart Button or Quantity Controls */}
+        {!showQuantityControls ? (
+          <Button 
+            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2"
+            onClick={handleInitialAddToCart}>
+            Add to Cart
+          </Button>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className="flex items-center border border-slate-600 rounded-md flex-1">
+              <button 
+                onClick={handleDecreaseQuantity}
+                className="py-2 px-3 text-slate-300 hover:bg-slate-700 rounded-l-md"
+              >
+                <Minus className="h-4 w-4" />
+              </button>
+              <div className="py-2 px-4 bg-slate-700 text-slate-100 font-medium text-center flex-1">
+                {quantity}
               </div>
-              <div className="flex items-center justify-between border border-slate-600 rounded-md mb-3">
-                <button className="py-2 px-3 text-slate-300 hover:bg-slate-700" onClick={handleDecreaseQuantity}>
-                  <Minus className="h-4 w-4" />
-                </button>
-                <span className="font-medium">{quantity}</span>
-                <button className="py-2 px-3 text-slate-300 hover:bg-slate-700" onClick={handleIncreaseQuantity}>
-                  <Plus className="h-4 w-4" />
-                </button>
-              </div>
-              <div className="text-xs text-slate-400 mb-3 text-center">
-                Total: ₹{(offerPrice || price) * quantity}
-              </div>
-              <Button className="w-full bg-emerald-600 hover:bg-emerald-700" onClick={handleAddToCart}>
-                Add to Cart
-              </Button>
+              <button 
+                onClick={handleIncreaseQuantity}
+                className="py-2 px-3 text-slate-300 hover:bg-slate-700 rounded-r-md"
+              >
+                <Plus className="h-4 w-4" />
+              </button>
             </div>
-          </PopoverContent>
-        </Popover>
+            <Button 
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4"
+              onClick={handleAddToCart}
+            >
+              Update
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
