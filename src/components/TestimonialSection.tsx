@@ -34,15 +34,15 @@ const TESTIMONIALS = [
 
 const TestimonialSection = () => {
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16 bg-slate-900">
       <div className="container-avirva">
-        <h2 className="section-title text-center mb-12">What Our Customers Say</h2>
+        <h2 className="section-title text-center mb-12 text-slate-100">What Our Customers Say</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {TESTIMONIALS.map((testimonial) => (
             <div 
               key={testimonial.id}
-              className="bg-white rounded-lg p-6 shadow-sm"
+              className="bg-slate-800 rounded-lg p-6 shadow-sm border border-slate-700"
             >
               <div className="flex items-center mb-4">
                 <img 
@@ -51,8 +51,8 @@ const TestimonialSection = () => {
                   className="w-12 h-12 rounded-full object-cover mr-4"
                 />
                 <div>
-                  <h4 className="font-medium">{testimonial.name}</h4>
-                  <p className="text-sm text-gray-500">{testimonial.location}</p>
+                  <h4 className="font-medium text-slate-100">{testimonial.name}</h4>
+                  <p className="text-sm text-slate-400">{testimonial.location}</p>
                 </div>
               </div>
               
@@ -60,14 +60,14 @@ const TestimonialSection = () => {
                 {Array.from({ length: 5 }, (_, i) => (
                   <Star 
                     key={i}
-                    className={`h-4 w-4 ${i < testimonial.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
+                    className={`h-4 w-4 ${i < testimonial.rating ? 'text-yellow-400 fill-yellow-400' : 'text-slate-600'}`}
                   />
                 ))}
               </div>
               
-              <p className="text-gray-600 mb-4">{testimonial.text}</p>
+              <p className="text-slate-300 mb-4">{testimonial.text}</p>
               
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-slate-400">
                 Purchased: {testimonial.productOrdered}
               </div>
             </div>

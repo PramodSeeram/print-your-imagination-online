@@ -280,22 +280,22 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-slate-900">
       <Header />
       
-      <main className="flex-grow bg-background">
+      <main className="flex-grow bg-slate-900">
         <HeroBanner />
         
         <div className="container-avirva py-6">
           {/* Loyalty Points Card */}
-          <div className="mb-8 bg-gradient-to-r from-[#4ECDC4] to-[#8FE388] rounded-lg p-5 text-background shadow-lg animate-fade-in-up">
+          <div className="mb-8 bg-gradient-to-r from-emerald-600 to-emerald-500 rounded-lg p-5 text-white shadow-lg animate-fade-in-up">
             <div className="flex justify-between items-center">
               <div>
                 <h3 className="text-xl font-bold">Your Loyalty Points</h3>
                 <p className="text-sm opacity-90 mb-2">Collect points with every purchase</p>
                 <div className="text-3xl font-bold animate-pulse-slow">{loyaltyPoints} points</div>
               </div>
-              <Button className="bg-white/90 hover:bg-white text-[#4ECDC4] hover:scale-105 transition-transform shadow-md">
+              <Button className="bg-white/90 hover:bg-white text-emerald-600 hover:scale-105 transition-transform shadow-md">
                 View Rewards
               </Button>
             </div>
@@ -305,8 +305,8 @@ const Index = () => {
           {recentlyViewedProducts.length > 0 && (
             <div className="mb-8 animate-fade-in-up animate-delayed-1">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold">Pick up where you left off</h2>
-                <Button variant="link" className="text-[#4ECDC4]" onClick={() => navigate('/account')}>
+                <h2 className="text-xl font-bold text-slate-100">Pick up where you left off</h2>
+                <Button variant="link" className="text-emerald-400 hover:text-emerald-300" onClick={() => navigate('/account')}>
                   See more <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
               </div>
@@ -314,7 +314,7 @@ const Index = () => {
                 {recentlyViewedProducts.slice(0, 5).map((product, index) => (
                   <Card 
                     key={product.id} 
-                    className="cursor-pointer hover:shadow-md transition-shadow bg-card border-border/50 hover:border-[#4ECDC4]/30 overflow-hidden animate-fade-in-up" 
+                    className="cursor-pointer hover:shadow-md transition-shadow bg-slate-800 border-slate-700 hover:border-emerald-400/30 overflow-hidden animate-fade-in-up" 
                     style={{ animationDelay: `${index * 0.1}s` }}
                     onClick={() => navigate(`/product/${product.id}`)}
                   >
@@ -326,7 +326,7 @@ const Index = () => {
                           className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
                         />
                       </div>
-                      <h3 className="text-sm font-medium line-clamp-2">{product.name}</h3>
+                      <h3 className="text-sm font-medium line-clamp-2 text-slate-100">{product.name}</h3>
                     </CardContent>
                   </Card>
                 ))}
@@ -338,8 +338,8 @@ const Index = () => {
           {browsingHistory.length > 0 && (
             <div className="mb-8 animate-fade-in-up animate-delayed-2">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold">Keep shopping for</h2>
-                <Button variant="link" className="text-[#4ECDC4]">
+                <h2 className="text-xl font-bold text-slate-100">Keep shopping for</h2>
+                <Button variant="link" className="text-emerald-400 hover:text-emerald-300">
                   View your browsing history <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
               </div>
@@ -347,11 +347,11 @@ const Index = () => {
                 {browsingHistory.map((category, index) => (
                   <Card 
                     key={index} 
-                    className="overflow-hidden bg-card border-border/50 hover:border-[#4ECDC4]/30 animate-fade-in-up" 
+                    className="overflow-hidden bg-slate-800 border-slate-700 hover:border-emerald-400/30 animate-fade-in-up" 
                     style={{ animationDelay: `${index * 0.15 + 0.3}s` }}
                   >
                     <CardContent className="p-4">
-                      <h3 className="font-medium mb-2 text-[#4ECDC4]">{category.category}</h3>
+                      <h3 className="font-medium mb-2 text-emerald-400">{category.category}</h3>
                       <div className="grid grid-cols-2 gap-2">
                         {category.items.map(item => (
                           <div 
@@ -359,14 +359,14 @@ const Index = () => {
                             className="cursor-pointer group"
                             onClick={() => navigate(`/product/${item.id}`)}
                           >
-                            <div className="aspect-square bg-muted mb-1 rounded overflow-hidden">
+                            <div className="aspect-square bg-slate-700 mb-1 rounded overflow-hidden">
                               <img 
                                 src={item.imageUrl} 
                                 alt={item.name} 
                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                               />
                             </div>
-                            <p className="text-xs text-muted-foreground">{category.items.length} viewed</p>
+                            <p className="text-xs text-slate-400">{category.items.length} viewed</p>
                           </div>
                         ))}
                       </div>

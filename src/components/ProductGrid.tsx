@@ -84,10 +84,10 @@ const ProductGrid: React.FC<ProductGridProps> = ({
     <div className="py-8">
       {title && (
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl md:text-2xl font-bold">{title}</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-slate-100">{title}</h2>
           <Button 
             variant="link" 
-            className="text-[#5D3FD3] flex items-center"
+            className="text-emerald-400 hover:text-emerald-300 flex items-center"
             onClick={() => navigate(`/category/${title.toLowerCase().replace(/\s+/g, '-')}`)}
           >
             View all <ChevronRight className="h-4 w-4 ml-1" />

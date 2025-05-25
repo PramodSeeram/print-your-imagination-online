@@ -89,7 +89,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     
     toast({
       title: "Added to cart",
-      description: `${name} has been added to your cart.`
+      description: `${name} has been added to your cart.`,
     });
     
     if (onAddToCart) {
@@ -98,6 +98,52 @@ const ProductCard: React.FC<ProductCardProps> = ({
     
     setQuantity(1);
     setPopoverOpen(false);
+  };
+
+  const handleDirectAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Direct add to cart with quantity 1
+    const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+    const existingItemIndex = cartItems.findIndex((item: any) => item.id === id);
+    
+    if (existingItemIndex !== -1) {
+      cartItems[existingItemIndex].quantity += 1;
+    } else {
+      cartItems.push({
+        id,
+        name,
+        price,
+        offerPrice,
+        rating,
+        imageUrl,
+        isNew,
+        isBestSeller,
+        quantity: 1
+      });
+    }
+    
+    // Calculate cart total
+    const total = cartItems.reduce((sum: number, item: any) => 
+      sum + ((item.offerPrice || item.price) * item.quantity), 0
+    );
+    
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    localStorage.setItem('cartTotal', total.toString());
+    
+    // Dispatch event to update cart count in header
+    const event = new CustomEvent('cartUpdated');
+    window.dispatchEvent(event);
+    
+    toast({
+      title: "Added to cart",
+      description: `${name} has been added to your cart.`,
+    });
+    
+    if (onAddToCart) {
+      onAddToCart(1);
+    }
   };
 
   const handleToggleWishlist = (e: React.MouseEvent) => {
@@ -216,10 +262,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <PopoverTrigger asChild>
             <Button 
               className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}>
+              onClick={handleDirectAddToCart}>
               <span>Add to Cart</span>
             </Button>
           </PopoverTrigger>
