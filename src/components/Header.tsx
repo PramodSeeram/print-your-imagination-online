@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
@@ -9,16 +10,10 @@ import {
   Package,
   ChevronDown,
   ChevronRight,
-  MessageSquare
+  MessageSquare,
+  Search
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
@@ -81,6 +76,7 @@ const Header = () => {
   const [cartCount, setCartCount] = useState<number>(0);
   const [wishlistCount, setWishlistCount] = useState<number>(0);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [showSearchDialog, setShowSearchDialog] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -136,72 +132,85 @@ const Header = () => {
             </div>
           </Link>
           
-          {/* Navigation - Desktop */}
+          {/* Navigation - Desktop with Hover Effects */}
           <nav className="hidden lg:flex items-center space-x-8">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center space-x-1 text-stone-600 hover:text-stone-900 font-medium">
-                  <span>Home</span>
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-64 bg-white border-stone-200">
-                <Link to="/">
-                  <DropdownMenuItem className="text-stone-600 hover:bg-stone-50">
+            {/* Home with Hover Menu */}
+            <div className="relative group">
+              <Link 
+                to="/" 
+                className="text-stone-600 hover:text-stone-900 font-medium py-2 transition-colors duration-200"
+              >
+                Home
+              </Link>
+              <div className="absolute top-full left-0 w-48 bg-white border border-stone-200 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div className="py-2">
+                  <Link to="/" className="block px-4 py-2 text-stone-600 hover:bg-stone-50 hover:text-stone-900">
                     Homepage
-                  </DropdownMenuItem>
-                </Link>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  </Link>
+                </div>
+              </div>
+            </div>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center space-x-1 text-stone-600 hover:text-stone-900 font-medium">
-                  <span>Shop</span>
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-64 bg-white border-stone-200">
-                {CATEGORIES.map(category => (
-                  <DropdownMenu key={category.id}>
-                    <DropdownMenuTrigger className="w-full flex justify-between items-center px-4 py-2 hover:bg-stone-50 cursor-pointer text-stone-600">
-                      <span>{category.name}</span>
-                      <ChevronRight className="h-4 w-4" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent side="right" className="bg-white border-stone-200">
-                      <Link to={`/category/${category.id}`}>
-                        <DropdownMenuItem className="font-medium text-stone-600 hover:bg-stone-50">
-                          All {category.name}
-                        </DropdownMenuItem>
-                      </Link>
-                      <DropdownMenuSeparator className="bg-stone-200" />
-                      {category.subcategories.map(subcategory => (
-                        <Link 
-                          key={subcategory.id} 
-                          to={`/category/${category.id}/subcategory/${subcategory.id}`}
-                        >
-                          <DropdownMenuItem className="text-stone-600 hover:bg-stone-50">{subcategory.name}</DropdownMenuItem>
-                        </Link>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {/* Shop with Hover Menu */}
+            <div className="relative group">
+              <span className="text-stone-600 hover:text-stone-900 font-medium py-2 cursor-pointer transition-colors duration-200">
+                Shop
+              </span>
+              <div className="absolute top-full left-0 w-64 bg-white border border-stone-200 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div className="py-2">
+                  {CATEGORIES.map(category => (
+                    <div key={category.id} className="relative group/sub">
+                      <div className="flex justify-between items-center px-4 py-2 hover:bg-stone-50 cursor-pointer text-stone-600">
+                        <span>{category.name}</span>
+                        <ChevronRight className="h-4 w-4" />
+                      </div>
+                      <div className="absolute left-full top-0 w-48 bg-white border border-stone-200 rounded-md shadow-lg opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all duration-200">
+                        <div className="py-2">
+                          <Link to={`/category/${category.id}`} className="block px-4 py-2 font-medium text-stone-600 hover:bg-stone-50">
+                            All {category.name}
+                          </Link>
+                          <div className="border-t border-stone-200 my-1"></div>
+                          {category.subcategories.map(subcategory => (
+                            <Link 
+                              key={subcategory.id} 
+                              to={`/category/${category.id}/subcategory/${subcategory.id}`}
+                              className="block px-4 py-2 text-stone-600 hover:bg-stone-50"
+                            >
+                              {subcategory.name}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
 
-            <Button variant="ghost" className="text-stone-600 hover:text-stone-900 font-medium">Product</Button>
-            <Button variant="ghost" className="text-stone-600 hover:text-stone-900 font-medium">Blog</Button>
-            <Button variant="ghost" className="text-stone-600 hover:text-stone-900 font-medium">Featured</Button>
+            {/* Product with Hover Menu */}
+            <div className="relative group">
+              <span className="text-stone-600 hover:text-stone-900 font-medium py-2 cursor-pointer transition-colors duration-200">
+                Product
+              </span>
+              <div className="absolute top-full left-0 w-48 bg-white border border-stone-200 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div className="py-2">
+                  <Link to="/products" className="block px-4 py-2 text-stone-600 hover:bg-stone-50 hover:text-stone-900">
+                    All Products
+                  </Link>
+                  <Link to="/new-arrivals" className="block px-4 py-2 text-stone-600 hover:bg-stone-50 hover:text-stone-900">
+                    New Arrivals
+                  </Link>
+                  <Link to="/bestsellers" className="block px-4 py-2 text-stone-600 hover:bg-stone-50 hover:text-stone-900">
+                    Best Sellers
+                  </Link>
+                </div>
+              </div>
+            </div>
           </nav>
           
-          {/* Search - Hidden on mobile */}
-          <div className="hidden md:block relative flex-1 max-w-md mx-8">
-            <SearchBar allProducts={PRODUCTS} className="w-full" />
-          </div>
-          
-          {/* Icons */}
+          {/* Right Side - Search, Language, Cart, Profile */}
           <div className="flex items-center space-x-4">
-            {/* Language & Currency */}
+            {/* Language & Currency - Desktop Only */}
             <div className="hidden lg:flex items-center space-x-4 text-sm">
               <div className="flex items-center space-x-1">
                 <img src="https://flagcdn.com/16x12/us.png" alt="USD" className="w-4 h-3" />
@@ -214,18 +223,16 @@ const Header = () => {
               </div>
             </div>
 
-            {/* Search icon for mobile */}
-            <Dialog>
+            {/* Search Icon */}
+            <Dialog open={showSearchDialog} onOpenChange={setShowSearchDialog}>
               <DialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden text-stone-600">
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
+                <Button variant="ghost" size="icon" className="text-stone-600 hover:text-stone-900">
+                  <Search className="h-5 w-5" />
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-md bg-white border-stone-200">
+              <DialogContent className="sm:max-w-2xl bg-white border-stone-200">
                 <DialogHeader>
-                  <DialogTitle className="text-stone-900">Search products</DialogTitle>
+                  <DialogTitle className="text-stone-900 font-playfair">Search products</DialogTitle>
                   <DialogDescription className="text-stone-600">
                     Find the perfect product for your needs.
                   </DialogDescription>
@@ -235,7 +242,7 @@ const Header = () => {
             </Dialog>
             
             {/* Wishlist */}
-            <Link to="/wishlist" className="relative hidden sm:flex">
+            <Link to="/wishlist" className="relative">
               <Button variant="ghost" size="icon" className="text-stone-600 hover:text-stone-900">
                 <Heart className="h-5 w-5" />
                 {wishlistCount > 0 && (
@@ -247,7 +254,7 @@ const Header = () => {
             </Link>
             
             {/* Cart */}
-            <Link to="/cart" className="relative hidden sm:flex">
+            <Link to="/cart" className="relative">
               <Button variant="ghost" size="icon" className="text-stone-600 hover:text-stone-900">
                 <ShoppingCart className="h-5 w-5" />
                 {cartCount > 0 && (
@@ -262,7 +269,7 @@ const Header = () => {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="relative hidden sm:flex text-stone-600 hover:text-stone-900"
+              className="relative text-stone-600 hover:text-stone-900"
               onClick={() => navigate('/account')}
             >
               {isLoggedIn ? (
@@ -285,11 +292,6 @@ const Header = () => {
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
           </div>
-        </div>
-        
-        {/* Mobile Search */}
-        <div className="mt-4 mb-2 md:hidden">
-          <SearchBar allProducts={PRODUCTS} className="w-full" />
         </div>
       </div>
       
@@ -381,12 +383,6 @@ const Header = () => {
                 </li>
                 <li>
                   <div className="text-stone-900 font-medium py-2 text-lg">Product</div>
-                </li>
-                <li>
-                  <div className="text-stone-900 font-medium py-2 text-lg">Blog</div>
-                </li>
-                <li>
-                  <div className="text-stone-900 font-medium py-2 text-lg">Featured</div>
                 </li>
               </ul>
               

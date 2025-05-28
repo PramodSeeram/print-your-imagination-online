@@ -183,7 +183,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   return (
-    <div className="group bg-slate-800 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow border border-slate-700">
+    <div className="group bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow border border-stone-100">
       <ProductImage
         imageUrl={imageUrl}
         name={name}
