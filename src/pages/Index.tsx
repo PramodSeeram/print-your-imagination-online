@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from "@/components/Header";
@@ -289,17 +290,17 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-stone-50">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
       
       {/* Newsletter Popup */}
       {showNewsletterPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="newsletter-popup relative">
+          <div className="bg-white rounded-2xl p-8 max-w-2xl mx-auto shadow-2xl border border-gray-200 relative">
             <Button
               variant="ghost"
               size="icon"
-              className="absolute right-4 top-4 text-stone-400 hover:text-stone-600"
+              className="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
               onClick={() => setShowNewsletterPopup(false)}
             >
               <X className="h-5 w-5" />
@@ -307,20 +308,20 @@ const Index = () => {
             
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div>
-                <h2 className="font-playfair text-3xl font-medium mb-4 text-stone-900">
+                <h2 className="font-playfair text-3xl font-medium mb-4 text-black">
                   Join the our family
                 </h2>
-                <p className="text-stone-600 mb-6 leading-relaxed">
+                <p className="text-gray-600 mb-6 leading-relaxed">
                   Sign up for our newsletter and receive updates you're looking for: interior 
                   inspiration, the latest trends and discounts
                 </p>
-                <div className="flex">
+                <div className="flex rounded-full border border-gray-300 overflow-hidden">
                   <input
                     type="email"
                     placeholder="Email address......"
-                    className="flex-1 px-4 py-3 border border-stone-300 rounded-l-full focus:outline-none focus:border-stone-500"
+                    className="flex-1 px-4 py-3 focus:outline-none bg-white text-black placeholder-gray-500"
                   />
-                  <Button className="bg-stone-900 hover:bg-stone-800 text-white px-8 rounded-r-full">
+                  <Button className="bg-black hover:bg-gray-800 text-white px-8 rounded-none">
                     Send
                   </Button>
                 </div>
@@ -337,7 +338,7 @@ const Index = () => {
         </div>
       )}
       
-      <main className="flex-grow bg-stone-50">
+      <main className="flex-grow bg-white">
         {/* Hero Section */}
         <section className="relative h-[600px] overflow-hidden">
           <img 
@@ -348,12 +349,12 @@ const Index = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-white/80 to-transparent">
             <div className="container-avirva h-full flex items-center">
               <div className="max-w-2xl">
-                <p className="text-sm uppercase tracking-wider text-stone-600 mb-4">ADORN YOUR SPACE</p>
-                <h1 className="font-playfair text-5xl md:text-6xl font-medium text-stone-900 mb-6 leading-tight">
+                <p className="text-sm uppercase tracking-wider text-gray-600 mb-4">ADORN YOUR SPACE</p>
+                <h1 className="font-playfair text-5xl md:text-6xl font-medium text-black mb-6 leading-tight">
                   Elevating Your<br />
                   Lifestyle through Exquisite
                 </h1>
-                <Button className="bg-stone-900 hover:bg-stone-800 text-white px-8 py-3 rounded-full text-lg">
+                <Button className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-full text-lg">
                   Shop Now
                 </Button>
               </div>
@@ -366,7 +367,7 @@ const Index = () => {
           <section className="mb-20">
             <div className="text-center mb-12">
               <h2 className="section-title">Our Categories</h2>
-              <p className="text-stone-600 max-w-2xl mx-auto">
+              <p className="text-gray-600 max-w-2xl mx-auto">
                 From home to contract, get inspired and design!
               </p>
             </div>
@@ -379,7 +380,7 @@ const Index = () => {
                 { name: "Lamp", image: "https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?auto=format&fit=crop&w=400&q=80" },
                 { name: "Table", image: "https://images.unsplash.com/photo-1549497538-303791108f95?auto=format&fit=crop&w=400&q=80" }
               ].map((category) => (
-                <Card key={category.name} className="group cursor-pointer overflow-hidden border-0 shadow-sm hover:shadow-lg transition-all duration-300">
+                <Card key={category.name} className="group cursor-pointer overflow-hidden border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 bg-white">
                   <CardContent className="p-0">
                     <div className="aspect-square overflow-hidden">
                       <img 
@@ -389,7 +390,7 @@ const Index = () => {
                       />
                     </div>
                     <div className="p-4">
-                      <h3 className="font-medium text-stone-900">{category.name}</h3>
+                      <h3 className="font-medium text-black">{category.name}</h3>
                     </div>
                   </CardContent>
                 </Card>
@@ -400,7 +401,7 @@ const Index = () => {
           {/* Featured Collections */}
           <section className="mb-20">
             <div className="grid md:grid-cols-2 gap-8">
-              <Card className="relative overflow-hidden h-80 border-0 shadow-sm">
+              <Card className="relative overflow-hidden h-80 border border-gray-200 shadow-sm bg-white">
                 <img 
                   src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80"
                   alt="Elevate Your Space"
@@ -409,7 +410,7 @@ const Index = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
                   <div className="text-white">
                     <h3 className="font-playfair text-2xl font-medium mb-2">Elevate Your Space</h3>
-                    <Button className="bg-white text-stone-900 hover:bg-stone-100 rounded-full px-6">
+                    <Button className="bg-white text-black hover:bg-gray-100 rounded-full px-6">
                       Shop Now
                     </Button>
                   </div>
@@ -417,7 +418,7 @@ const Index = () => {
               </Card>
               
               <div className="space-y-6">
-                <Card className="relative overflow-hidden h-36 border-0 shadow-sm">
+                <Card className="relative overflow-hidden h-36 border border-gray-200 shadow-sm bg-white">
                   <img 
                     src="https://images.unsplash.com/photo-1549497538-303791108f95?auto=format&fit=crop&w=800&q=80"
                     alt="Harmony in Design"
@@ -426,14 +427,14 @@ const Index = () => {
                   <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center p-6">
                     <div className="text-white">
                       <h3 className="font-playfair text-xl font-medium mb-2">Harmony in Design</h3>
-                      <Button className="bg-white text-stone-900 hover:bg-stone-100 rounded-full px-4 py-1 text-sm">
+                      <Button className="bg-white text-black hover:bg-gray-100 rounded-full px-4 py-1 text-sm">
                         Shop Now
                       </Button>
                     </div>
                   </div>
                 </Card>
                 
-                <Card className="relative overflow-hidden h-36 border-0 shadow-sm">
+                <Card className="relative overflow-hidden h-36 border border-gray-200 shadow-sm bg-white">
                   <img 
                     src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?auto=format&fit=crop&w=800&q=80"
                     alt="Curated Living"
@@ -442,7 +443,7 @@ const Index = () => {
                   <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center p-6">
                     <div className="text-white">
                       <h3 className="font-playfair text-xl font-medium mb-2">Curated Living</h3>
-                      <Button className="bg-white text-stone-900 hover:bg-stone-100 rounded-full px-4 py-1 text-sm">
+                      <Button className="bg-white text-black hover:bg-gray-100 rounded-full px-4 py-1 text-sm">
                         Shop Now
                       </Button>
                     </div>
@@ -456,10 +457,10 @@ const Index = () => {
           <section className="mb-20">
             <div className="flex justify-between items-center mb-8">
               <div>
-                <h2 className="font-playfair text-2xl font-medium text-stone-900">Bestseller</h2>
-                <p className="text-stone-600">Experience featured products at our store</p>
+                <h2 className="font-playfair text-2xl font-medium text-black">Bestseller</h2>
+                <p className="text-gray-600">Experience featured products at our store</p>
               </div>
-              <Button variant="link" className="text-stone-600 hover:text-stone-900">
+              <Button variant="link" className="text-gray-600 hover:text-black">
                 View All <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             </div>

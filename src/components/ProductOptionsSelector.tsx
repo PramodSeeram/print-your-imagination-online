@@ -1,55 +1,62 @@
 
 import React from 'react';
 
-interface Option {
-  label: string;
-  value: string;
-  available: boolean;
-}
-
 interface ProductOptionsSelectorProps {
-  title: string;
-  options: Option[];
-  selectedValue: string;
-  onSelect: (value: string) => void;
-  type: 'color' | 'material' | 'size';
+  onSizeSelect?: (size: string) => void;
+  onColorSelect?: (color: string) => void;
+  selectedSize?: string;
+  selectedColor?: string;
 }
 
 const ProductOptionsSelector: React.FC<ProductOptionsSelectorProps> = ({
-  title,
-  options,
-  selectedValue,
-  onSelect,
-  type
+  onSizeSelect,
+  onColorSelect,
+  selectedSize,
+  selectedColor
 }) => {
+  const sizes = ['S', 'M', 'L', 'XL'];
+  const colors = ['Black', 'White', 'Gray', 'Brown'];
+
   return (
-    <div className="space-y-3">
-      <h3 className="text-sm font-medium text-black">{title}:</h3>
-      <div className="flex flex-wrap gap-2">
-        {options.map((option) => (
-          <button
-            key={option.value}
-            onClick={() => option.available && onSelect(option.value)}
-            disabled={!option.available}
-            className={`
-              relative px-4 py-2 text-sm font-medium rounded-md border transition-all duration-200
-              ${
-                selectedValue === option.value
-                  ? 'border-black bg-black text-white'
-                  : option.available
-                  ? 'border-gray-300 bg-white text-black hover:border-gray-400'
-                  : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
-              }
-            `}
-          >
-            {option.label}
-            {!option.available && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-full h-0.5 bg-gray-400 rotate-45 transform" />
-              </div>
-            )}
-          </button>
-        ))}
+    <div className="space-y-4">
+      {/* Size Selection */}
+      <div>
+        <h4 className="text-sm font-medium text-black mb-2">Size</h4>
+        <div className="flex gap-2">
+          {sizes.map((size) => (
+            <button
+              key={size}
+              onClick={() => onSizeSelect?.(size)}
+              className={`w-10 h-10 border border-gray-300 rounded text-sm font-medium transition-colors ${
+                selectedSize === size
+                  ? 'bg-black text-white border-black'
+                  : 'bg-white text-black hover:border-black'
+              }`}
+            >
+              {size}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Color Selection */}
+      <div>
+        <h4 className="text-sm font-medium text-black mb-2">Color</h4>
+        <div className="flex gap-2">
+          {colors.map((color) => (
+            <button
+              key={color}
+              onClick={() => onColorSelect?.(color)}
+              className={`px-3 py-1 border border-gray-300 rounded text-xs font-medium transition-colors ${
+                selectedColor === color
+                  ? 'bg-black text-white border-black'
+                  : 'bg-white text-black hover:border-black'
+              }`}
+            >
+              {color}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

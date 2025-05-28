@@ -154,6 +154,19 @@
   .newsletter-popup {
     @apply bg-white rounded-2xl p-8 max-w-2xl mx-auto shadow-2xl border border-gray-200;
   }
+
+  /* Ensure all pages use consistent colors */
+  .page-container {
+    @apply bg-white text-black min-h-screen;
+  }
+
+  .admin-sidebar {
+    @apply bg-gray-50 border-r border-gray-200;
+  }
+
+  .admin-content {
+    @apply bg-white;
+  }
 }
 
 /* Custom animations */
