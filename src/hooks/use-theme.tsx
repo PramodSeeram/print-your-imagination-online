@@ -1,7 +1,7 @@
 
 import { createContext, useContext } from "react";
 
-type Theme = "dark";
+type Theme = "light";
 
 type ThemeProviderProps = {
   children: React.ReactNode;
@@ -13,7 +13,7 @@ type ThemeProviderState = {
 };
 
 const initialState: ThemeProviderState = {
-  theme: "dark",
+  theme: "light",
   setTheme: () => null,
 };
 
@@ -23,17 +23,17 @@ export function ThemeProvider({
   children,
   ...props
 }: ThemeProviderProps) {
-  // Always use dark theme
-  const theme: Theme = "dark";
+  // Always use light theme
+  const theme: Theme = "light";
   
-  // Apply dark class to document root
+  // Remove dark class from document root
   if (typeof window !== "undefined") {
-    document.documentElement.classList.add("dark");
+    document.documentElement.classList.remove("dark");
   }
 
   const value = {
     theme,
-    setTheme: () => {}, // No-op since we only use dark theme
+    setTheme: () => {}, // No-op since we only use light theme
   };
 
   return (

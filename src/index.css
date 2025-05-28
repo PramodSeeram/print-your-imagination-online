@@ -1,5 +1,5 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,65 +7,35 @@
 
 @layer base {
   :root {
-    --background: 196 69% 14%;
-    --foreground: 177 54% 90%;
-
-    --card: 196 69% 18%;
-    --card-foreground: 177 54% 90%;
-
-    --popover: 196 69% 18%;
-    --popover-foreground: 177 54% 90%;
-
-    --primary: 174 60% 55%;
-    --primary-foreground: 196 69% 10%;
-
-    --secondary: 142 69% 58%;
-    --secondary-foreground: 196 69% 10%;
-
-    --muted: 196 69% 25%;
-    --muted-foreground: 177 30% 70%;
-
-    --accent: 174 60% 55%;
-    --accent-foreground: 196 69% 10%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 177 54% 90%;
-
-    --border: 196 69% 25%;
-    --input: 196 69% 25%;
-    --ring: 174 60% 55%;
-
-    --radius: 0.5rem;
-  }
-
-  .light {
-    --background: 196 30% 95%;
-    --foreground: 196 69% 10%;
+    --background: 0 0% 98%;
+    --foreground: 0 0% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 196 69% 10%;
+    --card-foreground: 0 0% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 196 69% 10%;
+    --popover-foreground: 0 0% 15%;
 
-    --primary: 174 60% 45%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 0 0% 15%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 142 69% 58%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 30 15% 92%;
+    --secondary-foreground: 0 0% 15%;
 
-    --muted: 196 30% 90%;
-    --muted-foreground: 196 30% 40%;
+    --muted: 30 15% 95%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 174 60% 45%;
-    --accent-foreground: 196 69% 10%;
+    --accent: 30 15% 92%;
+    --accent-foreground: 0 0% 15%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 196 30% 85%;
-    --input: 196 30% 85%;
-    --ring: 174 60% 45%;
+    --border: 30 15% 88%;
+    --input: 30 15% 88%;
+    --ring: 0 0% 15%;
+
+    --radius: 0.5rem;
   }
 }
 
@@ -75,54 +45,54 @@
   }
 
   body {
-    @apply bg-background text-foreground font-poppins;
+    @apply bg-background text-foreground font-inter;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-poppins font-semibold;
+    @apply font-playfair font-medium;
   }
 }
 
-/* Custom classes for AVIRVA */
+/* Custom classes for elegant design */
 @layer components {
   .container-avirva {
     @apply w-full max-w-[1400px] mx-auto px-4 md:px-6;
   }
   
   .btn-primary {
-    @apply bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-2.5 px-5 rounded transition-colors;
+    @apply bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-3 px-8 rounded-full transition-all duration-300 hover:scale-105;
   }
   
   .btn-secondary {
-    @apply bg-secondary hover:bg-secondary/90 text-secondary-foreground font-medium py-2.5 px-5 rounded transition-colors;
+    @apply bg-secondary hover:bg-secondary/90 text-secondary-foreground font-medium py-3 px-8 rounded-full transition-all duration-300 hover:scale-105;
   }
   
   .btn-accent {
-    @apply bg-accent hover:bg-accent/90 text-accent-foreground font-medium py-2.5 px-5 rounded transition-colors;
+    @apply bg-accent hover:bg-accent/90 text-accent-foreground font-medium py-3 px-8 rounded-full transition-all duration-300 hover:scale-105;
   }
 
   .badge {
-    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-medium;
   }
 
   .badge-primary {
-    @apply badge bg-primary/20 text-primary dark:bg-primary/30 dark:text-primary;
+    @apply badge bg-primary/10 text-primary border border-primary/20;
   }
 
   .badge-secondary {
-    @apply badge bg-secondary/20 text-secondary dark:bg-secondary/30 dark:text-secondary;
+    @apply badge bg-secondary/50 text-secondary-foreground border border-secondary;
   }
 
   .badge-accent {
-    @apply badge bg-accent/20 text-accent dark:bg-accent/30 dark:text-accent;
+    @apply badge bg-accent/50 text-accent-foreground border border-accent;
   }
 
   .section-title {
-    @apply text-2xl md:text-3xl font-bold mb-6 text-foreground;
+    @apply text-3xl md:text-4xl font-playfair font-medium mb-8 text-foreground;
   }
 
   .card-hover {
-    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-2;
   }
   
   /* Animation classes */
@@ -164,7 +134,7 @@
   .hover-glow {
     @apply transition-all duration-300;
     &:hover {
-      box-shadow: 0 0 15px theme('colors.primary.DEFAULT');
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     }
   }
 
@@ -174,6 +144,15 @@
 
   .animate-rotate-slow {
     animation: rotate 10s linear infinite;
+  }
+
+  /* Elegant product card styles */
+  .product-card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
+
+  .newsletter-popup {
+    @apply bg-white rounded-2xl p-8 max-w-2xl mx-auto shadow-2xl;
   }
 }
 

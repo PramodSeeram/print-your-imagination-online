@@ -3,39 +3,39 @@ import { Truck, Shield, RefreshCcw, Clock } from 'lucide-react';
 
 const FeaturesSection = () => {
   return (
-    <section className="py-12 bg-slate-900">
+    <section className="py-16 bg-white">
       <div className="container-avirva">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div className="bg-slate-800 p-6 rounded-lg shadow-sm flex flex-col items-center text-center border border-slate-700">
-            <div className="bg-emerald-600/20 p-3 rounded-full mb-4">
-              <Truck className="h-6 w-6 text-emerald-400" />
+          <div className="bg-stone-50 p-8 rounded-lg flex flex-col items-center text-center border border-stone-100 hover:shadow-lg transition-all duration-300">
+            <div className="bg-stone-900 p-4 rounded-full mb-6">
+              <Truck className="h-6 w-6 text-white" />
             </div>
-            <h3 className="font-medium text-lg mb-2 text-slate-100">Free Shipping</h3>
-            <p className="text-slate-300">Free delivery on all orders above ₹599</p>
+            <h3 className="font-playfair font-medium text-xl mb-3 text-stone-900">Free Shipping</h3>
+            <p className="text-stone-600">Free delivery on all orders above ₹599</p>
           </div>
           
-          <div className="bg-slate-800 p-6 rounded-lg shadow-sm flex flex-col items-center text-center border border-slate-700">
-            <div className="bg-emerald-600/20 p-3 rounded-full mb-4">
-              <Shield className="h-6 w-6 text-emerald-400" />
+          <div className="bg-stone-50 p-8 rounded-lg flex flex-col items-center text-center border border-stone-100 hover:shadow-lg transition-all duration-300">
+            <div className="bg-stone-900 p-4 rounded-full mb-6">
+              <Shield className="h-6 w-6 text-white" />
             </div>
-            <h3 className="font-medium text-lg mb-2 text-slate-100">7-Day Guarantee</h3>
-            <p className="text-slate-300">Not satisfied? Get your money back or a reprint</p>
+            <h3 className="font-playfair font-medium text-xl mb-3 text-stone-900">7-Day Guarantee</h3>
+            <p className="text-stone-600">Not satisfied? Get your money back or a reprint</p>
           </div>
           
-          <div className="bg-slate-800 p-6 rounded-lg shadow-sm flex flex-col items-center text-center border border-slate-700">
-            <div className="bg-emerald-600/20 p-3 rounded-full mb-4">
-              <RefreshCcw className="h-6 w-6 text-emerald-400" />
+          <div className="bg-stone-50 p-8 rounded-lg flex flex-col items-center text-center border border-stone-100 hover:shadow-lg transition-all duration-300">
+            <div className="bg-stone-900 p-4 rounded-full mb-6">
+              <RefreshCcw className="h-6 w-6 text-white" />
             </div>
-            <h3 className="font-medium text-lg mb-2 text-slate-100">Design Revisions</h3>
-            <p className="text-slate-300">We'll help perfect your custom orders</p>
+            <h3 className="font-playfair font-medium text-xl mb-3 text-stone-900">Design Revisions</h3>
+            <p className="text-stone-600">We'll help perfect your custom orders</p>
           </div>
           
-          <div className="bg-slate-800 p-6 rounded-lg shadow-sm flex flex-col items-center text-center border border-slate-700">
-            <div className="bg-emerald-600/20 p-3 rounded-full mb-4">
-              <Clock className="h-6 w-6 text-emerald-400" />
+          <div className="bg-stone-50 p-8 rounded-lg flex flex-col items-center text-center border border-stone-100 hover:shadow-lg transition-all duration-300">
+            <div className="bg-stone-900 p-4 rounded-full mb-6">
+              <Clock className="h-6 w-6 text-white" />
             </div>
-            <h3 className="font-medium text-lg mb-2 text-slate-100">Quick Turnaround</h3>
-            <p className="text-slate-300">Most products delivered within 3-5 days</p>
+            <h3 className="font-playfair font-medium text-xl mb-3 text-stone-900">Quick Turnaround</h3>
+            <p className="text-stone-600">Most products delivered within 3-5 days</p>
           </div>
         </div>
       </div>

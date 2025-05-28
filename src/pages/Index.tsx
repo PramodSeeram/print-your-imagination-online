@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from "@/components/Header";
@@ -11,7 +10,7 @@ import ProductGrid from "@/components/ProductGrid";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { ChevronRight, Search } from 'lucide-react';
+import { ChevronRight, X } from 'lucide-react';
 
 interface Product {
   id: number;
@@ -34,6 +33,7 @@ const Index = () => {
   const [recentlyViewedProducts, setRecentlyViewedProducts] = useState<Product[]>([]);
   const [browsingHistory, setBrowsingHistory] = useState<{category: string, items: Product[]}[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [showNewsletterPopup, setShowNewsletterPopup] = useState<boolean>(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -279,153 +279,219 @@ const Index = () => {
     window.dispatchEvent(event);
   };
 
+  // Show newsletter popup after 3 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowNewsletterPopup(true);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <div className="min-h-screen flex flex-col bg-slate-900">
+    <div className="min-h-screen flex flex-col bg-stone-50">
       <Header />
       
-      <main className="flex-grow bg-slate-900">
-        <HeroBanner />
-        
-        <div className="container-avirva py-6">
-          {/* Loyalty Points Card */}
-          <div className="mb-8 bg-gradient-to-r from-emerald-600 to-emerald-500 rounded-lg p-5 text-white shadow-lg animate-fade-in-up">
-            <div className="flex justify-between items-center">
+      {/* Newsletter Popup */}
+      {showNewsletterPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="newsletter-popup relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-4 top-4 text-stone-400 hover:text-stone-600"
+              onClick={() => setShowNewsletterPopup(false)}
+            >
+              <X className="h-5 w-5" />
+            </Button>
+            
+            <div className="grid md:grid-cols-2 gap-8 items-center">
               <div>
-                <h3 className="text-xl font-bold">Your Loyalty Points</h3>
-                <p className="text-sm opacity-90 mb-2">Collect points with every purchase</p>
-                <div className="text-3xl font-bold animate-pulse-slow">{loyaltyPoints} points</div>
+                <h2 className="font-playfair text-3xl font-medium mb-4 text-stone-900">
+                  Join the our family
+                </h2>
+                <p className="text-stone-600 mb-6 leading-relaxed">
+                  Sign up for our newsletter and receive updates you're looking for: interior 
+                  inspiration, the latest trends and discounts
+                </p>
+                <div className="flex">
+                  <input
+                    type="email"
+                    placeholder="Email address......"
+                    className="flex-1 px-4 py-3 border border-stone-300 rounded-l-full focus:outline-none focus:border-stone-500"
+                  />
+                  <Button className="bg-stone-900 hover:bg-stone-800 text-white px-8 rounded-r-full">
+                    Send
+                  </Button>
+                </div>
               </div>
-              <Button className="bg-white/90 hover:bg-white text-emerald-600 hover:scale-105 transition-transform shadow-md">
-                View Rewards
+              <div className="hidden md:block">
+                <img 
+                  src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  alt="Furniture"
+                  className="w-full h-80 object-cover rounded-lg"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      <main className="flex-grow bg-stone-50">
+        {/* Hero Section */}
+        <section className="relative h-[600px] overflow-hidden">
+          <img 
+            src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
+            alt="Hero"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/80 to-transparent">
+            <div className="container-avirva h-full flex items-center">
+              <div className="max-w-2xl">
+                <p className="text-sm uppercase tracking-wider text-stone-600 mb-4">ADORN YOUR SPACE</p>
+                <h1 className="font-playfair text-5xl md:text-6xl font-medium text-stone-900 mb-6 leading-tight">
+                  Elevating Your<br />
+                  Lifestyle through Exquisite
+                </h1>
+                <Button className="bg-stone-900 hover:bg-stone-800 text-white px-8 py-3 rounded-full text-lg">
+                  Shop Now
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="container-avirva py-16">
+          {/* Categories Section */}
+          <section className="mb-20">
+            <div className="text-center mb-12">
+              <h2 className="section-title">Our Categories</h2>
+              <p className="text-stone-600 max-w-2xl mx-auto">
+                From home to contract, get inspired and design!
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+              {[
+                { name: "Bathroom", image: "https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&w=400&q=80" },
+                { name: "Chair", image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=400&q=80" },
+                { name: "Decor", image: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?auto=format&fit=crop&w=400&q=80" },
+                { name: "Lamp", image: "https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?auto=format&fit=crop&w=400&q=80" },
+                { name: "Table", image: "https://images.unsplash.com/photo-1549497538-303791108f95?auto=format&fit=crop&w=400&q=80" }
+              ].map((category) => (
+                <Card key={category.name} className="group cursor-pointer overflow-hidden border-0 shadow-sm hover:shadow-lg transition-all duration-300">
+                  <CardContent className="p-0">
+                    <div className="aspect-square overflow-hidden">
+                      <img 
+                        src={category.image} 
+                        alt={category.name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-medium text-stone-900">{category.name}</h3>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+
+          {/* Featured Collections */}
+          <section className="mb-20">
+            <div className="grid md:grid-cols-2 gap-8">
+              <Card className="relative overflow-hidden h-80 border-0 shadow-sm">
+                <img 
+                  src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80"
+                  alt="Elevate Your Space"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
+                  <div className="text-white">
+                    <h3 className="font-playfair text-2xl font-medium mb-2">Elevate Your Space</h3>
+                    <Button className="bg-white text-stone-900 hover:bg-stone-100 rounded-full px-6">
+                      Shop Now
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+              
+              <div className="space-y-6">
+                <Card className="relative overflow-hidden h-36 border-0 shadow-sm">
+                  <img 
+                    src="https://images.unsplash.com/photo-1549497538-303791108f95?auto=format&fit=crop&w=800&q=80"
+                    alt="Harmony in Design"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center p-6">
+                    <div className="text-white">
+                      <h3 className="font-playfair text-xl font-medium mb-2">Harmony in Design</h3>
+                      <Button className="bg-white text-stone-900 hover:bg-stone-100 rounded-full px-4 py-1 text-sm">
+                        Shop Now
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+                
+                <Card className="relative overflow-hidden h-36 border-0 shadow-sm">
+                  <img 
+                    src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?auto=format&fit=crop&w=800&q=80"
+                    alt="Curated Living"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center p-6">
+                    <div className="text-white">
+                      <h3 className="font-playfair text-xl font-medium mb-2">Curated Living</h3>
+                      <Button className="bg-white text-stone-900 hover:bg-stone-100 rounded-full px-4 py-1 text-sm">
+                        Shop Now
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            </div>
+          </section>
+
+          {/* Bestseller Section */}
+          <section className="mb-20">
+            <div className="flex justify-between items-center mb-8">
+              <div>
+                <h2 className="font-playfair text-2xl font-medium text-stone-900">Bestseller</h2>
+                <p className="text-stone-600">Experience featured products at our store</p>
+              </div>
+              <Button variant="link" className="text-stone-600 hover:text-stone-900">
+                View All <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             </div>
-          </div>
-          
-          {/* Continue Shopping Section - based on Amazon-like layout */}
-          {recentlyViewedProducts.length > 0 && (
-            <div className="mb-8 animate-fade-in-up animate-delayed-1">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-slate-100">Pick up where you left off</h2>
-                <Button variant="link" className="text-emerald-400 hover:text-emerald-300" onClick={() => navigate('/account')}>
-                  See more <ChevronRight className="h-4 w-4 ml-1" />
-                </Button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                {recentlyViewedProducts.slice(0, 5).map((product, index) => (
-                  <Card 
-                    key={product.id} 
-                    className="cursor-pointer hover:shadow-md transition-shadow bg-slate-800 border-slate-700 hover:border-emerald-400/30 overflow-hidden animate-fade-in-up" 
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                    onClick={() => navigate(`/product/${product.id}`)}
-                  >
-                    <CardContent className="p-3">
-                      <div className="aspect-square mb-2 overflow-hidden rounded">
-                        <img 
-                          src={product.imageUrl} 
-                          alt={product.name} 
-                          className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
-                        />
-                      </div>
-                      <h3 className="text-sm font-medium line-clamp-2 text-slate-100">{product.name}</h3>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          )}
-          
-          {/* Browsing History - Amazon-like Category Row */}
-          {browsingHistory.length > 0 && (
-            <div className="mb-8 animate-fade-in-up animate-delayed-2">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-slate-100">Keep shopping for</h2>
-                <Button variant="link" className="text-emerald-400 hover:text-emerald-300">
-                  View your browsing history <ChevronRight className="h-4 w-4 ml-1" />
-                </Button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {browsingHistory.map((category, index) => (
-                  <Card 
-                    key={index} 
-                    className="overflow-hidden bg-slate-800 border-slate-700 hover:border-emerald-400/30 animate-fade-in-up" 
-                    style={{ animationDelay: `${index * 0.15 + 0.3}s` }}
-                  >
-                    <CardContent className="p-4">
-                      <h3 className="font-medium mb-2 text-emerald-400">{category.category}</h3>
-                      <div className="grid grid-cols-2 gap-2">
-                        {category.items.map(item => (
-                          <div 
-                            key={item.id} 
-                            className="cursor-pointer group"
-                            onClick={() => navigate(`/product/${item.id}`)}
-                          >
-                            <div className="aspect-square bg-slate-700 mb-1 rounded overflow-hidden">
-                              <img 
-                                src={item.imageUrl} 
-                                alt={item.name} 
-                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                              />
-                            </div>
-                            <p className="text-xs text-slate-400">{category.items.length} viewed</p>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          )}
-          
-          {/* Hero Banner with Categories - with animation */}
-          <div className="animate-fade-in-up animate-delayed-2">
-            <CategoryBanner 
-              id={1}
-              name="Home Decor Collection"
-              description="Discover our curated selection of beautiful home decor pieces to elevate your living space."
-              imageUrl="https://images.unsplash.com/photo-1615529482396-63f8b0d0944b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-            />
-          </div>
-          
-          {/* Product Grids */}
-          <div className="animate-fade-in-up animate-delayed-3">
-            {/* New Arrivals */}
-            <ProductGrid 
-              title="New Arrivals" 
-              products={newArrivals}
-              onAddToCart={handleAddToCart}
-              onToggleWishlist={handleToggleWishlist}
-              wishlistedIds={wishlistedIds}
-            />
             
-            {/* Best Sellers */}
             <ProductGrid 
-              title="Best Sellers" 
+              title="" 
               products={bestSellers}
               onAddToCart={handleAddToCart}
               onToggleWishlist={handleToggleWishlist}
               wishlistedIds={wishlistedIds}
             />
-            
-            {/* Deals */}
-            <ProductGrid 
-              title="Deals of the Week" 
-              products={deals}
-              onAddToCart={handleAddToCart}
-              onToggleWishlist={handleToggleWishlist}
-              wishlistedIds={wishlistedIds}
-            />
-          </div>
+          </section>
           
-          {/* Features Section */}
-          <div className="animate-fade-in-up" style={{ animationDelay: '0.9s' }}>
-            <FeaturesSection />
-          </div>
+          {/* Other product sections */}
+          <ProductGrid 
+            title="New Arrivals" 
+            products={newArrivals}
+            onAddToCart={handleAddToCart}
+            onToggleWishlist={handleToggleWishlist}
+            wishlistedIds={wishlistedIds}
+          />
           
-          {/* Testimonials */}
-          <div className="animate-fade-in-up" style={{ animationDelay: '1.1s' }}>
-            <TestimonialSection />
-          </div>
+          <ProductGrid 
+            title="Special Offers" 
+            products={deals}
+            onAddToCart={handleAddToCart}
+            onToggleWishlist={handleToggleWishlist}
+            wishlistedIds={wishlistedIds}
+          />
+          
+          <FeaturesSection />
+          <TestimonialSection />
         </div>
       </main>
       

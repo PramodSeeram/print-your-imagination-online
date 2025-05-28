@@ -6,11 +6,9 @@ import {
   X, 
   User, 
   Heart,
-  LogIn,
   Package,
   ChevronDown,
   ChevronRight,
-  Bell,
   MessageSquare
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -18,7 +16,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -32,10 +29,8 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
 import Logo from '@/components/Logo';
 import SearchBar from '@/components/SearchBar';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { useMobileMenu } from '@/hooks/use-mobile-menu';
 
 // Mock data for categories
@@ -125,54 +120,67 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="border-b bg-slate-900 border-slate-700">
+    <header className="border-b bg-white border-stone-200 sticky top-0 z-50">
       {/* Top Bar */}
-      <div className="bg-emerald-700 text-white py-2 text-center text-sm">
-        <p>Free shipping on all orders above ₹999. Use code FREESHIP at checkout.</p>
+      <div className="bg-stone-900 text-white py-2 text-center text-sm">
+        <p>Quick sale: 20% off products purchased today</p>
       </div>
       
       {/* Main Header */}
-      <div className="container-avirva py-4">
+      <div className="container-avirva py-6">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <Logo />
+            <div className="font-playfair text-2xl md:text-3xl font-medium tracking-tight text-stone-900">
+              AVIRVA
+            </div>
           </Link>
           
-          {/* Search - Hidden on mobile, shown on desktop */}
-          <div className="hidden md:block relative flex-1 max-w-md mx-8">
-            <SearchBar allProducts={PRODUCTS} className="w-full" />
-          </div>
-          
-          {/* Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
+          {/* Navigation - Desktop */}
+          <nav className="hidden lg:flex items-center space-x-8">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center space-x-1 text-slate-300 hover:text-emerald-400 hover:bg-slate-800">
-                  <span>Categories</span>
+                <Button variant="ghost" className="flex items-center space-x-1 text-stone-600 hover:text-stone-900 font-medium">
+                  <span>Home</span>
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-64 bg-slate-800 border-slate-700">
+              <DropdownMenuContent className="w-64 bg-white border-stone-200">
+                <Link to="/">
+                  <DropdownMenuItem className="text-stone-600 hover:bg-stone-50">
+                    Homepage
+                  </DropdownMenuItem>
+                </Link>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center space-x-1 text-stone-600 hover:text-stone-900 font-medium">
+                  <span>Shop</span>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-64 bg-white border-stone-200">
                 {CATEGORIES.map(category => (
                   <DropdownMenu key={category.id}>
-                    <DropdownMenuTrigger className="w-full flex justify-between items-center px-4 py-2 hover:bg-slate-700 cursor-pointer text-slate-300">
+                    <DropdownMenuTrigger className="w-full flex justify-between items-center px-4 py-2 hover:bg-stone-50 cursor-pointer text-stone-600">
                       <span>{category.name}</span>
                       <ChevronRight className="h-4 w-4" />
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent side="right" className="bg-slate-800 border-slate-700">
+                    <DropdownMenuContent side="right" className="bg-white border-stone-200">
                       <Link to={`/category/${category.id}`}>
-                        <DropdownMenuItem className="font-medium text-slate-300 hover:bg-slate-700">
+                        <DropdownMenuItem className="font-medium text-stone-600 hover:bg-stone-50">
                           All {category.name}
                         </DropdownMenuItem>
                       </Link>
-                      <DropdownMenuSeparator className="bg-slate-700" />
+                      <DropdownMenuSeparator className="bg-stone-200" />
                       {category.subcategories.map(subcategory => (
                         <Link 
                           key={subcategory.id} 
                           to={`/category/${category.id}/subcategory/${subcategory.id}`}
                         >
-                          <DropdownMenuItem className="text-slate-300 hover:bg-slate-700">{subcategory.name}</DropdownMenuItem>
+                          <DropdownMenuItem className="text-stone-600 hover:bg-stone-50">{subcategory.name}</DropdownMenuItem>
                         </Link>
                       ))}
                     </DropdownMenuContent>
@@ -180,51 +188,58 @@ const Header = () => {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-            
-            <Link to="/tickets">
-              <Button variant="ghost" className="text-slate-300 hover:text-emerald-400 hover:bg-slate-800">Support</Button>
-            </Link>
 
-            <Link to="/collections">
-              <Button variant="ghost" className="text-slate-300 hover:text-emerald-400 hover:bg-slate-800">Collections</Button>
-            </Link>
-            
-            {isLoggedIn && (
-              <Link to="/orders">
-                <Button variant="ghost" className="flex items-center text-slate-300 hover:text-emerald-400 hover:bg-slate-800">
-                  <Package className="h-4 w-4 mr-1" />
-                  <span>Orders</span>
-                </Button>
-              </Link>
-            )}
+            <Button variant="ghost" className="text-stone-600 hover:text-stone-900 font-medium">Product</Button>
+            <Button variant="ghost" className="text-stone-600 hover:text-stone-900 font-medium">Blog</Button>
+            <Button variant="ghost" className="text-stone-600 hover:text-stone-900 font-medium">Featured</Button>
           </nav>
+          
+          {/* Search - Hidden on mobile */}
+          <div className="hidden md:block relative flex-1 max-w-md mx-8">
+            <SearchBar allProducts={PRODUCTS} className="w-full" />
+          </div>
           
           {/* Icons */}
           <div className="flex items-center space-x-4">
-            {/* Mobile Search Dialog */}
+            {/* Language & Currency */}
+            <div className="hidden lg:flex items-center space-x-4 text-sm">
+              <div className="flex items-center space-x-1">
+                <img src="https://flagcdn.com/16x12/us.png" alt="USD" className="w-4 h-3" />
+                <span className="text-stone-600">USD</span>
+                <ChevronDown className="h-3 w-3 text-stone-400" />
+              </div>
+              <div className="flex items-center space-x-1 text-stone-600">
+                <span>English</span>
+                <ChevronDown className="h-3 w-3 text-stone-400" />
+              </div>
+            </div>
+
+            {/* Search icon for mobile */}
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden text-slate-300">
-                  <Menu className="h-5 w-5" />
+                <Button variant="ghost" size="icon" className="md:hidden text-stone-600">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-md bg-slate-800 border-slate-700">
+              <DialogContent className="sm:max-w-md bg-white border-stone-200">
                 <DialogHeader>
-                  <DialogTitle className="text-slate-100">Search products</DialogTitle>
-                  <DialogDescription className="text-slate-400">
-                    Find the perfect 3D printed product for your needs.
+                  <DialogTitle className="text-stone-900">Search products</DialogTitle>
+                  <DialogDescription className="text-stone-600">
+                    Find the perfect product for your needs.
                   </DialogDescription>
                 </DialogHeader>
                 <SearchBar allProducts={PRODUCTS} className="w-full" />
               </DialogContent>
             </Dialog>
             
-            {/* Wishlist - Fixed navigation to wishlist page */}
+            {/* Wishlist */}
             <Link to="/wishlist" className="relative hidden sm:flex">
-              <Button variant="ghost" size="icon" className="text-slate-300 hover:text-emerald-400 hover:bg-slate-800">
+              <Button variant="ghost" size="icon" className="text-stone-600 hover:text-stone-900">
                 <Heart className="h-5 w-5" />
                 {wishlistCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 bg-stone-900 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                     {wishlistCount}
                   </span>
                 )}
@@ -233,41 +248,38 @@ const Header = () => {
             
             {/* Cart */}
             <Link to="/cart" className="relative hidden sm:flex">
-              <Button variant="ghost" size="icon" className="text-slate-300 hover:text-emerald-400 hover:bg-slate-800">
+              <Button variant="ghost" size="icon" className="text-stone-600 hover:text-stone-900">
                 <ShoppingCart className="h-5 w-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 bg-stone-900 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                     {cartCount}
                   </span>
                 )}
               </Button>
             </Link>
             
-            {/* Account - Make sure it navigates to account page */}
+            {/* Account */}
             <Button 
               variant="ghost" 
               size="icon" 
-              className="relative hidden sm:flex text-slate-300 hover:text-emerald-400 hover:bg-slate-800"
+              className="relative hidden sm:flex text-stone-600 hover:text-stone-900"
               onClick={() => navigate('/account')}
             >
               {isLoggedIn ? (
-                <Avatar className="h-8 w-8 border border-slate-600">
+                <Avatar className="h-8 w-8 border border-stone-200">
                   <AvatarImage src="https://randomuser.me/api/portraits/men/32.jpg" />
-                  <AvatarFallback className="bg-slate-700 text-slate-300">JD</AvatarFallback>
+                  <AvatarFallback className="bg-stone-100 text-stone-600">JD</AvatarFallback>
                 </Avatar>
               ) : (
                 <User className="h-5 w-5" />
               )}
-              {isLoggedIn && (
-                <span className="absolute -top-1 -right-1 bg-emerald-600 border-2 border-slate-800 w-3 h-3 rounded-full"></span>
-              )}
             </Button>
             
-            {/* Mobile menu button - only show on mobile */}
+            {/* Mobile menu button */}
             <Button 
               variant="ghost" 
               size="icon" 
-              className="md:hidden text-slate-300"
+              className="lg:hidden text-stone-600"
               onClick={toggleMenu}
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -275,28 +287,28 @@ const Header = () => {
           </div>
         </div>
         
-        {/* Mobile Search - only show on mobile BELOW header */}
+        {/* Mobile Search */}
         <div className="mt-4 mb-2 md:hidden">
           <SearchBar allProducts={PRODUCTS} className="w-full" />
         </div>
       </div>
       
       {/* Mobile menu */}
-      <div className={`fixed inset-0 bg-gray-800 bg-opacity-50 z-40 transition-opacity duration-300 ${isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-        <div className={`fixed inset-y-0 left-0 w-64 bg-slate-900 transform transition-transform duration-300 ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-          <div className="p-4 overflow-y-auto h-full flex flex-col">
+      <div className={`fixed inset-0 bg-black bg-opacity-30 z-40 transition-opacity duration-300 lg:hidden ${isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <div className={`fixed inset-y-0 left-0 w-80 bg-white transform transition-transform duration-300 ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+          <div className="p-6 overflow-y-auto h-full flex flex-col">
             {/* Close button */}
             <Button 
               variant="ghost" 
               size="icon" 
-              className="absolute right-2 top-2 text-slate-300"
+              className="absolute right-4 top-4 text-stone-600"
               onClick={closeMenu}
             >
               <X className="h-5 w-5" />
             </Button>
             
             {/* User Section */}
-            <div className="py-4 border-b border-slate-700 mb-4">
+            <div className="py-6 border-b border-stone-200 mb-6">
               {isLoggedIn ? (
                 <div 
                   className="flex items-center space-x-3 cursor-pointer" 
@@ -305,29 +317,29 @@ const Header = () => {
                     closeMenu();
                   }}
                 >
-                  <Avatar className="border border-slate-600">
+                  <Avatar className="border border-stone-200">
                     <AvatarImage src="https://randomuser.me/api/portraits/men/32.jpg" />
-                    <AvatarFallback className="bg-slate-700 text-slate-300">JD</AvatarFallback>
+                    <AvatarFallback className="bg-stone-100 text-stone-600">JD</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-medium text-slate-100">John Doe</p>
-                    <p className="text-xs text-slate-400">john.doe@example.com</p>
+                    <p className="font-medium text-stone-900">John Doe</p>
+                    <p className="text-sm text-stone-500">john.doe@example.com</p>
                   </div>
                 </div>
               ) : (
-                <div className="flex flex-col space-y-2">
+                <div className="flex flex-col space-y-3">
                   <Button 
-                    className="bg-emerald-600 hover:bg-emerald-700"
+                    className="bg-stone-900 hover:bg-stone-800 text-white rounded-full"
                     onClick={() => {
                       navigate('/account');
                       closeMenu();
                     }}
                   >
-                    Login
+                    Sign In
                   </Button>
                   <Button 
                     variant="outline"
-                    className="border-slate-600 text-slate-300 hover:bg-slate-800"
+                    className="border-stone-300 text-stone-600 hover:bg-stone-50 rounded-full"
                     onClick={() => {
                       navigate('/account?register=true');
                       closeMenu();
@@ -341,109 +353,109 @@ const Header = () => {
             
             {/* Navigation Links */}
             <nav className="flex-1">
-              <p className="text-sm font-medium text-slate-400 mb-2">Shop By Category</p>
-              <ul className="space-y-1">
-                {CATEGORIES.map(category => (
-                  <li key={category.id}>
-                    <Link
-                      to={`/category/${category.id}`}
-                      onClick={closeMenu}
-                      className="block text-slate-300 hover:bg-slate-800 rounded-md px-3 py-2"
-                    >
-                      {category.name}
-                    </Link>
-                  </li>
-                ))}
+              <ul className="space-y-4">
+                <li>
+                  <Link
+                    to="/"
+                    onClick={closeMenu}
+                    className="block text-stone-900 font-medium py-2 text-lg"
+                  >
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <div className="text-stone-900 font-medium py-2 text-lg">Shop</div>
+                  <ul className="ml-4 mt-2 space-y-2">
+                    {CATEGORIES.map(category => (
+                      <li key={category.id}>
+                        <Link
+                          to={`/category/${category.id}`}
+                          onClick={closeMenu}
+                          className="block text-stone-600 hover:text-stone-900 py-1"
+                        >
+                          {category.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+                <li>
+                  <div className="text-stone-900 font-medium py-2 text-lg">Product</div>
+                </li>
+                <li>
+                  <div className="text-stone-900 font-medium py-2 text-lg">Blog</div>
+                </li>
+                <li>
+                  <div className="text-stone-900 font-medium py-2 text-lg">Featured</div>
+                </li>
               </ul>
               
-              <div className="border-t border-slate-700 my-4"></div>
-              
-              <ul className="space-y-1">
-                <li>
-                  <Link
-                    to="/cart"
-                    onClick={closeMenu}
-                    className="block text-slate-300 hover:bg-slate-800 rounded-md px-3 py-2 flex items-center justify-between"
-                  >
-                    <div className="flex items-center">
-                      <ShoppingCart className="h-4 w-4 mr-2" />
-                      <span>Cart</span>
-                    </div>
-                    {cartCount > 0 && (
-                      <Badge className="bg-emerald-600">{cartCount}</Badge>
-                    )}
-                  </Link>
-                </li>
-                
-                <li>
-                  <Link
-                    to="/wishlist"
-                    onClick={closeMenu}
-                    className="block text-slate-300 hover:bg-slate-800 rounded-md px-3 py-2 flex items-center justify-between"
-                  >
-                    <div className="flex items-center">
-                      <Heart className="h-4 w-4 mr-2" />
-                      <span>Wishlist</span>
-                    </div>
-                    {wishlistCount > 0 && (
-                      <Badge className="bg-emerald-600">{wishlistCount}</Badge>
-                    )}
-                  </Link>
-                </li>
-
-                <li>
-                  <Link
-                    to="/browsing-history"
-                    onClick={closeMenu}
-                    className="block text-slate-300 hover:bg-slate-800 rounded-md px-3 py-2 flex items-center"
-                  >
-                    <User className="h-4 w-4 mr-2" />
-                    <span>Browsing History</span>
-                  </Link>
-                </li>
-
-                <li>
-                  <Link
-                    to="/collections"
-                    onClick={closeMenu}
-                    className="block text-slate-300 hover:bg-slate-800 rounded-md px-3 py-2 flex items-center"
-                  >
-                    <User className="h-4 w-4 mr-2" />
-                    <span>Collections</span>
-                  </Link>
-                </li>
-                
-                {isLoggedIn && (
+              <div className="border-t border-stone-200 my-6 pt-6">
+                <ul className="space-y-3">
                   <li>
                     <Link
-                      to="/orders"
+                      to="/cart"
                       onClick={closeMenu}
-                      className="block text-slate-300 hover:bg-slate-800 rounded-md px-3 py-2 flex items-center"
+                      className="flex items-center justify-between text-stone-600 hover:text-stone-900 py-2"
                     >
-                      <Package className="h-4 w-4 mr-2" />
-                      <span>My Orders</span>
+                      <div className="flex items-center">
+                        <ShoppingCart className="h-5 w-5 mr-3" />
+                        <span>Cart</span>
+                      </div>
+                      {cartCount > 0 && (
+                        <Badge className="bg-stone-900 text-white">{cartCount}</Badge>
+                      )}
                     </Link>
                   </li>
-                )}
-                
-                <li>
-                  <Link
-                    to="/tickets"
-                    onClick={closeMenu}
-                    className="block text-slate-300 hover:bg-slate-800 rounded-md px-3 py-2 flex items-center"
-                  >
-                    <MessageSquare className="h-4 w-4 mr-2" />
-                    <span>Support</span>
-                  </Link>
-                </li>
-              </ul>
+                  
+                  <li>
+                    <Link
+                      to="/wishlist"
+                      onClick={closeMenu}
+                      className="flex items-center justify-between text-stone-600 hover:text-stone-900 py-2"
+                    >
+                      <div className="flex items-center">
+                        <Heart className="h-5 w-5 mr-3" />
+                        <span>Wishlist</span>
+                      </div>
+                      {wishlistCount > 0 && (
+                        <Badge className="bg-stone-900 text-white">{wishlistCount}</Badge>
+                      )}
+                    </Link>
+                  </li>
+
+                  {isLoggedIn && (
+                    <li>
+                      <Link
+                        to="/orders"
+                        onClick={closeMenu}
+                        className="flex items-center text-stone-600 hover:text-stone-900 py-2"
+                      >
+                        <Package className="h-5 w-5 mr-3" />
+                        <span>My Orders</span>
+                      </Link>
+                    </li>
+                  )}
+                  
+                  <li>
+                    <Link
+                      to="/tickets"
+                      onClick={closeMenu}
+                      className="flex items-center text-stone-600 hover:text-stone-900 py-2"
+                    >
+                      <MessageSquare className="h-5 w-5 mr-3" />
+                      <span>Support</span>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
             </nav>
             
             {/* Logout Button */}
             {isLoggedIn && (
               <Button 
                 variant="outline" 
-                className="w-full mt-4 border-slate-600 text-slate-300 hover:bg-slate-800"
+                className="w-full mt-4 border-stone-300 text-stone-600 hover:bg-stone-50 rounded-full"
                 onClick={() => {
                   localStorage.setItem('userLoggedIn', 'false');
                   setIsLoggedIn(false);
