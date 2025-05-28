@@ -474,22 +474,33 @@ const Index = () => {
             />
           </section>
           
-          {/* Other product sections */}
-          <ProductGrid 
-            title="New Arrivals" 
-            products={newArrivals}
-            onAddToCart={handleAddToCart}
-            onToggleWishlist={handleToggleWishlist}
-            wishlistedIds={wishlistedIds}
-          />
+          {/* New Arrivals Section with Bold Black Title */}
+          <section className="mb-20">
+            <div className="text-center mb-8">
+              <h2 className="font-bold text-3xl text-black mb-2">New Arrivals</h2>
+            </div>
+            <ProductGrid 
+              title="" 
+              products={newArrivals}
+              onAddToCart={handleAddToCart}
+              onToggleWishlist={handleToggleWishlist}
+              wishlistedIds={wishlistedIds}
+            />
+          </section>
           
-          <ProductGrid 
-            title="Special Offers" 
-            products={deals}
-            onAddToCart={handleAddToCart}
-            onToggleWishlist={handleToggleWishlist}
-            wishlistedIds={wishlistedIds}
-          />
+          {/* Special Offers Section with Bold Black Title */}
+          <section className="mb-20">
+            <div className="text-center mb-8">
+              <h2 className="font-bold text-3xl text-black mb-2">Special Offers</h2>
+            </div>
+            <ProductGrid 
+              title="" 
+              products={deals}
+              onAddToCart={handleAddToCart}
+              onToggleWishlist={handleToggleWishlist}
+              wishlistedIds={wishlistedIds}
+            />
+          </section>
           
           <FeaturesSection />
           <TestimonialSection />

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart, User, ChevronDown, Search, Menu, X, MapPin } from 'lucide-react';
@@ -90,7 +91,7 @@ const Header = () => {
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
       {/* Top bar with location and currency */}
-      <div className="bg-gray-100 border-b border-gray-200">
+      <div className="bg-gray-50 border-b border-gray-200">
         <div className="container-avirva">
           <div className="flex justify-between items-center py-2 text-sm">
             <div className="flex items-center space-x-4">
@@ -116,7 +117,7 @@ const Header = () => {
           {/* Logo */}
           <Logo />
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation with Hover Effects */}
           <nav className="hidden lg:flex items-center space-x-8">
             {categories.map((category) => (
               <div key={category.id} className="relative group">
