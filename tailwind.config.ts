@@ -55,33 +55,6 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Elegant color palette inspired by the reference images
-        warm: {
-          50: "#fefdf8",
-          100: "#fdf9ed",
-          200: "#fbf2d4",
-          300: "#f7e6b3",
-          400: "#f1d18a",
-          500: "#e9b96e",
-          600: "#dc9f55",
-          700: "#b8834a",
-          800: "#946842",
-          900: "#785537",
-          950: "#422c1b",
-        },
-        stone: {
-          50: "#fafaf9",
-          100: "#f5f5f4",
-          200: "#e7e5e4",
-          300: "#d6d3d1",
-          400: "#a8a29e",
-          500: "#78716c",
-          600: "#57534e",
-          700: "#44403c",
-          800: "#292524",
-          900: "#1c1917",
-          950: "#0c0a09",
-        }
       },
       borderRadius: {
         lg: "var(--radius)",

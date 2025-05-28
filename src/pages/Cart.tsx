@@ -179,18 +179,18 @@ const Cart = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-900">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
       
       <main className="flex-grow pt-8 pb-16">
         <div className="container-avirva">
-          <h1 className="text-3xl font-bold mb-6 text-slate-100">Your Shopping Cart</h1>
+          <h1 className="text-3xl font-bold mb-6 text-black">Your Shopping Cart</h1>
           
           {cartItems.length === 0 ? (
             <div className="text-center py-16">
-              <h2 className="text-2xl font-medium text-slate-300 mb-4">Your cart is empty</h2>
-              <p className="text-slate-400 mb-8">Looks like you haven't added anything to your cart yet.</p>
-              <Button asChild className="bg-emerald-600 hover:bg-emerald-700">
+              <h2 className="text-2xl font-medium text-gray-700 mb-4">Your cart is empty</h2>
+              <p className="text-gray-500 mb-8">Looks like you haven't added anything to your cart yet.</p>
+              <Button asChild className="bg-black hover:bg-gray-800 text-white">
                 <Link to="/">Continue Shopping</Link>
               </Button>
             </div>
@@ -198,12 +198,12 @@ const Cart = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Cart Items */}
               <div className="lg:col-span-2 space-y-6">
-                <div className="bg-slate-800 rounded-lg shadow border border-slate-700">
-                  <div className="p-6 border-b border-slate-700">
-                    <h2 className="font-semibold text-lg text-slate-100">Cart Items ({cartItems.length})</h2>
+                <div className="bg-white rounded-lg shadow border border-gray-200">
+                  <div className="p-6 border-b border-gray-200">
+                    <h2 className="font-semibold text-lg text-black">Cart Items ({cartItems.length})</h2>
                   </div>
                   
-                  <div className="divide-y divide-slate-700">
+                  <div className="divide-y divide-gray-200">
                     {cartItems.map((item) => (
                       <div key={item.id} className="flex p-6 gap-4">
                         <div className="w-24 h-24 flex-shrink-0">
@@ -215,30 +215,30 @@ const Cart = () => {
                         </div>
                         
                         <div className="flex-grow">
-                          <h3 className="font-medium text-slate-100">{item.name}</h3>
-                          <p className="text-slate-400 text-sm mb-2">Item #{item.id}</p>
+                          <h3 className="font-medium text-black">{item.name}</h3>
+                          <p className="text-gray-500 text-sm mb-2">Item #{item.id}</p>
                           
                           <div className="flex items-center justify-between mt-4">
-                            <div className="flex items-center border border-slate-600 rounded">
+                            <div className="flex items-center border border-gray-300 rounded">
                               <button 
-                                className="px-3 py-1 text-slate-300 hover:bg-slate-700"
+                                className="px-3 py-1 text-gray-600 hover:bg-gray-100"
                                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
                               >
                                 <Minus className="h-4 w-4" />
                               </button>
-                              <span className="px-3 py-1 text-slate-100">{item.quantity}</span>
+                              <span className="px-3 py-1 text-black">{item.quantity}</span>
                               <button 
-                                className="px-3 py-1 text-slate-300 hover:bg-slate-700"
+                                className="px-3 py-1 text-gray-600 hover:bg-gray-100"
                                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
                               >
                                 <Plus className="h-4 w-4" />
                               </button>
                             </div>
                             
-                            <p className="font-medium text-slate-100">₹{(item.offerPrice || item.price) * item.quantity}</p>
+                            <p className="font-medium text-black">₹{(item.offerPrice || item.price) * item.quantity}</p>
                             
                             <button 
-                              className="text-slate-400 hover:text-red-400 transition-colors"
+                              className="text-gray-400 hover:text-red-500 transition-colors"
                               onClick={() => removeItem(item.id)}
                             >
                               <Trash2 className="h-5 w-5" />
@@ -251,24 +251,24 @@ const Cart = () => {
                 </div>
 
                 {/* People Also Bought */}
-                <div className="bg-slate-800 rounded-lg shadow border border-slate-700">
-                  <div className="p-6 border-b border-slate-700">
-                    <h2 className="font-semibold text-lg text-slate-100">People Also Bought</h2>
+                <div className="bg-white rounded-lg shadow border border-gray-200">
+                  <div className="p-6 border-b border-gray-200">
+                    <h2 className="font-semibold text-lg text-black">People Also Bought</h2>
                   </div>
                   <div className="p-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {suggestions.map((item) => (
-                        <div key={item.id} className="flex gap-3 p-3 bg-slate-700 rounded-lg">
+                        <div key={item.id} className="flex gap-3 p-3 bg-gray-50 rounded-lg">
                           <img src={item.imageUrl} alt={item.name} className="w-16 h-16 object-cover rounded" />
                           <div className="flex-grow">
-                            <h4 className="font-medium text-slate-100 text-sm">{item.name}</h4>
+                            <h4 className="font-medium text-black text-sm">{item.name}</h4>
                             <div className="flex items-center space-x-2 mt-1">
-                              <span className="text-emerald-400 font-medium">₹{item.offerPrice}</span>
-                              <span className="text-slate-400 text-sm line-through">₹{item.price}</span>
+                              <span className="text-black font-medium">₹{item.offerPrice}</span>
+                              <span className="text-gray-400 text-sm line-through">₹{item.price}</span>
                             </div>
                             <Button 
                               size="sm" 
-                              className="mt-2 bg-emerald-600 hover:bg-emerald-700 text-xs"
+                              className="mt-2 bg-black hover:bg-gray-800 text-white text-xs"
                               onClick={() => addToCartFromWishlist(item)}
                             >
                               Add to Cart
@@ -282,29 +282,29 @@ const Cart = () => {
 
                 {/* From Your Wishlist */}
                 {wishlistItems.length > 0 && (
-                  <div className="bg-slate-800 rounded-lg shadow border border-slate-700">
-                    <div className="p-6 border-b border-slate-700">
-                      <h2 className="font-semibold text-lg text-slate-100 flex items-center">
-                        <Heart className="h-5 w-5 mr-2 text-red-400" />
+                  <div className="bg-white rounded-lg shadow border border-gray-200">
+                    <div className="p-6 border-b border-gray-200">
+                      <h2 className="font-semibold text-lg text-black flex items-center">
+                        <Heart className="h-5 w-5 mr-2 text-red-500" />
                         From Your Wishlist
                       </h2>
                     </div>
                     <div className="p-6">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {wishlistItems.map((item) => (
-                          <div key={item.id} className="flex flex-col gap-3 p-3 bg-slate-700 rounded-lg">
+                          <div key={item.id} className="flex flex-col gap-3 p-3 bg-gray-50 rounded-lg">
                             <img src={item.imageUrl} alt={item.name} className="w-full h-24 object-cover rounded" />
                             <div>
-                              <h4 className="font-medium text-slate-100 text-sm">{item.name}</h4>
+                              <h4 className="font-medium text-black text-sm">{item.name}</h4>
                               <div className="flex items-center space-x-2 mt-1">
-                                <span className="text-emerald-400 font-medium">₹{item.offerPrice || item.price}</span>
+                                <span className="text-black font-medium">₹{item.offerPrice || item.price}</span>
                                 {item.offerPrice && (
-                                  <span className="text-slate-400 text-sm line-through">₹{item.price}</span>
+                                  <span className="text-gray-400 text-sm line-through">₹{item.price}</span>
                                 )}
                               </div>
                               <Button 
                                 size="sm" 
-                                className="mt-2 w-full bg-emerald-600 hover:bg-emerald-700 text-xs"
+                                className="mt-2 w-full bg-black hover:bg-gray-800 text-white text-xs"
                                 onClick={() => addToCartFromWishlist(item)}
                               >
                                 <ShoppingCart className="h-3 w-3 mr-1" />
@@ -321,41 +321,41 @@ const Cart = () => {
               
               {/* Order Summary */}
               <div className="lg:col-span-1">
-                <div className="bg-slate-800 rounded-lg shadow sticky top-24 border border-slate-700">
-                  <div className="p-6 border-b border-slate-700">
-                    <h2 className="font-semibold text-lg text-slate-100">Order Summary</h2>
+                <div className="bg-white rounded-lg shadow sticky top-24 border border-gray-200">
+                  <div className="p-6 border-b border-gray-200">
+                    <h2 className="font-semibold text-lg text-black">Order Summary</h2>
                   </div>
                   
                   <div className="p-6">
                     <div className="space-y-4">
                       <div className="flex justify-between">
-                        <span className="text-slate-300">Subtotal</span>
-                        <span className="font-medium text-slate-100">₹{subtotal}</span>
+                        <span className="text-gray-600">Subtotal</span>
+                        <span className="font-medium text-black">₹{subtotal}</span>
                       </div>
                       
                       <div className="flex justify-between">
-                        <span className="text-slate-300">Shipping</span>
-                        <span className="font-medium text-slate-100">
+                        <span className="text-gray-600">Shipping</span>
+                        <span className="font-medium text-black">
                           {shipping === 0 ? "Free" : `₹${shipping}`}
                         </span>
                       </div>
                       
                       {shipping === 0 && (
-                        <div className="text-green-400 text-sm">
+                        <div className="text-green-600 text-sm">
                           You've qualified for free shipping!
                         </div>
                       )}
                       
-                      <div className="border-t border-slate-700 pt-4 mt-4">
+                      <div className="border-t border-gray-200 pt-4 mt-4">
                         <div className="flex justify-between">
-                          <span className="font-semibold text-slate-100">Total</span>
-                          <span className="font-semibold text-slate-100">₹{total}</span>
+                          <span className="font-semibold text-black">Total</span>
+                          <span className="font-semibold text-black">₹{total}</span>
                         </div>
                       </div>
                     </div>
                     
                     <Button 
-                      className="w-full mt-6 bg-emerald-600 hover:bg-emerald-700"
+                      className="w-full mt-6 bg-black hover:bg-gray-800 text-white"
                       onClick={proceedToCheckout}
                     >
                       Checkout <ArrowRight className="ml-2 h-4 w-4" />
@@ -363,7 +363,7 @@ const Cart = () => {
                     
                     <Button 
                       variant="outline" 
-                      className="w-full mt-3 border-slate-600 text-slate-300 hover:bg-slate-700"
+                      className="w-full mt-3 border-gray-300 text-black hover:bg-gray-100"
                       asChild
                     >
                       <Link to="/">Continue Shopping</Link>

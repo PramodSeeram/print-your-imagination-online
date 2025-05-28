@@ -183,7 +183,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   return (
-    <div className="group bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow border border-stone-100">
+    <div className="group bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-200">
       <ProductImage
         imageUrl={imageUrl}
         name={name}
@@ -194,7 +194,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       
       <ProductBadges isNew={isNew} isBestSeller={isBestSeller} />
       
-      <div className="p-4">
+      <div className="p-4 bg-white">
         <ProductInfo
           name={name}
           rating={rating}

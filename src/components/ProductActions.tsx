@@ -22,7 +22,7 @@ const ProductActions: React.FC<ProductActionsProps> = ({
     <>
       {!showQuantityControls ? (
         <Button 
-          className="w-full bg-stone-900 hover:bg-stone-800 text-white font-medium py-2"
+          className="w-full bg-black hover:bg-gray-800 text-white font-medium py-2"
           onClick={onInitialAddToCart}
         >
           Add to Cart

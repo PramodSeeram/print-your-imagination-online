@@ -145,48 +145,48 @@ const SearchBar: React.FC<SearchBarProps> = ({
                 placeholder="Search products..."
                 value={searchTerm}
                 onChange={handleSearchChange}
-                className="rounded-l-md rounded-r-none border-r-0 pl-10 bg-stone-50 border-stone-200 focus:border-stone-400 focus:ring-stone-400 text-stone-900 placeholder:text-stone-500"
+                className="rounded-l-md rounded-r-none border-r-0 pl-10 bg-white border-gray-300 focus:border-black focus:ring-black text-black placeholder:text-gray-500"
               />
               <Button 
                 type="submit" 
-                className="bg-stone-900 hover:bg-stone-800 text-white px-4 rounded-r-md"
+                className="bg-black hover:bg-gray-800 text-white px-4 rounded-r-md"
                 aria-label="Search"
               >
                 <Search className="h-4 w-4" />
               </Button>
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-stone-400" />
+                <Search className="h-4 w-4 text-gray-400" />
               </div>
             </form>
           </div>
         </PopoverTrigger>
-        <PopoverContent className="w-[300px] p-0 border-stone-200 bg-white" align="start">
+        <PopoverContent className="w-[300px] p-0 border-gray-200 bg-white" align="start">
           {searchResults.length > 0 ? (
             <div className="py-2">
-              <div className="px-3 py-2 text-sm font-medium text-stone-500 border-b border-stone-100">
+              <div className="px-3 py-2 text-sm font-medium text-gray-500 border-b border-gray-100">
                 Products ({searchResults.length})
               </div>
               <div className="max-h-[300px] overflow-y-auto">
                 {searchResults.map(product => (
                   <div 
                     key={product.id} 
-                    className="px-3 py-2 flex items-center gap-3 hover:bg-stone-50 cursor-pointer transition-colors" 
+                    className="px-3 py-2 flex items-center gap-3 hover:bg-gray-50 cursor-pointer transition-colors" 
                     onClick={() => handleResultClick(product.id)}
                   >
-                    <div className="w-10 h-10 bg-stone-100 rounded">
+                    <div className="w-10 h-10 bg-gray-100 rounded">
                       <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover rounded" />
                     </div>
                     <div className="flex-1">
-                      <div className="text-sm font-medium line-clamp-1 text-stone-900">{product.name}</div>
+                      <div className="text-sm font-medium line-clamp-1 text-black">{product.name}</div>
                       <div className="flex justify-between items-center">
-                        <div className="text-xs text-stone-500">
+                        <div className="text-xs text-gray-500">
                           ₹{product.offerPrice || product.price}
                           {product.offerPrice && (
-                            <span className="text-stone-400 line-through ml-1">₹{product.price}</span>
+                            <span className="text-gray-400 line-through ml-1">₹{product.price}</span>
                           )}
                         </div>
                         {product.category && (
-                          <Badge variant="outline" className="text-stone-600 bg-stone-50 border-stone-200 text-xs">
+                          <Badge variant="outline" className="text-gray-600 bg-gray-50 border-gray-200 text-xs">
                             {product.category}
                           </Badge>
                         )}
@@ -195,9 +195,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
                   </div>
                 ))}
               </div>
-              <div className="px-3 py-2 border-t border-stone-100">
+              <div className="px-3 py-2 border-t border-gray-100">
                 <Button 
-                  className="w-full text-sm bg-stone-900 hover:bg-stone-800 text-white" 
+                  className="w-full text-sm bg-black hover:bg-gray-800 text-white" 
                   onClick={handleSearchSubmit}
                 >
                   See all results
@@ -205,12 +205,12 @@ const SearchBar: React.FC<SearchBarProps> = ({
               </div>
             </div>
           ) : searchTerm.trim() ? (
-            <div className="p-3 text-center text-stone-500">
+            <div className="p-3 text-center text-gray-500">
               No products found for "{searchTerm}"
             </div>
           ) : (
             <div className="py-2">
-              <div className="px-3 py-2 text-sm font-medium text-stone-500 border-b border-stone-100">
+              <div className="px-3 py-2 text-sm font-medium text-gray-500 border-b border-gray-100">
                 Popular searches
               </div>
               <div className="p-3 flex flex-wrap gap-2">
@@ -218,7 +218,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                   <Badge 
                     key={keyword}
                     variant="outline" 
-                    className="bg-stone-50 hover:bg-stone-100 border-stone-200 text-stone-600 cursor-pointer transition-colors py-1 px-3"
+                    className="bg-gray-50 hover:bg-gray-100 border-gray-200 text-gray-600 cursor-pointer transition-colors py-1 px-3"
                     onClick={() => handleKeywordClick(keyword)}
                   >
                     {keyword}

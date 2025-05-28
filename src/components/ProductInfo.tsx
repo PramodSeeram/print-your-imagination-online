@@ -18,24 +18,40 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   onInfoClick
 }) => {
   return (
-    <div onClick={onInfoClick} className="block cursor-pointer">
-      <h3 className="font-medium text-slate-100 mb-1 line-clamp-2">{name}</h3>
+    <div className="cursor-pointer" onClick={onInfoClick}>
+      <h3 className="font-medium text-black mb-2 text-sm line-clamp-2 min-h-[2.5rem]">
+        {name}
+      </h3>
+      
       <div className="flex items-center mb-2">
         <div className="flex items-center">
-          <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500 mr-1" />
-          <span className="text-sm text-slate-300">{rating}</span>
+          {[...Array(5)].map((_, i) => (
+            <Star
+              key={i}
+              className={`h-3 w-3 ${
+                i < Math.floor(rating) 
+                  ? 'fill-black text-black' 
+                  : 'text-gray-300'
+              }`}
+            />
+          ))}
         </div>
+        <span className="text-xs text-gray-600 ml-1">({rating})</span>
       </div>
       
-      <div className="flex items-center space-x-2 mb-3">
-        <span className="font-medium text-slate-100">₹{offerPrice || price}</span>
+      <div className="flex items-center space-x-2">
+        <span className="text-black font-semibold">
+          ₹{offerPrice || price}
+        </span>
         {offerPrice && (
-          <div className="flex items-center space-x-2">
-            <span className="text-sm text-slate-400 line-through">₹{price}</span>
-            <span className="text-xs text-green-400 font-medium">
-              {Math.round((price - offerPrice) / price * 100)}% off
+          <>
+            <span className="text-gray-500 text-sm line-through">
+              ₹{price}
             </span>
-          </div>
+            <span className="text-green-600 text-xs font-medium">
+              {Math.round(((price - offerPrice) / price) * 100)}% off
+            </span>
+          </>
         )}
       </div>
     </div>

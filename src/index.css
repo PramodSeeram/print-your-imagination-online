@@ -7,33 +7,33 @@
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
-    --foreground: 0 0% 15%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 15%;
+    --card-foreground: 0 0% 0%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 15%;
+    --popover-foreground: 0 0% 0%;
 
-    --primary: 0 0% 15%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 30 15% 92%;
-    --secondary-foreground: 0 0% 15%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 0%;
 
-    --muted: 30 15% 95%;
+    --muted: 0 0% 96%;
     --muted-foreground: 0 0% 45%;
 
-    --accent: 30 15% 92%;
-    --accent-foreground: 0 0% 15%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 0%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 30 15% 88%;
-    --input: 30 15% 88%;
-    --ring: 0 0% 15%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 0%;
 
     --radius: 0.5rem;
   }
@@ -45,30 +45,30 @@
   }
 
   body {
-    @apply bg-background text-foreground font-inter;
+    @apply bg-white text-black font-inter;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-playfair font-medium;
+    @apply font-playfair font-medium text-black;
   }
 }
 
-/* Custom classes for elegant design */
+/* Custom classes for black and white design */
 @layer components {
   .container-avirva {
     @apply w-full max-w-[1400px] mx-auto px-4 md:px-6;
   }
   
   .btn-primary {
-    @apply bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-3 px-8 rounded-full transition-all duration-300 hover:scale-105;
+    @apply bg-black hover:bg-gray-800 text-white font-medium py-3 px-8 rounded-full transition-all duration-300 hover:scale-105;
   }
   
   .btn-secondary {
-    @apply bg-secondary hover:bg-secondary/90 text-secondary-foreground font-medium py-3 px-8 rounded-full transition-all duration-300 hover:scale-105;
+    @apply bg-white hover:bg-gray-100 text-black border border-black font-medium py-3 px-8 rounded-full transition-all duration-300 hover:scale-105;
   }
   
   .btn-accent {
-    @apply bg-accent hover:bg-accent/90 text-accent-foreground font-medium py-3 px-8 rounded-full transition-all duration-300 hover:scale-105;
+    @apply bg-gray-100 hover:bg-gray-200 text-black font-medium py-3 px-8 rounded-full transition-all duration-300 hover:scale-105;
   }
 
   .badge {
@@ -76,19 +76,19 @@
   }
 
   .badge-primary {
-    @apply badge bg-primary/10 text-primary border border-primary/20;
+    @apply badge bg-black text-white;
   }
 
   .badge-secondary {
-    @apply badge bg-secondary/50 text-secondary-foreground border border-secondary;
+    @apply badge bg-white text-black border border-black;
   }
 
   .badge-accent {
-    @apply badge bg-accent/50 text-accent-foreground border border-accent;
+    @apply badge bg-gray-100 text-black border border-gray-300;
   }
 
   .section-title {
-    @apply text-3xl md:text-4xl font-playfair font-medium mb-8 text-foreground;
+    @apply text-3xl md:text-4xl font-playfair font-medium mb-8 text-black;
   }
 
   .card-hover {
@@ -146,13 +146,13 @@
     animation: rotate 10s linear infinite;
   }
 
-  /* Elegant product card styles */
+  /* Product card styles */
   .product-card {
-    @apply bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
   }
 
   .newsletter-popup {
-    @apply bg-white rounded-2xl p-8 max-w-2xl mx-auto shadow-2xl;
+    @apply bg-white rounded-2xl p-8 max-w-2xl mx-auto shadow-2xl border border-gray-200;
   }
 }
 
