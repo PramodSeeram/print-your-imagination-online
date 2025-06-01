@@ -117,9 +117,9 @@ const Admin = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
+    <div className="min-h-screen flex bg-white">
       {/* Sidebar */}
-      <aside className="hidden lg:flex flex-col w-64 bg-gray-900 text-white">
+      <aside className="hidden lg:flex flex-col w-64 bg-black text-white">
         <div className="p-4 border-b border-gray-800">
           <div className="flex items-center">
             <Logo withText={false} />
@@ -190,7 +190,7 @@ const Admin = () => {
       {/* Main content */}
       <div className="flex-1 flex flex-col">
         {/* Admin header */}
-        <header className="bg-white shadow-sm border-b px-6 py-3">
+        <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <Button 
@@ -201,7 +201,7 @@ const Admin = () => {
               >
                 <Menu className="h-5 w-5" />
               </Button>
-              <h1 className="text-xl font-semibold text-gray-800">Dashboard</h1>
+              <h1 className="text-xl font-semibold text-black">Dashboard</h1>
             </div>
             <div className="flex items-center space-x-3">
               <Button variant="ghost" size="icon" className="relative">
@@ -218,36 +218,36 @@ const Admin = () => {
                   className="h-8 w-8 rounded-full mr-2" 
                 />
                 <div className="flex items-center">
-                  <span className="text-sm text-gray-700 mr-1">Admin User</span>
+                  <span className="text-sm text-black mr-1">Admin User</span>
                   <ChevronDown className="h-4 w-4 text-gray-500" />
                 </div>
               </div>
-              <Button variant="outline" size="sm">Logout</Button>
+              <Button variant="outline" size="sm" className="border-gray-300 text-gray-700 hover:bg-gray-50">Logout</Button>
             </div>
           </div>
         </header>
 
         {/* Admin content */}
-        <main className="flex-1 p-6 overflow-y-auto">
+        <main className="flex-1 p-6 overflow-y-auto bg-gray-50">
           {/* Action buttons */}
           <div className="mb-8 flex flex-wrap gap-3">
-            <Button className="flex items-center gap-2 bg-teal hover:bg-teal-600">
+            <Button className="flex items-center gap-2 bg-black hover:bg-gray-800 text-white">
               <PlusCircle className="h-4 w-4" />
               Add New Product
             </Button>
-            <Button className="flex items-center gap-2 bg-indigo hover:bg-indigo-600">
+            <Button className="flex items-center gap-2 bg-gray-700 hover:bg-gray-600 text-white">
               <Calendar className="h-4 w-4" />
               Schedule Promotion
             </Button>
-            <Button className="flex items-center gap-2 bg-saffron hover:bg-saffron-600">
+            <Button className="flex items-center gap-2 bg-gray-600 hover:bg-gray-500 text-white">
               <Percent className="h-4 w-4" />
               Create Discount
             </Button>
-            <Button variant="outline" className="flex items-center gap-2 ml-auto">
+            <Button variant="outline" className="flex items-center gap-2 ml-auto border-gray-300 text-gray-700 hover:bg-gray-50">
               <Download className="h-4 w-4" />
               Export
             </Button>
-            <Button variant="outline" className="flex items-center gap-2">
+            <Button variant="outline" className="flex items-center gap-2 border-gray-300 text-gray-700 hover:bg-gray-50">
               <Upload className="h-4 w-4" />
               Import
             </Button>
@@ -262,8 +262,8 @@ const Admin = () => {
               trend="from last month"
               trendIsPositive={true}
               icon={BarChart3}
-              iconBgClass="bg-teal-100"
-              iconColorClass="text-teal-600"
+              iconBgClass="bg-gray-100"
+              iconColorClass="text-gray-600"
             />
             <AdminStatCard
               title="Orders"
@@ -272,8 +272,8 @@ const Admin = () => {
               trend="from last month"
               trendIsPositive={true}
               icon={ShoppingBag}
-              iconBgClass="bg-indigo-100"
-              iconColorClass="text-indigo-600"
+              iconBgClass="bg-gray-100"
+              iconColorClass="text-gray-600"
             />
             <AdminStatCard
               title="Products"
@@ -282,8 +282,8 @@ const Admin = () => {
               trend="new this month"
               trendIsPositive={true}
               icon={Package}
-              iconBgClass="bg-saffron-100"
-              iconColorClass="text-saffron-600"
+              iconBgClass="bg-gray-100"
+              iconColorClass="text-gray-600"
             />
             <AdminStatCard
               title="Tickets"
@@ -292,8 +292,8 @@ const Admin = () => {
               trend="open tickets"
               trendIsPositive={false}
               icon={MessageSquare}
-              iconBgClass="bg-purple-100"
-              iconColorClass="text-purple-600"
+              iconBgClass="bg-gray-100"
+              iconColorClass="text-gray-600"
             />
           </div>
 

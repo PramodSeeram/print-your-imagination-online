@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Heart, ShoppingCart, User, ChevronDown, Search, Menu, X, MapPin } from 'lucide-react';
+import { Heart, ShoppingCart, User, ChevronDown, Search, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Logo from './Logo';
@@ -90,22 +90,25 @@ const Header = () => {
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-      {/* Top bar with location and currency */}
-      <div className="bg-gray-50 border-b border-gray-200">
+      {/* Top bar */}
+      <div className="bg-black text-white border-b">
         <div className="container-avirva">
           <div className="flex justify-between items-center py-2 text-sm">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center text-gray-600">
-                <MapPin className="h-3 w-3 mr-1" />
-                <span>Deliver to: Delhi 110001</span>
-              </div>
+            <div className="flex items-center space-x-6">
+              <span>📧 info@avirva.com</span>
+              <span>📞 +91 12345 67890</span>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center text-gray-600">
-                <span className="mr-1">🇮🇳</span>
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center">
+                <span className="mr-2">🇮🇳</span>
                 <span>INR</span>
               </div>
-              <span className="text-gray-600">Free shipping above ₹599</span>
+              <span>Free shipping above ₹599</span>
+              <div className="flex space-x-3">
+                <a href="#" className="hover:text-gray-300">Facebook</a>
+                <a href="#" className="hover:text-gray-300">Twitter</a>
+                <a href="#" className="hover:text-gray-300">Instagram</a>
+              </div>
             </div>
           </div>
         </div>

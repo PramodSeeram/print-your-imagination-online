@@ -15,7 +15,6 @@ const ProductOptionsSelector: React.FC<ProductOptionsSelectorProps> = ({
   selectedColor
 }) => {
   const sizes = ['S', 'M', 'L', 'XL'];
-  const colors = ['Black', 'White', 'Gray', 'Brown'];
   const materials = [
     { name: 'Sheesham Wood', selected: true },
     { name: 'Mango Wood', selected: false },
@@ -62,25 +61,17 @@ const ProductOptionsSelector: React.FC<ProductOptionsSelectorProps> = ({
           {materials.map((material) => (
             <div key={material.name} className="relative">
               <button
-                className={`relative w-full px-3 py-2 text-xs border rounded transition-all ${
+                className={`relative w-full px-3 py-2 text-xs border rounded transition-all overflow-hidden ${
                   material.selected
-                    ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-300 bg-white text-black hover:border-black'
+                    ? 'border-black bg-gray-100 text-black'
+                    : 'border-gray-300 bg-white text-gray-400 hover:border-black'
                 }`}
               >
-                {material.name}
+                <span className={material.selected ? 'relative z-10' : ''}>{material.name}</span>
                 {!material.selected && (
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div 
-                      className="w-full h-0.5 bg-red-500 transform rotate-12 origin-center"
-                      style={{ 
-                        position: 'absolute',
-                        top: '50%',
-                        left: '0',
-                        transform: 'translateY(-50%) rotate(-12deg)'
-                      }}
-                    ></div>
-                  </div>
+                  <div 
+                    className="absolute top-1/2 left-0 w-full h-0.5 bg-red-500 transform -translate-y-1/2 rotate-12"
+                  ></div>
                 )}
               </button>
             </div>
