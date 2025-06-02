@@ -33,7 +33,6 @@ const Index = () => {
   const [recentlyViewedProducts, setRecentlyViewedProducts] = useState<Product[]>([]);
   const [browsingHistory, setBrowsingHistory] = useState<{category: string, items: Product[]}[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const [showNewsletterPopup, setShowNewsletterPopup] = useState<boolean>(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -279,63 +278,9 @@ const Index = () => {
     window.dispatchEvent(event);
   };
 
-  // Show newsletter popup after 3 seconds
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowNewsletterPopup(true);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
-      
-      {/* Newsletter Popup */}
-      {showNewsletterPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-8 max-w-2xl mx-auto shadow-2xl border border-gray-200 relative">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
-              onClick={() => setShowNewsletterPopup(false)}
-            >
-              <X className="h-5 w-5" />
-            </Button>
-            
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div>
-                <h2 className="font-playfair text-3xl font-medium mb-4 text-black">
-                  Join the our family
-                </h2>
-                <p className="text-gray-600 mb-6 leading-relaxed">
-                  Sign up for our newsletter and receive updates you're looking for: interior 
-                  inspiration, the latest trends and discounts
-                </p>
-                <div className="flex border border-gray-300 rounded-full overflow-hidden bg-white">
-                  <input
-                    type="email"
-                    placeholder="Email address......"
-                    className="flex-1 px-6 py-4 focus:outline-none bg-white text-black placeholder-gray-500 text-base"
-                  />
-                  <Button className="bg-black hover:bg-gray-800 text-white px-8 py-4 rounded-none font-medium text-base whitespace-nowrap">
-                    Send
-                  </Button>
-                </div>
-              </div>
-              <div className="hidden md:block">
-                <img 
-                  src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                  alt="Furniture"
-                  className="w-full h-80 object-cover rounded-lg"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
       
       <main className="flex-grow bg-white">
         {/* Hero Section */}
