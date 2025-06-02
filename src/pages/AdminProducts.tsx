@@ -28,7 +28,7 @@ import AdminMobileNavigation from '@/components/AdminMobileNavigation';
 import AddProductForm from '@/components/AddProductForm';
 import { useToast } from '@/hooks/use-toast';
 
-// Updated Product interface
+// Product interface matching the one in AddProductForm
 interface Product {
   id: string;
   name: string;
@@ -37,13 +37,13 @@ interface Product {
   categories: string[];
   status: string;
   imageUrl: string;
-  description?: string;
-  category?: string;
+  description: string;
+  category: string;
   subcategory?: string;
-  sku?: string;
-  colors?: string[];
-  features?: string[];
-  images?: string[];
+  sku: string;
+  colors: string[];
+  features: string[];
+  images: string[];
 }
 
 // Initial mock data for products
@@ -158,7 +158,6 @@ const AdminProducts = () => {
     const newProduct: Product = {
       ...productData,
       id: Date.now().toString(),
-      categories: [productData.category || ''],
     };
     setProducts([...products, newProduct]);
     setShowAddForm(false);
@@ -168,7 +167,7 @@ const AdminProducts = () => {
     if (editingProduct) {
       const updatedProducts = products.map(product =>
         product.id === editingProduct.id
-          ? { ...productData, id: editingProduct.id, categories: [productData.category || ''] }
+          ? { ...productData, id: editingProduct.id }
           : product
       );
       setProducts(updatedProducts);

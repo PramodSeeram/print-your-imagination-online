@@ -39,6 +39,7 @@ interface Product {
   features: string[];
   imageUrl: string;
   images: string[];
+  categories: string[];
 }
 
 interface AddProductFormProps {
@@ -96,13 +97,20 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
   });
 
   const onSubmit = (data: ProductFormData) => {
-    const productData = {
-      ...data,
+    const productData: Omit<Product, 'id'> = {
+      name: data.name,
+      price: data.price,
+      description: data.description,
+      category: data.category,
+      subcategory: data.subcategory,
       stock: parseInt(data.stock),
+      sku: data.sku,
+      status: data.status,
       colors: selectedColors,
       features,
       imageUrl: imageUrl || 'https://images.unsplash.com/photo-1544376798-76d0953d1506?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       images: additionalImages,
+      categories: [data.category],
     };
     
     onSave(productData);
