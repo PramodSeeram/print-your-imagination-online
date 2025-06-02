@@ -25,9 +25,29 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import Logo from '@/components/Logo';
 import AdminMobileNavigation from '@/components/AdminMobileNavigation';
+import AddProductForm from '@/components/AddProductForm';
+import { useToast } from '@/hooks/use-toast';
 
-// Mock data for products
-const PRODUCTS = [
+// Updated Product interface
+interface Product {
+  id: string;
+  name: string;
+  price: string;
+  stock: number;
+  categories: string[];
+  status: string;
+  imageUrl: string;
+  description?: string;
+  category?: string;
+  subcategory?: string;
+  sku?: string;
+  colors?: string[];
+  features?: string[];
+  images?: string[];
+}
+
+// Initial mock data for products
+const INITIAL_PRODUCTS: Product[] = [
   {
     id: "1",
     name: "Customizable Desk Organizer",
@@ -35,7 +55,13 @@ const PRODUCTS = [
     stock: 45,
     categories: ["Home Decor", "Desk Accessories"],
     status: "Active",
-    imageUrl: "https://images.unsplash.com/photo-1544376798-76d0953d1506?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1544376798-76d0953d1506?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+    description: "A versatile desk organizer that can be customized to fit your workspace needs.",
+    category: "Home Decor",
+    sku: "DO-001",
+    colors: ["Natural Wood", "Black", "White"],
+    features: ["Customizable compartments", "Eco-friendly material", "Easy assembly"],
+    images: []
   },
   {
     id: "2",
@@ -44,7 +70,13 @@ const PRODUCTS = [
     stock: 32,
     categories: ["Miniatures", "Landmarks"],
     status: "Active",
-    imageUrl: "https://images.unsplash.com/photo-1564507592333-c60657eea523?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1564507592333-c60657eea523?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+    description: "Detailed miniature replica of the iconic Taj Mahal.",
+    category: "Miniatures",
+    sku: "TM-001",
+    colors: ["White", "Gold"],
+    features: ["Hand-crafted details", "Premium materials", "Perfect for display"],
+    images: []
   },
   {
     id: "3",
@@ -53,7 +85,13 @@ const PRODUCTS = [
     stock: 18,
     categories: ["Gifts & Custom", "Personalized Nameplates"],
     status: "Active",
-    imageUrl: "https://images.unsplash.com/photo-1557180295-76eee20ae8aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1557180295-76eee20ae8aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+    description: "Personalized family name plate for your home.",
+    category: "Gifts & Custom",
+    sku: "NP-001",
+    colors: ["Natural Wood", "Black", "Brown"],
+    features: ["Personalized engraving", "Weather resistant", "Easy mounting"],
+    images: []
   },
   {
     id: "4",
@@ -62,7 +100,13 @@ const PRODUCTS = [
     stock: 27,
     categories: ["Home Decor", "Planters"],
     status: "Out of Stock",
-    imageUrl: "https://images.unsplash.com/photo-1545194445-dddb8f4487c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1545194445-dddb8f4487c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+    description: "Modern geometric design plant holder for indoor plants.",
+    category: "Home Decor",
+    sku: "PH-001",
+    colors: ["Black", "White", "Gold"],
+    features: ["Modern design", "Drainage system", "Multiple sizes"],
+    images: []
   },
   {
     id: "5",
@@ -71,7 +115,13 @@ const PRODUCTS = [
     stock: 15,
     categories: ["Home Decor", "Lighting"],
     status: "Active",
-    imageUrl: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+    description: "Elegant geometric lamp shade for ambient lighting.",
+    category: "Home Decor",
+    sku: "LS-001",
+    colors: ["Black", "White", "Gold", "Silver"],
+    features: ["Geometric design", "LED compatible", "Easy installation"],
+    images: []
   }
 ];
 
@@ -79,6 +129,10 @@ const AdminProducts = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
+  const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const { toast } = useToast();
   
   const toggleProductSelection = (id: string) => {
     if (selectedProducts.includes(id)) {
@@ -89,16 +143,63 @@ const AdminProducts = () => {
   };
 
   const toggleSelectAll = () => {
-    if (selectedProducts.length === PRODUCTS.length) {
+    if (selectedProducts.length === products.length) {
       setSelectedProducts([]);
     } else {
-      setSelectedProducts(PRODUCTS.map(product => product.id));
+      setSelectedProducts(products.map(product => product.id));
     }
   };
   
-  const filteredProducts = PRODUCTS.filter(product => 
+  const filteredProducts = products.filter(product => 
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleAddProduct = (productData: Omit<Product, 'id'>) => {
+    const newProduct: Product = {
+      ...productData,
+      id: Date.now().toString(),
+      categories: [productData.category || ''],
+    };
+    setProducts([...products, newProduct]);
+    setShowAddForm(false);
+  };
+
+  const handleEditProduct = (productData: Omit<Product, 'id'>) => {
+    if (editingProduct) {
+      const updatedProducts = products.map(product =>
+        product.id === editingProduct.id
+          ? { ...productData, id: editingProduct.id, categories: [productData.category || ''] }
+          : product
+      );
+      setProducts(updatedProducts);
+      setEditingProduct(null);
+    }
+  };
+
+  const handleDeleteProduct = (productId: string) => {
+    if (confirm('Are you sure you want to delete this product?')) {
+      setProducts(products.filter(product => product.id !== productId));
+      toast({
+        title: 'Product Deleted',
+        description: 'The product has been successfully deleted.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedProducts.length === 0) return;
+    
+    if (confirm(`Are you sure you want to delete ${selectedProducts.length} product(s)?`)) {
+      setProducts(products.filter(product => !selectedProducts.includes(product.id)));
+      setSelectedProducts([]);
+      toast({
+        title: 'Products Deleted',
+        description: `${selectedProducts.length} product(s) have been successfully deleted.`,
+        variant: 'destructive',
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen flex bg-gray-50">
@@ -233,7 +334,16 @@ const AdminProducts = () => {
                   <Download className="h-4 w-4" />
                   Export
                 </Button>
-                <Button className="flex items-center gap-2 bg-teal hover:bg-teal-600">
+                {selectedProducts.length > 0 && (
+                  <Button variant="destructive" onClick={handleBulkDelete} className="flex items-center gap-2">
+                    <Trash className="h-4 w-4" />
+                    Delete Selected ({selectedProducts.length})
+                  </Button>
+                )}
+                <Button 
+                  className="flex items-center gap-2 bg-teal hover:bg-teal-600"
+                  onClick={() => setShowAddForm(true)}
+                >
                   <PlusCircle className="h-4 w-4" />
                   Add Product
                 </Button>
@@ -249,11 +359,12 @@ const AdminProducts = () => {
                   <tr>
                     <th className="px-4 py-3 font-medium">
                       <Checkbox
-                        checked={selectedProducts.length === PRODUCTS.length}
+                        checked={selectedProducts.length === products.length}
                         onCheckedChange={toggleSelectAll}
                       />
                     </th>
                     <th className="px-4 py-3 font-medium">Product</th>
+                    <th className="px-4 py-3 font-medium">SKU</th>
                     <th className="px-4 py-3 font-medium">Price</th>
                     <th className="px-4 py-3 font-medium">Stock</th>
                     <th className="px-4 py-3 font-medium">Categories</th>
@@ -279,11 +390,23 @@ const AdminProducts = () => {
                               className="w-full h-full object-cover"
                             />
                           </div>
-                          <span className="font-medium text-gray-900">{product.name}</span>
+                          <div>
+                            <span className="font-medium text-gray-900 block">{product.name}</span>
+                            {product.description && (
+                              <span className="text-xs text-gray-500 block truncate max-w-xs">
+                                {product.description}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </td>
-                      <td className="px-4 py-3">{product.price}</td>
-                      <td className="px-4 py-3">{product.stock}</td>
+                      <td className="px-4 py-3 text-gray-600">{product.sku || 'N/A'}</td>
+                      <td className="px-4 py-3 font-medium">{product.price}</td>
+                      <td className="px-4 py-3">
+                        <span className={`${product.stock <= 10 ? 'text-red-600' : 'text-gray-900'}`}>
+                          {product.stock}
+                        </span>
+                      </td>
                       <td className="px-4 py-3">
                         <div className="flex flex-wrap gap-1">
                           {product.categories.map((category, index) => (
@@ -309,10 +432,20 @@ const AdminProducts = () => {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-8 w-8"
+                            onClick={() => setEditingProduct(product)}
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500">
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-8 w-8 text-red-500 hover:text-red-700"
+                            onClick={() => handleDeleteProduct(product.id)}
+                          >
                             <Trash className="h-4 w-4" />
                           </Button>
                         </div>
@@ -333,7 +466,7 @@ const AdminProducts = () => {
             <div className="px-6 py-3 flex items-center justify-between border-t">
               <p className="text-sm text-gray-500">
                 Showing <span className="font-medium">{filteredProducts.length}</span> of{" "}
-                <span className="font-medium">{PRODUCTS.length}</span> products
+                <span className="font-medium">{products.length}</span> products
               </p>
               <div className="flex items-center gap-2">
                 <Button variant="outline" size="sm" disabled>
@@ -347,6 +480,22 @@ const AdminProducts = () => {
           </div>
         </main>
       </div>
+
+      {/* Add Product Form */}
+      <AddProductForm
+        isOpen={showAddForm}
+        onClose={() => setShowAddForm(false)}
+        onSave={handleAddProduct}
+      />
+
+      {/* Edit Product Form */}
+      <AddProductForm
+        isOpen={!!editingProduct}
+        onClose={() => setEditingProduct(null)}
+        onSave={handleEditProduct}
+        product={editingProduct || undefined}
+        isEditing={true}
+      />
     </div>
   );
 };
