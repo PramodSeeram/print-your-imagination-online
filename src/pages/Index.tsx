@@ -315,13 +315,13 @@ const Index = () => {
                   Sign up for our newsletter and receive updates you're looking for: interior 
                   inspiration, the latest trends and discounts
                 </p>
-                <div className="flex rounded-full border border-gray-300 overflow-hidden">
+                <div className="flex border border-gray-300 rounded-full overflow-hidden bg-white">
                   <input
                     type="email"
                     placeholder="Email address......"
-                    className="flex-1 px-4 py-3 focus:outline-none bg-white text-black placeholder-gray-500"
+                    className="flex-1 px-6 py-4 focus:outline-none bg-white text-black placeholder-gray-500 text-base"
                   />
-                  <Button className="bg-black hover:bg-gray-800 text-white px-8 rounded-none">
+                  <Button className="bg-black hover:bg-gray-800 text-white px-8 py-4 rounded-none font-medium text-base whitespace-nowrap">
                     Send
                   </Button>
                 </div>

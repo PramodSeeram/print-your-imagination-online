@@ -61,7 +61,7 @@ const ProductOptionsSelector: React.FC<ProductOptionsSelectorProps> = ({
           {materials.map((material) => (
             <div key={material.name} className="relative">
               <button
-                className={`relative w-full px-3 py-2 text-xs border rounded transition-all overflow-hidden ${
+                className={`relative w-full px-3 py-2 text-xs border rounded transition-all ${
                   material.selected
                     ? 'border-black bg-gray-100 text-black'
                     : 'border-gray-300 bg-white text-gray-400 hover:border-black'
@@ -69,9 +69,12 @@ const ProductOptionsSelector: React.FC<ProductOptionsSelectorProps> = ({
               >
                 <span className={material.selected ? 'relative z-10' : ''}>{material.name}</span>
                 {!material.selected && (
-                  <div 
-                    className="absolute top-1/2 left-0 w-full h-0.5 bg-red-500 transform -translate-y-1/2 rotate-12"
-                  ></div>
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div 
+                      className="w-full h-0.5 bg-red-500 transform rotate-12"
+                      style={{ maxWidth: '80%' }}
+                    ></div>
+                  </div>
                 )}
               </button>
             </div>
