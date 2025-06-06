@@ -1,25 +1,6 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  LayoutGrid, 
-  Package, 
-  ShoppingBag, 
-  Users, 
-  Settings, 
-  BarChart3, 
-  Home,
-  Menu,
-  Bell,
-  ChevronDown,
-  PlusCircle,
-  Search,
-  Filter,
-  Edit,
-  Trash,
-  Download,
-  Upload
-} from 'lucide-react';
+import { LayoutGrid, Package, ShoppingBag, Users, Settings, BarChart3, Home, Menu, Bell, ChevronDown, PlusCircle, Search, Filter, Edit, Trash, Download, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -47,84 +28,77 @@ interface Product {
 }
 
 // Initial mock data for products
-const INITIAL_PRODUCTS: Product[] = [
-  {
-    id: "1",
-    name: "Customizable Desk Organizer",
-    price: "₹699",
-    stock: 45,
-    categories: ["Home Decor", "Desk Accessories"],
-    status: "Active",
-    imageUrl: "https://images.unsplash.com/photo-1544376798-76d0953d1506?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-    description: "A versatile desk organizer that can be customized to fit your workspace needs.",
-    category: "Home Decor",
-    sku: "DO-001",
-    colors: ["Natural Wood", "Black", "White"],
-    features: ["Customizable compartments", "Eco-friendly material", "Easy assembly"],
-    images: []
-  },
-  {
-    id: "2",
-    name: "Miniature Taj Mahal",
-    price: "₹799",
-    stock: 32,
-    categories: ["Miniatures", "Landmarks"],
-    status: "Active",
-    imageUrl: "https://images.unsplash.com/photo-1564507592333-c60657eea523?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-    description: "Detailed miniature replica of the iconic Taj Mahal.",
-    category: "Miniatures",
-    sku: "TM-001",
-    colors: ["White", "Gold"],
-    features: ["Hand-crafted details", "Premium materials", "Perfect for display"],
-    images: []
-  },
-  {
-    id: "3",
-    name: "Family Name Plate",
-    price: "₹999",
-    stock: 18,
-    categories: ["Gifts & Custom", "Personalized Nameplates"],
-    status: "Active",
-    imageUrl: "https://images.unsplash.com/photo-1557180295-76eee20ae8aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-    description: "Personalized family name plate for your home.",
-    category: "Gifts & Custom",
-    sku: "NP-001",
-    colors: ["Natural Wood", "Black", "Brown"],
-    features: ["Personalized engraving", "Weather resistant", "Easy mounting"],
-    images: []
-  },
-  {
-    id: "4",
-    name: "Geometric Plant Holder",
-    price: "₹599",
-    stock: 27,
-    categories: ["Home Decor", "Planters"],
-    status: "Out of Stock",
-    imageUrl: "https://images.unsplash.com/photo-1545194445-dddb8f4487c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-    description: "Modern geometric design plant holder for indoor plants.",
-    category: "Home Decor",
-    sku: "PH-001",
-    colors: ["Black", "White", "Gold"],
-    features: ["Modern design", "Drainage system", "Multiple sizes"],
-    images: []
-  },
-  {
-    id: "5",
-    name: "Geometric Lamp Shade",
-    price: "₹1,499",
-    stock: 15,
-    categories: ["Home Decor", "Lighting"],
-    status: "Active",
-    imageUrl: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-    description: "Elegant geometric lamp shade for ambient lighting.",
-    category: "Home Decor",
-    sku: "LS-001",
-    colors: ["Black", "White", "Gold", "Silver"],
-    features: ["Geometric design", "LED compatible", "Easy installation"],
-    images: []
-  }
-];
-
+const INITIAL_PRODUCTS: Product[] = [{
+  id: "1",
+  name: "Customizable Desk Organizer",
+  price: "₹699",
+  stock: 45,
+  categories: ["Home Decor", "Desk Accessories"],
+  status: "Active",
+  imageUrl: "https://images.unsplash.com/photo-1544376798-76d0953d1506?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+  description: "A versatile desk organizer that can be customized to fit your workspace needs.",
+  category: "Home Decor",
+  sku: "DO-001",
+  colors: ["Natural Wood", "Black", "White"],
+  features: ["Customizable compartments", "Eco-friendly material", "Easy assembly"],
+  images: []
+}, {
+  id: "2",
+  name: "Miniature Taj Mahal",
+  price: "₹799",
+  stock: 32,
+  categories: ["Miniatures", "Landmarks"],
+  status: "Active",
+  imageUrl: "https://images.unsplash.com/photo-1564507592333-c60657eea523?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+  description: "Detailed miniature replica of the iconic Taj Mahal.",
+  category: "Miniatures",
+  sku: "TM-001",
+  colors: ["White", "Gold"],
+  features: ["Hand-crafted details", "Premium materials", "Perfect for display"],
+  images: []
+}, {
+  id: "3",
+  name: "Family Name Plate",
+  price: "₹999",
+  stock: 18,
+  categories: ["Gifts & Custom", "Personalized Nameplates"],
+  status: "Active",
+  imageUrl: "https://images.unsplash.com/photo-1557180295-76eee20ae8aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+  description: "Personalized family name plate for your home.",
+  category: "Gifts & Custom",
+  sku: "NP-001",
+  colors: ["Natural Wood", "Black", "Brown"],
+  features: ["Personalized engraving", "Weather resistant", "Easy mounting"],
+  images: []
+}, {
+  id: "4",
+  name: "Geometric Plant Holder",
+  price: "₹599",
+  stock: 27,
+  categories: ["Home Decor", "Planters"],
+  status: "Out of Stock",
+  imageUrl: "https://images.unsplash.com/photo-1545194445-dddb8f4487c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+  description: "Modern geometric design plant holder for indoor plants.",
+  category: "Home Decor",
+  sku: "PH-001",
+  colors: ["Black", "White", "Gold"],
+  features: ["Modern design", "Drainage system", "Multiple sizes"],
+  images: []
+}, {
+  id: "5",
+  name: "Geometric Lamp Shade",
+  price: "₹1,499",
+  stock: 15,
+  categories: ["Home Decor", "Lighting"],
+  status: "Active",
+  imageUrl: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
+  description: "Elegant geometric lamp shade for ambient lighting.",
+  category: "Home Decor",
+  sku: "LS-001",
+  colors: ["Black", "White", "Gold", "Silver"],
+  features: ["Geometric design", "LED compatible", "Easy installation"],
+  images: []
+}];
 const AdminProducts = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -132,8 +106,9 @@ const AdminProducts = () => {
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const { toast } = useToast();
-  
+  const {
+    toast
+  } = useToast();
   const toggleProductSelection = (id: string) => {
     if (selectedProducts.includes(id)) {
       setSelectedProducts(selectedProducts.filter(productId => productId !== id));
@@ -141,7 +116,6 @@ const AdminProducts = () => {
       setSelectedProducts([...selectedProducts, id]);
     }
   };
-
   const toggleSelectAll = () => {
     if (selectedProducts.length === products.length) {
       setSelectedProducts([]);
@@ -149,59 +123,48 @@ const AdminProducts = () => {
       setSelectedProducts(products.map(product => product.id));
     }
   };
-  
-  const filteredProducts = products.filter(product => 
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+  const filteredProducts = products.filter(product => product.name.toLowerCase().includes(searchTerm.toLowerCase()));
   const handleAddProduct = (productData: Omit<Product, 'id'>) => {
     const newProduct: Product = {
       ...productData,
-      id: Date.now().toString(),
+      id: Date.now().toString()
     };
     setProducts([...products, newProduct]);
     setShowAddForm(false);
   };
-
   const handleEditProduct = (productData: Omit<Product, 'id'>) => {
     if (editingProduct) {
-      const updatedProducts = products.map(product =>
-        product.id === editingProduct.id
-          ? { ...productData, id: editingProduct.id }
-          : product
-      );
+      const updatedProducts = products.map(product => product.id === editingProduct.id ? {
+        ...productData,
+        id: editingProduct.id
+      } : product);
       setProducts(updatedProducts);
       setEditingProduct(null);
     }
   };
-
   const handleDeleteProduct = (productId: string) => {
     if (confirm('Are you sure you want to delete this product?')) {
       setProducts(products.filter(product => product.id !== productId));
       toast({
         title: 'Product Deleted',
         description: 'The product has been successfully deleted.',
-        variant: 'destructive',
+        variant: 'destructive'
       });
     }
   };
-
   const handleBulkDelete = () => {
     if (selectedProducts.length === 0) return;
-    
     if (confirm(`Are you sure you want to delete ${selectedProducts.length} product(s)?`)) {
       setProducts(products.filter(product => !selectedProducts.includes(product.id)));
       setSelectedProducts([]);
       toast({
         title: 'Products Deleted',
         description: `${selectedProducts.length} product(s) have been successfully deleted.`,
-        variant: 'destructive',
+        variant: 'destructive'
       });
     }
   };
-
-  return (
-    <div className="min-h-screen flex bg-gray-50">
+  return <div className="min-h-screen flex bg-gray-50">
       {/* Sidebar - reuse from Admin.tsx */}
       <aside className="hidden lg:flex flex-col w-64 bg-gray-900 text-white">
         <div className="p-4 border-b border-gray-800">
@@ -271,12 +234,7 @@ const AdminProducts = () => {
         <header className="bg-white shadow-sm border-b px-6 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="lg:hidden mr-2"
-                onClick={() => setMobileMenuOpen(true)}
-              >
+              <Button variant="ghost" size="icon" className="lg:hidden mr-2" onClick={() => setMobileMenuOpen(true)}>
                 <Menu className="h-5 w-5" />
               </Button>
               <h1 className="text-xl font-semibold text-gray-800">Products</h1>
@@ -290,11 +248,7 @@ const AdminProducts = () => {
               </Button>
               <div className="hidden md:block border-l border-gray-300 h-6 mx-2" />
               <div className="hidden md:flex items-center">
-                <img 
-                  src="https://randomuser.me/api/portraits/men/45.jpg" 
-                  alt="Admin user" 
-                  className="h-8 w-8 rounded-full mr-2" 
-                />
+                <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Admin user" className="h-8 w-8 rounded-full mr-2" />
                 <div className="flex items-center">
                   <span className="text-sm text-gray-700 mr-1">Admin User</span>
                   <ChevronDown className="h-4 w-4 text-gray-500" />
@@ -312,13 +266,7 @@ const AdminProducts = () => {
             <div className="flex flex-wrap gap-4 items-center justify-between">
               <div className="relative flex-1 min-w-[200px]">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-                <Input
-                  type="text"
-                  placeholder="Search products..."
-                  className="pl-10"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
+                <Input type="text" placeholder="Search products..." className="pl-10" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
               </div>
               <div className="flex gap-3 flex-wrap">
                 <Button variant="outline" className="flex items-center gap-2">
@@ -333,16 +281,11 @@ const AdminProducts = () => {
                   <Download className="h-4 w-4" />
                   Export
                 </Button>
-                {selectedProducts.length > 0 && (
-                  <Button variant="destructive" onClick={handleBulkDelete} className="flex items-center gap-2">
+                {selectedProducts.length > 0 && <Button variant="destructive" onClick={handleBulkDelete} className="flex items-center gap-2">
                     <Trash className="h-4 w-4" />
                     Delete Selected ({selectedProducts.length})
-                  </Button>
-                )}
-                <Button 
-                  className="flex items-center gap-2 bg-teal hover:bg-teal-600"
-                  onClick={() => setShowAddForm(true)}
-                >
+                  </Button>}
+                <Button onClick={() => setShowAddForm(true)} className="flex items-center gap-2 bg-zinc-950 hover:bg-zinc-800">
                   <PlusCircle className="h-4 w-4" />
                   Add Product
                 </Button>
@@ -357,10 +300,7 @@ const AdminProducts = () => {
                 <thead className="text-gray-700 bg-gray-50">
                   <tr>
                     <th className="px-4 py-3 font-medium">
-                      <Checkbox
-                        checked={selectedProducts.length === products.length}
-                        onCheckedChange={toggleSelectAll}
-                      />
+                      <Checkbox checked={selectedProducts.length === products.length} onCheckedChange={toggleSelectAll} />
                     </th>
                     <th className="px-4 py-3 font-medium">Product</th>
                     <th className="px-4 py-3 font-medium">SKU</th>
@@ -372,30 +312,20 @@ const AdminProducts = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredProducts.map((product) => (
-                    <tr key={product.id} className="border-b">
+                  {filteredProducts.map(product => <tr key={product.id} className="border-b">
                       <td className="px-4 py-3">
-                        <Checkbox
-                          checked={selectedProducts.includes(product.id)}
-                          onCheckedChange={() => toggleProductSelection(product.id)}
-                        />
+                        <Checkbox checked={selectedProducts.includes(product.id)} onCheckedChange={() => toggleProductSelection(product.id)} />
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center">
                           <div className="w-10 h-10 bg-gray-100 rounded mr-3 flex-shrink-0 overflow-hidden">
-                            <img 
-                              src={product.imageUrl} 
-                              alt={product.name}
-                              className="w-full h-full object-cover"
-                            />
+                            <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
                           </div>
                           <div>
                             <span className="font-medium text-gray-900 block">{product.name}</span>
-                            {product.description && (
-                              <span className="text-xs text-gray-500 block truncate max-w-xs">
+                            {product.description && <span className="text-xs text-gray-500 block truncate max-w-xs">
                                 {product.description}
-                              </span>
-                            )}
+                              </span>}
                           </div>
                         </div>
                       </td>
@@ -408,58 +338,34 @@ const AdminProducts = () => {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex flex-wrap gap-1">
-                          {product.categories.map((category, index) => (
-                            <span 
-                              key={index} 
-                              className="inline-block px-2 py-0.5 bg-gray-100 text-xs rounded"
-                            >
+                          {product.categories.map((category, index) => <span key={index} className="inline-block px-2 py-0.5 bg-gray-100 text-xs rounded">
                               {category}
-                            </span>
-                          ))}
+                            </span>)}
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <span 
-                          className={`inline-block px-2 py-0.5 text-xs rounded ${
-                            product.status === "Active" 
-                              ? "bg-green-100 text-green-800" 
-                              : "bg-red-100 text-red-800"
-                          }`}
-                        >
+                        <span className={`inline-block px-2 py-0.5 text-xs rounded ${product.status === "Active" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
                           {product.status}
                         </span>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-8 w-8"
-                            onClick={() => setEditingProduct(product)}
-                          >
+                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setEditingProduct(product)}>
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-8 w-8 text-red-500 hover:text-red-700"
-                            onClick={() => handleDeleteProduct(product.id)}
-                          >
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-700" onClick={() => handleDeleteProduct(product.id)}>
                             <Trash className="h-4 w-4" />
                           </Button>
                         </div>
                       </td>
-                    </tr>
-                  ))}
+                    </tr>)}
                 </tbody>
               </table>
             </div>
             
-            {filteredProducts.length === 0 && (
-              <div className="py-8 text-center text-gray-500">
+            {filteredProducts.length === 0 && <div className="py-8 text-center text-gray-500">
                 No products found. Try a different search term.
-              </div>
-            )}
+              </div>}
             
             {/* Pagination */}
             <div className="px-6 py-3 flex items-center justify-between border-t">
@@ -481,22 +387,10 @@ const AdminProducts = () => {
       </div>
 
       {/* Add Product Form */}
-      <AddProductForm
-        isOpen={showAddForm}
-        onClose={() => setShowAddForm(false)}
-        onSave={handleAddProduct}
-      />
+      <AddProductForm isOpen={showAddForm} onClose={() => setShowAddForm(false)} onSave={handleAddProduct} />
 
       {/* Edit Product Form */}
-      <AddProductForm
-        isOpen={!!editingProduct}
-        onClose={() => setEditingProduct(null)}
-        onSave={handleEditProduct}
-        product={editingProduct || undefined}
-        isEditing={true}
-      />
-    </div>
-  );
+      <AddProductForm isOpen={!!editingProduct} onClose={() => setEditingProduct(null)} onSave={handleEditProduct} product={editingProduct || undefined} isEditing={true} />
+    </div>;
 };
-
 export default AdminProducts;
