@@ -226,6 +226,12 @@ const Admin = () => {
             Reports
           </Link>
           
+          <p className="text-xs text-gray-400 font-medium mt-6 mb-3 uppercase">Content</p>
+          <Link to="/admin/slideshow" className="flex items-center py-2 px-3 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white mb-1">
+            <LayoutGrid className="h-5 w-5 mr-3" />
+            Slideshow
+          </Link>
+          
           <div className="mt-6">
             <Link to="/admin/settings" className="flex items-center py-2 px-3 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">
               <Settings className="h-5 w-5 mr-3" />
@@ -298,9 +304,9 @@ const Admin = () => {
         </header>
 
         {/* Admin content */}
-        <main className="flex-1 p-6 overflow-y-auto bg-gray-50">
+        <main className="flex-1 p-3 sm:p-6 overflow-y-auto bg-gray-50">
           {/* Action buttons */}
-          <div className="mb-8 flex flex-wrap gap-3">
+          <div className="mb-6 sm:mb-8 flex flex-wrap gap-2 sm:gap-3">
             <Button 
               className="flex items-center gap-2 bg-black hover:bg-gray-800 text-white"
               onClick={handleAddNewProduct}
@@ -341,7 +347,7 @@ const Admin = () => {
           </div>
           
           {/* Statistics */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
             <AdminStatCard
               title="Total Sales"
               value="₹1,24,568"

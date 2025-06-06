@@ -56,7 +56,7 @@
 /* Custom classes for black and white design */
 @layer components {
   .container-avirva {
-    @apply w-full max-w-[1400px] mx-auto px-4 md:px-6;
+    @apply w-full max-w-[1400px] mx-auto px-3 sm:px-4 md:px-6;
   }
   
   .btn-primary {
@@ -88,7 +88,7 @@
   }
 
   .section-title {
-    @apply text-3xl md:text-4xl font-playfair font-medium mb-8 text-black;
+    @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl font-playfair font-medium mb-6 sm:mb-8 text-black;
   }
 
   .card-hover {

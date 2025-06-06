@@ -15,6 +15,7 @@ import AdminCustomers from "./pages/AdminCustomers";
 import AdminAnalytics from "./pages/AdminAnalytics";
 import AdminSettings from "./pages/AdminSettings";
 import AdminTickets from "./pages/AdminTickets";
+import AdminSlideshow from "./pages/AdminSlideshow";
 import CategoryPage from "./pages/CategoryPage";
 import ProductDetails from "./pages/ProductDetails";
 import SearchResults from "./pages/SearchResults";
@@ -60,6 +61,7 @@ const App = () => (
             <Route path="/admin/analytics" element={<AdminAnalytics />} />
             <Route path="/admin/settings" element={<AdminSettings />} />
             <Route path="/admin/tickets" element={<AdminTickets />} />
+            <Route path="/admin/slideshow" element={<AdminSlideshow />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

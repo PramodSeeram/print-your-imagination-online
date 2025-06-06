@@ -257,23 +257,9 @@ const Index = () => {
       <Header />
       
       <main className="flex-grow bg-white">
-        {/* Hero Section */}
-        <section className="relative h-[600px] overflow-hidden">
-          <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Hero" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-r from-white/80 to-transparent">
-            <div className="container-avirva h-full flex items-center">
-              <div className="max-w-2xl">
-                <p className="text-sm uppercase tracking-wider text-gray-600 mb-4">ADORN YOUR SPACE</p>
-                <h1 className="font-playfair text-5xl md:text-6xl font-medium text-black mb-6 leading-tight">
-                  Elevating Your<br />
-                  Lifestyle through Exquisite
-                </h1>
-                <Button className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-full text-lg" onClick={() => navigate('/category/1')}>
-                  Shop Now
-                </Button>
-              </div>
-            </div>
-          </div>
+        {/* Hero Section - Slideshow */}
+        <section className="relative h-[400px] sm:h-[500px] md:h-[600px] overflow-hidden">
+          <HeroBanner />
         </section>
 
         <div className="container-avirva py-16">

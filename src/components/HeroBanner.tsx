@@ -36,20 +36,52 @@ const BANNER_SLIDES = [
 
 const HeroBanner = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [slides, setSlides] = useState(BANNER_SLIDES);
+
+  useEffect(() => {
+    // Load slides from localStorage if available
+    const storedSlides = localStorage.getItem('heroSlides');
+    if (storedSlides) {
+      try {
+        const parsedSlides = JSON.parse(storedSlides);
+        const activeSlides = parsedSlides.filter((slide: any) => slide.isActive);
+        if (activeSlides.length > 0) {
+          setSlides(activeSlides);
+        }
+      } catch (error) {
+        console.error('Error parsing stored slides:', error);
+      }
+    }
+
+    // Listen for slideshow updates
+    const handleSlideshowUpdate = (event: CustomEvent) => {
+      const activeSlides = event.detail.filter((slide: any) => slide.isActive);
+      if (activeSlides.length > 0) {
+        setSlides(activeSlides);
+        setCurrentSlide(0);
+      }
+    };
+
+    window.addEventListener('slideshowUpdated', handleSlideshowUpdate as EventListener);
+    
+    return () => {
+      window.removeEventListener('slideshowUpdated', handleSlideshowUpdate as EventListener);
+    };
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev === BANNER_SLIDES.length - 1 ? 0 : prev + 1));
+      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
     }, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [slides.length]);
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
   };
 
-  const currentBanner = BANNER_SLIDES[currentSlide];
+  const currentBanner = slides[currentSlide];
 
   const alignmentClasses = {
     left: "items-start text-left",
@@ -59,7 +91,7 @@ const HeroBanner = () => {
 
   return (
     <div className="relative h-[500px] overflow-hidden">
-      {BANNER_SLIDES.map((slide, index) => (
+      {slides.map((slide, index) => (
         <div 
           key={slide.id}
           className={`absolute inset-0 transition-opacity duration-1000 ${
@@ -89,7 +121,7 @@ const HeroBanner = () => {
       </div>
 
       <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-3">
-        {BANNER_SLIDES.map((_, index) => (
+        {slides.map((_, index) => (
           <button 
             key={index} 
             onClick={() => goToSlide(index)}
