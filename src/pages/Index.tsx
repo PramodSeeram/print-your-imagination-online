@@ -347,7 +347,7 @@ const Index = () => {
                   <img src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?auto=format&fit=crop&w=800&q=80" alt="Curated Living" className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center p-6">
                     <div className="text-white">
-                      <h3 className="font-playfair text-xl font-medium mb-2">Curated Living</h3>
+                      <h3 className="font-playfair text-xl font-medium mb-2 text-gray-50">Discounts</h3>
                       <Button className="bg-white text-black hover:bg-gray-100 rounded-full px-4 py-1 text-sm" onClick={() => navigate('/category/3')}>
                         Shop Now
                       </Button>
