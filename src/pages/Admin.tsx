@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 import {
   LayoutGrid,
   Package,
@@ -107,6 +108,7 @@ const TOP_SELLING_PRODUCTS = [
 const Admin = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleViewAllOrders = () => {
     navigate('/admin/orders');
@@ -114,6 +116,62 @@ const Admin = () => {
 
   const handleViewAllProducts = () => {
     navigate('/admin/products');
+  };
+
+  const handleAddNewProduct = () => {
+    navigate('/admin/products');
+  };
+
+  const handleSchedulePromotion = () => {
+    toast({
+      title: "Schedule Promotion",
+      description: "Promotion scheduling feature coming soon!",
+    });
+  };
+
+  const handleCreateDiscount = () => {
+    toast({
+      title: "Create Discount",
+      description: "Discount creation feature coming soon!",
+    });
+  };
+
+  const handleExport = () => {
+    toast({
+      title: "Export Data",
+      description: "Exporting admin data...",
+    });
+    // Simulate export functionality
+    setTimeout(() => {
+      toast({
+        title: "Export Complete",
+        description: "Data has been exported successfully!",
+      });
+    }, 2000);
+  };
+
+  const handleImport = () => {
+    toast({
+      title: "Import Data",
+      description: "Import feature coming soon!",
+    });
+  };
+
+  const handleNotifications = () => {
+    toast({
+      title: "Notifications",
+      description: "You have 3 new notifications.",
+    });
+  };
+
+  const handleLogout = () => {
+    if (confirm('Are you sure you want to logout?')) {
+      navigate('/');
+      toast({
+        title: "Logged Out",
+        description: "You have been successfully logged out.",
+      });
+    }
   };
 
   return (
@@ -204,7 +262,12 @@ const Admin = () => {
               <h1 className="text-xl font-semibold text-black">Dashboard</h1>
             </div>
             <div className="flex items-center space-x-3">
-              <Button variant="ghost" size="icon" className="relative">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="relative"
+                onClick={handleNotifications}
+              >
                 <Bell className="h-5 w-5" />
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   3
@@ -222,7 +285,14 @@ const Admin = () => {
                   <ChevronDown className="h-4 w-4 text-gray-500" />
                 </div>
               </div>
-              <Button variant="outline" size="sm" className="border-gray-300 text-gray-700 hover:bg-gray-50">Logout</Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                onClick={handleLogout}
+              >
+                Logout
+              </Button>
             </div>
           </div>
         </header>
@@ -231,23 +301,40 @@ const Admin = () => {
         <main className="flex-1 p-6 overflow-y-auto bg-gray-50">
           {/* Action buttons */}
           <div className="mb-8 flex flex-wrap gap-3">
-            <Button className="flex items-center gap-2 bg-black hover:bg-gray-800 text-white">
+            <Button 
+              className="flex items-center gap-2 bg-black hover:bg-gray-800 text-white"
+              onClick={handleAddNewProduct}
+            >
               <PlusCircle className="h-4 w-4" />
               Add New Product
             </Button>
-            <Button className="flex items-center gap-2 bg-gray-700 hover:bg-gray-600 text-white">
+            <Button 
+              className="flex items-center gap-2 bg-gray-700 hover:bg-gray-600 text-white"
+              onClick={handleSchedulePromotion}
+            >
               <Calendar className="h-4 w-4" />
               Schedule Promotion
             </Button>
-            <Button className="flex items-center gap-2 bg-gray-600 hover:bg-gray-500 text-white">
+            <Button 
+              className="flex items-center gap-2 bg-gray-600 hover:bg-gray-500 text-white"
+              onClick={handleCreateDiscount}
+            >
               <Percent className="h-4 w-4" />
               Create Discount
             </Button>
-            <Button variant="outline" className="flex items-center gap-2 ml-auto border-gray-300 text-gray-700 hover:bg-gray-50">
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2 ml-auto border-gray-300 text-gray-700 hover:bg-gray-50"
+              onClick={handleExport}
+            >
               <Download className="h-4 w-4" />
               Export
             </Button>
-            <Button variant="outline" className="flex items-center gap-2 border-gray-300 text-gray-700 hover:bg-gray-50">
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2 border-gray-300 text-gray-700 hover:bg-gray-50"
+              onClick={handleImport}
+            >
               <Upload className="h-4 w-4" />
               Import
             </Button>
