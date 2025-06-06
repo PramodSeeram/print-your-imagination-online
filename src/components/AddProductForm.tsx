@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, ChangeEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,9 +9,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { X, Plus, Upload, Check } from 'lucide-react';
+import { X, Plus, Upload, Check, Image, Tag, Tags } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@/components/ui/badge';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const productSchema = z.object({
   name: z.string().min(1, 'Product name is required'),
@@ -91,7 +93,13 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
   const [newColor, setNewColor] = useState('');
   const [customColors, setCustomColors] = useState<string[]>([]);
   const [productTags, setProductTags] = useState<string[]>(product?.tags || []);
+  const [productStatus, setProductStatus] = useState<'Draft' | 'Live' | 'New' | 'Trending'>(
+    (product?.status === 'Active' ? 'Live' : product?.status) as 'Draft' | 'Live' | 'New' | 'Trending' || 'Draft'
+  );
+  const [tagsReflect, setTagsReflect] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const mainImageInputRef = useRef<HTMLInputElement>(null);
+  const additionalImagesInputRef = useRef<HTMLInputElement>(null);
   
   const { toast } = useToast();
 
@@ -118,12 +126,14 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
       subcategory: data.subcategory,
       stock: parseInt(data.stock),
       sku: data.sku,
-      status: data.status,
+      status: productStatus,
       colors: selectedColors,
       features,
       imageUrl: imageUrl || 'https://images.unsplash.com/photo-1544376798-76d0953d1506?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       images: additionalImages,
       categories: [data.category],
+      variants,
+      tags: [...productTags, ...tagsReflect],
     };
     
     onSave(productData);
@@ -152,6 +162,35 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
       setSelectedColors([...selectedColors, color]);
     }
   };
+  
+  const addCustomColor = () => {
+    if (newColor.trim() && !selectedColors.includes(newColor.trim())) {
+      setSelectedColors([...selectedColors, newColor.trim()]);
+      setCustomColors([...customColors, newColor.trim()]);
+      setNewColor('');
+    }
+  };
+
+  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>, type: 'main' | 'additional' | 'variant') => {
+    const files = e.target.files;
+    if (!files) return;
+
+    Array.from(files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const dataUrl = event.target?.result as string;
+        
+        if (type === 'main') {
+          setImageUrl(dataUrl);
+        } else if (type === 'additional') {
+          setAdditionalImages(prev => [...prev, dataUrl]);
+        } else {
+          setNewVariantImages(prev => [...prev, dataUrl]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
 
   const addImage = () => {
     if (newImageUrl.trim() && !additionalImages.includes(newImageUrl.trim())) {
@@ -162,6 +201,40 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
 
   const removeImage = (imageUrl: string) => {
     setAdditionalImages(additionalImages.filter(img => img !== imageUrl));
+  };
+  
+  const addVariant = () => {
+    if (newVariantColor && newVariantImages.length > 0) {
+      setVariants([
+        ...variants, 
+        {
+          color: newVariantColor,
+          size: newVariantSize || undefined,
+          images: [...newVariantImages]
+        }
+      ]);
+      setNewVariantColor('');
+      setNewVariantSize('');
+      setNewVariantImages([]);
+    } else {
+      toast({
+        title: 'Missing variant information',
+        description: 'Please add a color and at least one image for the variant.',
+        variant: 'destructive'
+      });
+    }
+  };
+  
+  const removeVariant = (index: number) => {
+    setVariants(variants.filter((_, i) => i !== index));
+  };
+  
+  const toggleTagReflect = (tag: 'Trending' | 'Most sold' | 'Discounts') => {
+    if (tagsReflect.includes(tag)) {
+      setTagsReflect(tagsReflect.filter(t => t !== tag));
+    } else {
+      setTagsReflect([...tagsReflect, tag]);
+    }
   };
 
   if (!isOpen) return null;
