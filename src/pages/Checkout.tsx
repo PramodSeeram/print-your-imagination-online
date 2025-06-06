@@ -246,7 +246,7 @@ const Checkout = () => {
                       </div>
                     </>}
                   
-                  <Button type="submit" className="w-full text-zinc-950 bg-zinc-500 hover:bg-zinc-400">
+                  <Button type="submit" className="w-full bg-gray-900 hover:bg-gray-800 text-purple-50">
                     Continue to Payment
                   </Button>
                 </form>
