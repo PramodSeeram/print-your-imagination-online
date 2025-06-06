@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,8 +9,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { X, Plus, Upload } from 'lucide-react';
+import { X, Plus, Upload, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const productSchema = z.object({
   name: z.string().min(1, 'Product name is required'),
@@ -40,6 +41,8 @@ interface Product {
   imageUrl: string;
   images: string[];
   categories: string[];
+  variants?: {color: string, size?: string, images: string[]}[];
+  tags?: string[];
 }
 
 interface AddProductFormProps {
@@ -79,6 +82,16 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
   const [imageUrl, setImageUrl] = useState(product?.imageUrl || '');
   const [additionalImages, setAdditionalImages] = useState<string[]>(product?.images || []);
   const [newImageUrl, setNewImageUrl] = useState('');
+  const [variants, setVariants] = useState<{color: string, size?: string, images: string[]}[]>(
+    product?.variants || []
+  );
+  const [newVariantColor, setNewVariantColor] = useState('');
+  const [newVariantSize, setNewVariantSize] = useState('');
+  const [newVariantImages, setNewVariantImages] = useState<string[]>([]);
+  const [newColor, setNewColor] = useState('');
+  const [customColors, setCustomColors] = useState<string[]>([]);
+  const [productTags, setProductTags] = useState<string[]>(product?.tags || []);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const { toast } = useToast();
 
