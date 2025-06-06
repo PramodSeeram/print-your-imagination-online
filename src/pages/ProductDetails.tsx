@@ -317,7 +317,7 @@ const ProductDetails = () => {
               
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-4 mb-8">
-                <Button className="flex-1 bg-indigo hover:bg-indigo-600" onClick={addToCart}>
+                <Button onClick={addToCart} className="flex-1 bg-orange-500 hover:bg-orange-400 text-slate-900">
                   <ShoppingBag className="h-5 w-5 mr-2" />
                   Add to Cart
                 </Button>
