@@ -322,7 +322,7 @@ const ProductDetails = () => {
                   Add to Cart
                 </Button>
                 
-                <Button className="flex-1 bg-teal hover:bg-teal-600" onClick={buyNow}>
+                <Button onClick={buyNow} className="flex-1 bg-slate-900 hover:bg-slate-800">
                   Buy Now
                 </Button>
                 
