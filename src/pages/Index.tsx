@@ -298,7 +298,10 @@ const Index = () => {
                   Elevating Your<br />
                   Lifestyle through Exquisite
                 </h1>
-                <Button className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-full text-lg">
+                <Button 
+                  className="bg-black hover:bg-gray-800 text-white px-8 py-3 rounded-full text-lg"
+                  onClick={() => navigate('/category/1')}
+                >
                   Shop Now
                 </Button>
               </div>
@@ -354,7 +357,10 @@ const Index = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
                   <div className="text-white">
                     <h3 className="font-playfair text-2xl font-medium mb-2">Elevate Your Space</h3>
-                    <Button className="bg-white text-black hover:bg-gray-100 rounded-full px-6">
+                    <Button 
+                      className="bg-white text-black hover:bg-gray-100 rounded-full px-6"
+                      onClick={() => navigate('/category/1')}
+                    >
                       Shop Now
                     </Button>
                   </div>
@@ -371,7 +377,10 @@ const Index = () => {
                   <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center p-6">
                     <div className="text-white">
                       <h3 className="font-playfair text-xl font-medium mb-2">Harmony in Design</h3>
-                      <Button className="bg-white text-black hover:bg-gray-100 rounded-full px-4 py-1 text-sm">
+                      <Button 
+                        className="bg-white text-black hover:bg-gray-100 rounded-full px-4 py-1 text-sm"
+                        onClick={() => navigate('/category/2')}
+                      >
                         Shop Now
                       </Button>
                     </div>
@@ -387,7 +396,10 @@ const Index = () => {
                   <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center p-6">
                     <div className="text-white">
                       <h3 className="font-playfair text-xl font-medium mb-2">Curated Living</h3>
-                      <Button className="bg-white text-black hover:bg-gray-100 rounded-full px-4 py-1 text-sm">
+                      <Button 
+                        className="bg-white text-black hover:bg-gray-100 rounded-full px-4 py-1 text-sm"
+                        onClick={() => navigate('/category/3')}
+                      >
                         Shop Now
                       </Button>
                     </div>
