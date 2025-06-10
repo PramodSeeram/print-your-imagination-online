@@ -81,10 +81,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
     const value = e.target.value;
     setSearchTerm(value);
     
-    // Use setTimeout to prevent cursor jumping
-    setTimeout(() => {
-      performSearch(value);
-    }, 0);
+    // Perform search immediately
+    performSearch(value);
 
     // Open popover when typing
     if (value.trim()) {

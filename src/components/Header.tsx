@@ -93,18 +93,19 @@ const Header = () => {
       {/* Top bar */}
       <div className="bg-black text-white border-b">
         <div className="container-avirva">
-          <div className="flex justify-between items-center py-2 text-sm">
-            <div className="flex items-center space-x-6">
-              <span>📧 info@avirva.com</span>
+          <div className="flex flex-col sm:flex-row justify-between items-center py-2 text-xs sm:text-sm gap-2 sm:gap-0">
+            <div className="flex items-center space-x-3 sm:space-x-6">
+              <span className="hidden sm:inline">📧 info@avirva.com</span>
               <span>📞 +91 12345 67890</span>
             </div>
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-3 sm:space-x-6">
               <div className="flex items-center">
-                <span className="mr-2">🇮🇳</span>
+                <span className="mr-1 sm:mr-2">🇮🇳</span>
                 <span>INR</span>
               </div>
-              <span>Free shipping above ₹599</span>
-              <div className="flex space-x-3">
+              <span className="hidden sm:inline">Free shipping above ₹599</span>
+              <span className="sm:hidden">Free shipping ₹599+</span>
+              <div className="hidden md:flex space-x-3">
                 <a href="#" className="hover:text-gray-300">Facebook</a>
                 <a href="#" className="hover:text-gray-300">Twitter</a>
                 <a href="#" className="hover:text-gray-300">Instagram</a>
@@ -121,7 +122,7 @@ const Header = () => {
           <Logo />
 
           {/* Desktop Navigation with Hover Effects */}
-          <nav className="hidden lg:flex items-center space-x-8">
+          <nav className="hidden lg:flex items-center space-x-8 ml-8">
             {categories.map((category) => (
               <div key={category.id} className="relative group">
                 <button
