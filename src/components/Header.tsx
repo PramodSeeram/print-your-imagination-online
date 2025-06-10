@@ -89,25 +89,25 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50 w-full overflow-hidden">
+    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
       {/* Top bar */}
-      <div className="bg-black text-white border-b border-gray-800 w-full">
+      <div className="bg-black text-white border-b">
         <div className="container-avirva">
-          <div className="flex justify-between items-center py-3 text-sm min-h-[44px]">
-            <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
-              <span className="text-xs lg:text-sm">📧 info@avirva.com</span>
-              <span className="text-xs lg:text-sm">📞 +91 12345 67890</span>
+          <div className="flex justify-between items-center py-2 text-sm">
+            <div className="flex items-center space-x-6">
+              <span>📧 info@avirva.com</span>
+              <span>📞 +91 12345 67890</span>
             </div>
-            <div className="flex items-center justify-center md:justify-end space-x-3 lg:space-x-6 w-full md:w-auto">
-              <div className="flex items-center text-xs lg:text-sm">
-                <span className="mr-1">🇮🇳</span>
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center">
+                <span className="mr-2">🇮🇳</span>
                 <span>INR</span>
               </div>
-              <span className="text-xs lg:text-sm">Free shipping above ₹599</span>
-              <div className="hidden lg:flex space-x-3">
-                <a href="#" className="hover:text-gray-300 text-xs transition-colors">Facebook</a>
-                <a href="#" className="hover:text-gray-300 text-xs transition-colors">Twitter</a>
-                <a href="#" className="hover:text-gray-300 text-xs transition-colors">Instagram</a>
+              <span>Free shipping above ₹599</span>
+              <div className="flex space-x-3">
+                <a href="#" className="hover:text-gray-300">Facebook</a>
+                <a href="#" className="hover:text-gray-300">Twitter</a>
+                <a href="#" className="hover:text-gray-300">Instagram</a>
               </div>
             </div>
           </div>
@@ -116,7 +116,7 @@ const Header = () => {
 
       {/* Main header */}
       <div className="container-avirva">
-        <div className="flex items-center justify-between py-4 min-h-[72px]">
+        <div className="flex items-center justify-between py-4">
           {/* Logo */}
           <Logo />
 
