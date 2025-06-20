@@ -7,33 +7,34 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
+    /* Luxury Color Palette */
+    --background: 40 60% 92%; /* Cream #F4EBD0 */
+    --foreground: 155 41% 13%; /* Charcoal #122620 */
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
+    --card: 40 60% 92%; /* Cream #F4EBD0 */
+    --card-foreground: 155 41% 13%; /* Charcoal #122620 */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
+    --popover: 40 60% 92%; /* Cream #F4EBD0 */
+    --popover-foreground: 155 41% 13%; /* Charcoal #122620 */
 
-    --primary: 0 0% 0%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 38 48% 49%; /* Tan #B68D40 */
+    --primary-foreground: 40 60% 92%; /* Cream #F4EBD0 */
 
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 0%;
+    --secondary: 43 46% 61%; /* Gold #D6AD60 */
+    --secondary-foreground: 155 41% 13%; /* Charcoal #122620 */
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 40 50% 85%; /* Lighter cream */
+    --muted-foreground: 155 41% 25%; /* Lighter charcoal */
 
-    --accent: 0 0% 96%;
-    --accent-foreground: 0 0% 0%;
+    --accent: 43 46% 61%; /* Gold #D6AD60 */
+    --accent-foreground: 155 41% 13%; /* Charcoal #122620 */
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive-foreground: 40 60% 92%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 0 0% 0%;
+    --border: 40 50% 85%; /* Lighter cream */
+    --input: 40 50% 85%; /* Lighter cream */
+    --ring: 38 48% 49%; /* Tan #B68D40 */
 
     --radius: 0.5rem;
   }
@@ -45,30 +46,30 @@
   }
 
   body {
-    @apply bg-white text-black font-inter;
+    @apply bg-background text-foreground font-inter;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-playfair font-medium text-black;
+    @apply font-playfair font-medium text-foreground;
   }
 }
 
-/* Custom classes for black and white design */
+/* Custom classes for luxury design */
 @layer components {
   .container-avirva {
     @apply w-full max-w-[1400px] mx-auto px-3 sm:px-4 md:px-6;
   }
   
   .btn-primary {
-    @apply bg-black hover:bg-gray-800 text-white font-medium py-3 px-8 rounded-full transition-all duration-300 hover:scale-105;
+    @apply bg-primary hover:bg-primary/80 text-primary-foreground font-medium py-3 px-8 rounded-full transition-all duration-300 hover:scale-105;
   }
   
   .btn-secondary {
-    @apply bg-white hover:bg-gray-100 text-black border border-black font-medium py-3 px-8 rounded-full transition-all duration-300 hover:scale-105;
+    @apply bg-secondary hover:bg-secondary/80 text-secondary-foreground border border-primary font-medium py-3 px-8 rounded-full transition-all duration-300 hover:scale-105;
   }
   
   .btn-accent {
-    @apply bg-gray-100 hover:bg-gray-200 text-black font-medium py-3 px-8 rounded-full transition-all duration-300 hover:scale-105;
+    @apply bg-accent hover:bg-accent/80 text-accent-foreground font-medium py-3 px-8 rounded-full transition-all duration-300 hover:scale-105;
   }
 
   .badge {
@@ -76,19 +77,19 @@
   }
 
   .badge-primary {
-    @apply badge bg-black text-white;
+    @apply badge bg-primary text-primary-foreground;
   }
 
   .badge-secondary {
-    @apply badge bg-white text-black border border-black;
+    @apply badge bg-secondary text-secondary-foreground border border-primary;
   }
 
   .badge-accent {
-    @apply badge bg-gray-100 text-black border border-gray-300;
+    @apply badge bg-accent text-accent-foreground border border-border;
   }
 
   .section-title {
-    @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl font-playfair font-medium mb-6 sm:mb-8 text-black;
+    @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl font-playfair font-medium mb-6 sm:mb-8 text-foreground;
   }
 
   .card-hover {
@@ -148,24 +149,24 @@
 
   /* Product card styles */
   .product-card {
-    @apply bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+    @apply bg-card rounded-lg shadow-sm border border-border overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
   }
 
   .newsletter-popup {
-    @apply bg-white rounded-2xl p-8 max-w-2xl mx-auto shadow-2xl border border-gray-200;
+    @apply bg-card rounded-2xl p-8 max-w-2xl mx-auto shadow-2xl border border-border;
   }
 
   /* Ensure all pages use consistent colors */
   .page-container {
-    @apply bg-white text-black min-h-screen;
+    @apply bg-background text-foreground min-h-screen;
   }
 
   .admin-sidebar {
-    @apply bg-gray-50 border-r border-gray-200;
+    @apply bg-muted border-r border-border;
   }
 
   .admin-content {
-    @apply bg-white;
+    @apply bg-background;
   }
 }
 

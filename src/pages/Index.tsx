@@ -253,10 +253,10 @@ const Index = () => {
     const event = new CustomEvent('wishlistUpdated');
     window.dispatchEvent(event);
   };
-  return <div className="min-h-screen flex flex-col bg-white">
+  return <div className="min-h-screen flex flex-col bg-background">
       <Header />
       
-      <main className="flex-grow bg-white">
+      <main className="flex-grow bg-background">
         {/* Hero Section - Slideshow */}
         <section className="relative h-[400px] sm:h-[500px] md:h-[600px] overflow-hidden">
           <HeroBanner />
@@ -267,7 +267,7 @@ const Index = () => {
           <section className="mb-20">
             <div className="text-center mb-12">
               <h2 className="section-title">Our Categories</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
+              <p className="text-muted-foreground max-w-2xl mx-auto">
                 From home to contract, get inspired and design!
               </p>
             </div>
@@ -288,13 +288,13 @@ const Index = () => {
             }, {
               name: "Table",
               image: "https://images.unsplash.com/photo-1549497538-303791108f95?auto=format&fit=crop&w=400&q=80"
-            }].map(category => <Card key={category.name} className="group cursor-pointer overflow-hidden border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 bg-white">
+            }].map(category => <Card key={category.name} className="group cursor-pointer overflow-hidden border border-border shadow-sm hover:shadow-lg transition-all duration-300 bg-card">
                   <CardContent className="p-0">
                     <div className="aspect-square overflow-hidden">
                       <img src={category.image} alt={category.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                     </div>
                     <div className="p-4">
-                      <h3 className="font-medium text-black">{category.name}</h3>
+                      <h3 className="font-medium text-card-foreground">{category.name}</h3>
                     </div>
                   </CardContent>
                 </Card>)}
@@ -304,12 +304,12 @@ const Index = () => {
           {/* Featured Collections */}
           <section className="mb-20">
             <div className="grid md:grid-cols-2 gap-8">
-              <Card className="relative overflow-hidden h-80 border border-gray-200 shadow-sm bg-white">
+              <Card className="relative overflow-hidden h-80 border border-border shadow-sm bg-card">
                 <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80" alt="Elevate Your Space" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
-                  <div className="text-white">
-                    <h3 className="font-playfair text-2xl font-medium mb-2 text-gray-50">Trending</h3>
-                    <Button className="bg-white text-black hover:bg-gray-100 rounded-full px-6" onClick={() => navigate('/category/1')}>
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent flex items-end p-8">
+                  <div className="text-primary-foreground">
+                    <h3 className="font-playfair text-2xl font-medium mb-2">Trending</h3>
+                    <Button className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 rounded-full px-6" onClick={() => navigate('/category/1')}>
                       Shop Now
                     </Button>
                   </div>
@@ -317,24 +317,24 @@ const Index = () => {
               </Card>
               
               <div className="space-y-6">
-                <Card className="relative overflow-hidden h-36 border border-gray-200 shadow-sm bg-white">
+                <Card className="relative overflow-hidden h-36 border border-border shadow-sm bg-card">
                   <img src="https://images.unsplash.com/photo-1549497538-303791108f95?auto=format&fit=crop&w=800&q=80" alt="Harmony in Design" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center p-6">
-                    <div className="text-white">
-                      <h3 className="font-playfair text-xl font-medium mb-2 text-gray-50">Most Sold</h3>
-                      <Button className="bg-white text-black hover:bg-gray-100 rounded-full px-4 py-1 text-sm" onClick={() => navigate('/category/2')}>
+                  <div className="absolute inset-0 bg-gradient-to-r from-foreground/60 to-transparent flex items-center p-6">
+                    <div className="text-primary-foreground">
+                      <h3 className="font-playfair text-xl font-medium mb-2">Most Sold</h3>
+                      <Button className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 rounded-full px-4 py-1 text-sm" onClick={() => navigate('/category/2')}>
                         Shop Now
                       </Button>
                     </div>
                   </div>
                 </Card>
                 
-                <Card className="relative overflow-hidden h-36 border border-gray-200 shadow-sm bg-white">
+                <Card className="relative overflow-hidden h-36 border border-border shadow-sm bg-card">
                   <img src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?auto=format&fit=crop&w=800&q=80" alt="Curated Living" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex items-center p-6">
-                    <div className="text-white">
-                      <h3 className="font-playfair text-xl font-medium mb-2 text-gray-50">Discounts</h3>
-                      <Button className="bg-white text-black hover:bg-gray-100 rounded-full px-4 py-1 text-sm" onClick={() => navigate('/category/3')}>
+                  <div className="absolute inset-0 bg-gradient-to-r from-foreground/60 to-transparent flex items-center p-6">
+                    <div className="text-primary-foreground">
+                      <h3 className="font-playfair text-xl font-medium mb-2">Discounts</h3>
+                      <Button className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 rounded-full px-4 py-1 text-sm" onClick={() => navigate('/category/3')}>
                         Shop Now
                       </Button>
                     </div>
@@ -348,10 +348,10 @@ const Index = () => {
           <section className="mb-20">
             <div className="flex justify-between items-center mb-8">
               <div>
-                <h2 className="font-playfair text-2xl font-medium text-black">Bestseller</h2>
-                <p className="text-gray-600">Experience featured products at our store</p>
+                <h2 className="font-playfair text-2xl font-medium text-foreground">Bestseller</h2>
+                <p className="text-muted-foreground">Experience featured products at our store</p>
               </div>
-              <Button variant="link" className="text-gray-600 hover:text-black">
+              <Button variant="link" className="text-muted-foreground hover:text-foreground">
                 View All <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             </div>
@@ -359,18 +359,18 @@ const Index = () => {
             <ProductGrid title="" products={bestSellers} onAddToCart={handleAddToCart} onToggleWishlist={handleToggleWishlist} wishlistedIds={wishlistedIds} />
           </section>
           
-          {/* New Arrivals Section with Bold Black Title */}
+          {/* New Arrivals Section with Bold Title */}
           <section className="mb-20">
             <div className="text-center mb-8">
-              <h2 className="font-bold text-3xl text-black mb-2">New Arrivals</h2>
+              <h2 className="font-bold text-3xl text-foreground mb-2">New Arrivals</h2>
             </div>
             <ProductGrid title="" products={newArrivals} onAddToCart={handleAddToCart} onToggleWishlist={handleToggleWishlist} wishlistedIds={wishlistedIds} />
           </section>
           
-          {/* Special Offers Section with Bold Black Title */}
+          {/* Special Offers Section with Bold Title */}
           <section className="mb-20">
             <div className="text-center mb-8">
-              <h2 className="font-bold text-3xl text-black mb-2">Special Offers</h2>
+              <h2 className="font-bold text-3xl text-foreground mb-2">Special Offers</h2>
             </div>
             <ProductGrid title="" products={deals} onAddToCart={handleAddToCart} onToggleWishlist={handleToggleWishlist} wishlistedIds={wishlistedIds} />
           </section>
