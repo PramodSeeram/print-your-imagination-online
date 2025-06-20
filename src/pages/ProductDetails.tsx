@@ -218,7 +218,7 @@ const ProductDetails = () => {
         <Footer />
       </div>;
   }
-  return <div className="min-h-screen flex flex-col">
+  return <div className="min-h-screen flex flex-col bg-background">
       <Header />
       
       <main className="flex-grow py-8">
@@ -233,17 +233,17 @@ const ProductDetails = () => {
                 <Link to={`/category/${product.category.toLowerCase().replace(' ', '-')}/subcategory/${product.subcategory.toLowerCase().replace(' ', '-')}`} className="text-gray-500 hover:text-gray-700">{product.subcategory}</Link>
               </>}
             <ChevronRight className="h-4 w-4 mx-2 text-gray-400" />
-            <span className="text-gray-900 font-medium">{product.name}</span>
+            <span className="text-foreground font-medium">{product.name}</span>
           </nav>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             {/* Product Images */}
             <div>
-              <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-4">
+              <div className="aspect-square bg-muted rounded-lg overflow-hidden mb-4">
                 <img src={selectedImage} alt={product.name} className="w-full h-full object-contain" />
               </div>
               <div className="grid grid-cols-4 gap-2">
-                {product.images.map((image, index) => <div key={index} className={`aspect-square border rounded-md overflow-hidden cursor-pointer ${selectedImage === image ? 'border-indigo-500 ring-2 ring-indigo-200' : 'border-gray-200'}`} onClick={() => setSelectedImage(image)}>
+                {product.images.map((image, index) => <div key={index} className={`aspect-square border rounded-md overflow-hidden cursor-pointer ${selectedImage === image ? 'border-primary ring-2 ring-primary/20' : 'border-border'}`} onClick={() => setSelectedImage(image)}>
                     <img src={image} alt={`${product.name} - Image ${index + 1}`} className="w-full h-full object-cover" />
                   </div>)}
               </div>
@@ -251,7 +251,7 @@ const ProductDetails = () => {
             
             {/* Product Info */}
             <div>
-              <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
+              <h1 className="text-3xl font-bold mb-2 text-foreground">{product.name}</h1>
               
               <div className="flex items-center mb-4">
                 <div className="flex items-center">
@@ -262,27 +262,27 @@ const ProductDetails = () => {
               
               <div className="mb-6">
                 {product.offerPrice ? <div className="flex items-center">
-                    <span className="text-3xl font-bold text-teal-600">₹{product.offerPrice}</span>
-                    <span className="ml-2 text-xl text-gray-400 line-through">₹{product.price}</span>
-                    <span className="ml-2 text-sm bg-teal-100 text-teal-800 px-2 py-1 rounded">
+                    <span className="text-3xl font-bold text-primary">₹{product.offerPrice}</span>
+                    <span className="ml-2 text-xl text-muted-foreground line-through">₹{product.price}</span>
+                    <span className="ml-2 text-sm bg-secondary text-secondary-foreground px-2 py-1 rounded">
                       {Math.round((1 - product.offerPrice / product.price) * 100)}% off
                     </span>
-                  </div> : <span className="text-3xl font-bold">₹{product.price}</span>}
-                <p className="text-sm text-gray-500 mt-1">Inclusive of all taxes</p>
+                  </div> : <span className="text-3xl font-bold text-foreground">₹{product.price}</span>}
+                <p className="text-sm text-muted-foreground mt-1">Inclusive of all taxes</p>
               </div>
               
               <div className="mb-6">
-                <p className="text-gray-700 leading-relaxed">{product.description}</p>
+                <p className="text-foreground leading-relaxed">{product.description}</p>
               </div>
               
               {/* Color Options */}
               <div className="mb-6">
                 <h3 className="font-medium mb-2">Color:</h3>
                 <div className="flex flex-wrap gap-2">
-                  {product.availableColors.map((color, index) => <button key={index} className={`w-10 h-10 rounded-full flex items-center justify-center ${!color.available ? 'opacity-30 cursor-not-allowed relative' : ''} ${color.value === selectedColor ? 'ring-2 ring-indigo-400' : ''}`} style={{
+                  {product.availableColors.map((color, index) => <button key={index} className={`w-10 h-10 rounded-full flex items-center justify-center ${!color.available ? 'opacity-30 cursor-not-allowed relative' : ''} ${color.value === selectedColor ? 'ring-2 ring-primary' : ''}`} style={{
                   backgroundColor: color.value
                 }} onClick={() => handleColorSelect(color.value)} disabled={!color.available} title={color.name}>
-                      {color.value === selectedColor && <Check className={`h-5 w-5 ${['#ffffff', '#e8dfd1', '#f5f5dc'].includes(color.value.toLowerCase()) ? 'text-black' : 'text-white'}`} />}
+                      {color.value === selectedColor && <Check className={`h-5 w-5 ${['#ffffff', '#e8dfd1', '#f5f5dc'].includes(color.value.toLowerCase()) ? 'text-foreground' : 'text-primary-foreground'}`} />}
                       {!color.available}
                     </button>)}
                 </div>
@@ -292,7 +292,7 @@ const ProductDetails = () => {
               <div className="mb-6">
                 <h3 className="font-medium mb-2">Material:</h3>
                 <div className="flex flex-wrap gap-2">
-                  {product.availableMaterials.map((material, index) => <button key={index} className={`px-4 py-2 rounded border ${material.name === selectedMaterial && material.available ? 'bg-indigo-100 border-indigo-400 text-indigo-700' : 'bg-white border-gray-200 text-gray-700'} ${!material.available ? 'opacity-50 cursor-not-allowed relative' : 'hover:bg-gray-50'}`} onClick={() => handleMaterialSelect(material.name)} disabled={!material.available}>
+                  {product.availableMaterials.map((material, index) => <button key={index} className={`px-4 py-2 rounded border ${material.name === selectedMaterial && material.available ? 'bg-secondary border-primary text-secondary-foreground' : 'bg-card border-border text-card-foreground'} ${!material.available ? 'opacity-50 cursor-not-allowed relative' : 'hover:bg-muted'}`} onClick={() => handleMaterialSelect(material.name)} disabled={!material.available}>
                       {material.name}
                       {!material.available}
                     </button>)}
@@ -303,13 +303,13 @@ const ProductDetails = () => {
               <div className="mb-6">
                 <h3 className="font-medium mb-2">Quantity:</h3>
                 <div className="flex items-center">
-                  <button onClick={decreaseQuantity} className="w-10 h-10 border border-gray-300 rounded-l flex items-center justify-center">
+                  <button onClick={decreaseQuantity} className="w-10 h-10 border border-border rounded-l flex items-center justify-center hover:bg-muted">
                     <Minus className="h-4 w-4" />
                   </button>
-                  <div className="w-14 h-10 border-t border-b border-gray-300 flex items-center justify-center font-medium">
+                  <div className="w-14 h-10 border-t border-b border-border flex items-center justify-center font-medium bg-background">
                     {quantity}
                   </div>
-                  <button onClick={increaseQuantity} className="w-10 h-10 border border-gray-300 rounded-r flex items-center justify-center">
+                  <button onClick={increaseQuantity} className="w-10 h-10 border border-border rounded-r flex items-center justify-center hover:bg-muted">
                     <Plus className="h-4 w-4" />
                   </button>
                 </div>
@@ -317,12 +317,12 @@ const ProductDetails = () => {
               
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-4 mb-8">
-                <Button onClick={addToCart} className="flex-1 bg-orange-500 hover:bg-orange-400 text-slate-900">
+                <Button onClick={addToCart} className="flex-1 bg-secondary hover:bg-secondary/90 text-secondary-foreground">
                   <ShoppingBag className="h-5 w-5 mr-2" />
                   Add to Cart
                 </Button>
                 
-                <Button onClick={buyNow} className="flex-1 bg-slate-900 hover:bg-slate-800">
+                <Button onClick={buyNow} className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground">
                   Buy Now
                 </Button>
                 

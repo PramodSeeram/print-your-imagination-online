@@ -175,72 +175,72 @@ const Admin = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-white">
+    <div className="min-h-screen flex bg-background">
       {/* Sidebar */}
-      <aside className="hidden lg:flex flex-col w-64 bg-black text-white">
-        <div className="p-4 border-b border-gray-800">
+      <aside className="hidden lg:flex flex-col w-64 bg-primary text-primary-foreground">
+        <div className="p-4 border-b border-primary-foreground/20">
           <div className="flex items-center">
             <Logo withText={false} />
-            <span className="ml-3 text-xl font-semibold">AVIRVA Admin</span>
+            <span className="ml-3 text-xl font-semibold text-primary-foreground">AVIRVA Admin</span>
           </div>
         </div>
 
         <nav className="flex-grow p-4">
-          <p className="text-xs text-gray-400 font-medium mb-3 uppercase">Dashboard</p>
-          <Link to="/admin" className="flex items-center py-2 px-3 rounded-md bg-gray-800 text-white mb-1">
+          <p className="text-xs text-primary-foreground/60 font-medium mb-3 uppercase">Dashboard</p>
+          <Link to="/admin" className="flex items-center py-2 px-3 rounded-md bg-secondary text-secondary-foreground mb-1">
             <LayoutGrid className="h-5 w-5 mr-3" />
             Overview
           </Link>
           
-          <p className="text-xs text-gray-400 font-medium mt-6 mb-3 uppercase">Products</p>
-          <Link to="/admin/products" className="flex items-center py-2 px-3 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white mb-1">
+          <p className="text-xs text-primary-foreground/60 font-medium mt-6 mb-3 uppercase">Products</p>
+          <Link to="/admin/products" className="flex items-center py-2 px-3 rounded-md text-primary-foreground/80 hover:bg-secondary hover:text-secondary-foreground mb-1">
             <Package className="h-5 w-5 mr-3" />
             Products
           </Link>
-          <Link to="/admin/categories" className="flex items-center py-2 px-3 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white mb-1">
+          <Link to="/admin/categories" className="flex items-center py-2 px-3 rounded-md text-primary-foreground/80 hover:bg-secondary hover:text-secondary-foreground mb-1">
             <LayoutGrid className="h-5 w-5 mr-3" />
             Categories
           </Link>
           
-          <p className="text-xs text-gray-400 font-medium mt-6 mb-3 uppercase">Orders</p>
-          <Link to="/admin/orders" className="flex items-center py-2 px-3 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white mb-1">
+          <p className="text-xs text-primary-foreground/60 font-medium mt-6 mb-3 uppercase">Orders</p>
+          <Link to="/admin/orders" className="flex items-center py-2 px-3 rounded-md text-primary-foreground/80 hover:bg-secondary hover:text-secondary-foreground mb-1">
             <ShoppingBag className="h-5 w-5 mr-3" />
             Orders
           </Link>
           
-          <p className="text-xs text-gray-400 font-medium mt-6 mb-3 uppercase">Customers</p>
-          <Link to="/admin/customers" className="flex items-center py-2 px-3 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white mb-1">
+          <p className="text-xs text-primary-foreground/60 font-medium mt-6 mb-3 uppercase">Customers</p>
+          <Link to="/admin/customers" className="flex items-center py-2 px-3 rounded-md text-primary-foreground/80 hover:bg-secondary hover:text-secondary-foreground mb-1">
             <Users className="h-5 w-5 mr-3" />
             Customers
           </Link>
           
-          <p className="text-xs text-gray-400 font-medium mt-6 mb-3 uppercase">Support</p>
-          <Link to="/admin/tickets" className="flex items-center py-2 px-3 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white mb-1">
+          <p className="text-xs text-primary-foreground/60 font-medium mt-6 mb-3 uppercase">Support</p>
+          <Link to="/admin/tickets" className="flex items-center py-2 px-3 rounded-md text-primary-foreground/80 hover:bg-secondary hover:text-secondary-foreground mb-1">
             <MessageSquare className="h-5 w-5 mr-3" />
             Tickets
           </Link>
           
-          <p className="text-xs text-gray-400 font-medium mt-6 mb-3 uppercase">Analytics</p>
-          <Link to="/admin/analytics" className="flex items-center py-2 px-3 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white mb-1">
+          <p className="text-xs text-primary-foreground/60 font-medium mt-6 mb-3 uppercase">Analytics</p>
+          <Link to="/admin/analytics" className="flex items-center py-2 px-3 rounded-md text-primary-foreground/80 hover:bg-secondary hover:text-secondary-foreground mb-1">
             <BarChart3 className="h-5 w-5 mr-3" />
             Reports
           </Link>
           
-          <p className="text-xs text-gray-400 font-medium mt-6 mb-3 uppercase">Content</p>
-          <Link to="/admin/slideshow" className="flex items-center py-2 px-3 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white mb-1">
+          <p className="text-xs text-primary-foreground/60 font-medium mt-6 mb-3 uppercase">Content</p>
+          <Link to="/admin/slideshow" className="flex items-center py-2 px-3 rounded-md text-primary-foreground/80 hover:bg-secondary hover:text-secondary-foreground mb-1">
             <LayoutGrid className="h-5 w-5 mr-3" />
             Slideshow
           </Link>
           
           <div className="mt-6">
-            <Link to="/admin/settings" className="flex items-center py-2 px-3 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">
+            <Link to="/admin/settings" className="flex items-center py-2 px-3 rounded-md text-primary-foreground/80 hover:bg-secondary hover:text-secondary-foreground">
               <Settings className="h-5 w-5 mr-3" />
               Settings
             </Link>
           </div>
           
           <div className="mt-auto pt-6">
-            <Link to="/" className="flex items-center py-2 px-3 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">
+            <Link to="/" className="flex items-center py-2 px-3 rounded-md text-primary-foreground/80 hover:bg-secondary hover:text-secondary-foreground">
               <Home className="h-5 w-5 mr-3" />
               Go to Website
             </Link>
@@ -254,7 +254,7 @@ const Admin = () => {
       {/* Main content */}
       <div className="flex-1 flex flex-col">
         {/* Admin header */}
-        <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-3">
+        <header className="bg-background shadow-sm border-b border-border px-6 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <Button 
@@ -265,7 +265,7 @@ const Admin = () => {
               >
                 <Menu className="h-5 w-5" />
               </Button>
-              <h1 className="text-xl font-semibold text-black">Dashboard</h1>
+              <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
             </div>
             <div className="flex items-center space-x-3">
               <Button 
@@ -287,14 +287,14 @@ const Admin = () => {
                   className="h-8 w-8 rounded-full mr-2" 
                 />
                 <div className="flex items-center">
-                  <span className="text-sm text-black mr-1">Admin User</span>
-                  <ChevronDown className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm text-foreground mr-1">Admin User</span>
+                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
                 </div>
               </div>
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                className="border-border text-foreground hover:bg-muted"
                 onClick={handleLogout}
               >
                 Logout
@@ -304,25 +304,25 @@ const Admin = () => {
         </header>
 
         {/* Admin content */}
-        <main className="flex-1 p-3 sm:p-6 overflow-y-auto bg-gray-50">
+        <main className="flex-1 p-3 sm:p-6 overflow-y-auto bg-muted/30">
           {/* Action buttons */}
           <div className="mb-6 sm:mb-8 flex flex-wrap gap-2 sm:gap-3">
             <Button 
-              className="flex items-center gap-2 bg-black hover:bg-gray-800 text-white"
+              className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
               onClick={handleAddNewProduct}
             >
               <PlusCircle className="h-4 w-4" />
               Add New Product
             </Button>
             <Button 
-              className="flex items-center gap-2 bg-gray-700 hover:bg-gray-600 text-white"
+              className="flex items-center gap-2 bg-secondary hover:bg-secondary/90 text-secondary-foreground"
               onClick={handleSchedulePromotion}
             >
               <Calendar className="h-4 w-4" />
               Schedule Promotion
             </Button>
             <Button 
-              className="flex items-center gap-2 bg-gray-600 hover:bg-gray-500 text-white"
+              className="flex items-center gap-2 bg-accent hover:bg-accent/90 text-accent-foreground"
               onClick={handleCreateDiscount}
             >
               <Percent className="h-4 w-4" />
@@ -330,7 +330,7 @@ const Admin = () => {
             </Button>
             <Button 
               variant="outline" 
-              className="flex items-center gap-2 ml-auto border-gray-300 text-gray-700 hover:bg-gray-50"
+              className="flex items-center gap-2 ml-auto border-border text-foreground hover:bg-muted"
               onClick={handleExport}
             >
               <Download className="h-4 w-4" />
@@ -338,7 +338,7 @@ const Admin = () => {
             </Button>
             <Button 
               variant="outline" 
-              className="flex items-center gap-2 border-gray-300 text-gray-700 hover:bg-gray-50"
+              className="flex items-center gap-2 border-border text-foreground hover:bg-muted"
               onClick={handleImport}
             >
               <Upload className="h-4 w-4" />

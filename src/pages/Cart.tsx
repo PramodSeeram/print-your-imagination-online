@@ -179,18 +179,18 @@ const Cart = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
       
       <main className="flex-grow pt-8 pb-16">
         <div className="container-avirva">
-          <h1 className="text-3xl font-bold mb-6 text-black">Your Shopping Cart</h1>
+          <h1 className="text-3xl font-bold mb-6 text-foreground">Your Shopping Cart</h1>
           
           {cartItems.length === 0 ? (
             <div className="text-center py-16">
-              <h2 className="text-2xl font-medium text-gray-700 mb-4">Your cart is empty</h2>
-              <p className="text-gray-500 mb-8">Looks like you haven't added anything to your cart yet.</p>
-              <Button asChild className="bg-black hover:bg-gray-800 text-white">
+              <h2 className="text-2xl font-medium text-foreground mb-4">Your cart is empty</h2>
+              <p className="text-muted-foreground mb-8">Looks like you haven't added anything to your cart yet.</p>
+              <Button asChild className="btn-primary">
                 <Link to="/">Continue Shopping</Link>
               </Button>
             </div>
@@ -198,12 +198,12 @@ const Cart = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Cart Items */}
               <div className="lg:col-span-2 space-y-6">
-                <div className="bg-white rounded-lg shadow border border-gray-200">
-                  <div className="p-6 border-b border-gray-200">
-                    <h2 className="font-semibold text-lg text-black">Cart Items ({cartItems.length})</h2>
+                <div className="bg-card rounded-lg shadow border border-border">
+                  <div className="p-6 border-b border-border">
+                    <h2 className="font-semibold text-lg text-card-foreground">Cart Items ({cartItems.length})</h2>
                   </div>
                   
-                  <div className="divide-y divide-gray-200">
+                  <div className="divide-y divide-border">
                     {cartItems.map((item) => (
                       <div key={item.id} className="flex p-6 gap-4">
                         <div className="w-24 h-24 flex-shrink-0">
