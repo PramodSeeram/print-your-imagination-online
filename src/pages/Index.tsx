@@ -257,9 +257,34 @@ const Index = () => {
       <Header />
       
       <main className="flex-grow bg-background">
-        {/* Hero Section - Slideshow */}
-        <section className="relative h-[400px] sm:h-[500px] md:h-[600px] overflow-hidden">
-          <HeroBanner />
+        {/* Hero Section - Split Layout */}
+        <section className="relative h-screen overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 h-full">
+            {/* Left side - Image */}
+            <div className="relative">
+              <img 
+                src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" 
+                alt="Luxury Home" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            
+            {/* Right side - Content */}
+            <div className="bg-primary text-primary-foreground flex items-center justify-center p-8 md:p-16">
+              <div className="max-w-lg text-center md:text-left">
+                <p className="font-playfair italic text-xl md:text-2xl mb-6 text-secondary">Avirva Collections</p>
+                <h1 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-medium mb-6 leading-tight text-secondary">
+                  LET'S FIND YOUR DREAM DECOR
+                </h1>
+                <p className="text-lg mb-8 text-primary-foreground/80 leading-relaxed">
+                  Discover handcrafted treasures and unique pieces that transform your space into a reflection of your style. Each item tells a story of artisan craftsmanship.
+                </p>
+                <Button className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-medium px-8 py-3 rounded-none text-lg">
+                  EXPLORE COLLECTION
+                </Button>
+              </div>
+            </div>
+          </div>
         </section>
 
         <div className="container-avirva py-16">
