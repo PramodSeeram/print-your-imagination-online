@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart, User, ChevronDown, Search, Menu, X } from 'lucide-react';
@@ -64,19 +63,29 @@ const Header = () => {
 
   const categories = [
     {
-      name: 'Home Decor',
+      name: 'HOME',
       id: 'home-decor',
       subcategories: ['Living Room', 'Bedroom', 'Kitchen', 'Bathroom']
     },
     {
-      name: 'Miniatures',
+      name: 'SHOP',
       id: 'miniatures',
       subcategories: ['Furniture', 'Accessories', 'Figurines', 'Vehicles']
     },
     {
-      name: 'Tech Gadgets',
+      name: 'PRODUCT',
       id: 'tech-gadgets',
       subcategories: ['Smart Home', 'Audio', 'Accessories', 'Gaming']
+    },
+    {
+      name: 'PAGES',
+      id: 'pages',
+      subcategories: ['About Us', 'Contact', 'FAQ', 'Terms']
+    },
+    {
+      name: 'BLOG',
+      id: 'blog',
+      subcategories: ['Latest Posts', 'Beauty Tips', 'Tutorials', 'Reviews']
     }
   ];
 
@@ -89,163 +98,188 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-background border-b border-border sticky top-0 z-50">
+    <header className="bg-background sticky top-0 z-50">
       {/* Top bar */}
-      <div className="bg-primary text-primary-foreground border-b border-border">
+      <div className="bg-muted border-b border-border">
         <div className="container-avirva">
-          <div className="flex flex-col sm:flex-row justify-between items-center py-2 text-xs sm:text-sm gap-2 sm:gap-0">
-            <div className="flex items-center space-x-3 sm:space-x-6">
-              <span className="hidden sm:inline">📧 info@avirva.com</span>
-              <span>📞 +91 12345 67890</span>
-            </div>
-            <div className="flex items-center space-x-3 sm:space-x-6">
-              <div className="flex items-center">
-                <span className="mr-1 sm:mr-2">🇮🇳</span>
-                <span>INR</span>
-              </div>
-              <span className="hidden sm:inline">Free shipping above ₹599</span>
-              <span className="sm:hidden">Free shipping ₹599+</span>
-              <div className="hidden md:flex space-x-3">
-                <a href="#" className="hover:text-primary-foreground/80">Facebook</a>
-                <a href="#" className="hover:text-primary-foreground/80">Twitter</a>
-                <a href="#" className="hover:text-primary-foreground/80">Instagram</a>
-              </div>
-            </div>
+          <div className="flex justify-center items-center py-3">
+            <span className="text-sm text-muted-foreground">Free shipping on all U.S. orders $50+</span>
           </div>
         </div>
       </div>
 
       {/* Main header */}
-      <div className="container-avirva">
-        <div className="flex items-center justify-between py-4">
-          {/* Logo */}
-          <Logo />
-
-          {/* Desktop Navigation with Hover Effects */}
-          <nav className="hidden lg:flex items-center space-x-8 ml-8">
-            {categories.map((category) => (
-              <div key={category.id} className="relative group">
-                <button
-                  className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors py-2"
-                  onClick={() => handleCategoryClick(category.id)}
-                >
-                  <span>{category.name}</span>
-                  <ChevronDown className="h-4 w-4 transition-transform group-hover:rotate-180" />
-                </button>
-                
-                {/* Hover dropdown */}
-                <div className="absolute left-0 top-full mt-2 w-48 bg-card border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                  <div className="py-2">
-                    {category.subcategories.map((subcategory) => (
-                      <button
-                        key={subcategory}
-                        className="block w-full text-left px-4 py-2 text-sm text-card-foreground hover:bg-muted hover:text-primary transition-colors"
-                        onClick={() => handleSubcategoryClick(category.id, subcategory)}
-                      >
-                        {subcategory}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </nav>
-
-          {/* Search Bar - Desktop */}
-          <div className="hidden lg:flex flex-1 max-w-md mx-8">
-            <SearchBar allProducts={allProducts} className="w-full" />
-          </div>
-
-          {/* Right side actions */}
-          <div className="flex items-center space-x-4">
-            {/* Search button - Mobile */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="lg:hidden text-foreground hover:text-primary"
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
-            >
-              <Search className="h-5 w-5" />
-            </Button>
-
-            {/* Wishlist */}
-            <Link to="/wishlist">
-              <Button variant="ghost" size="icon" className="relative text-foreground hover:text-primary">
-                <Heart className="h-5 w-5" />
-                {wishlistCount > 0 && (
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center text-xs bg-primary text-primary-foreground">
-                    {wishlistCount}
-                  </Badge>
-                )}
-              </Button>
-            </Link>
-
-            {/* Cart */}
-            <Link to="/cart">
-              <Button variant="ghost" size="icon" className="relative text-foreground hover:text-primary">
-                <ShoppingCart className="h-5 w-5" />
-                {cartItemCount > 0 && (
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center text-xs bg-primary text-primary-foreground">
-                    {cartItemCount}
-                  </Badge>
-                )}
-              </Button>
-            </Link>
-
-            {/* Profile */}
-            <Link to="/account">
-              <Button variant="ghost" size="icon" className="text-foreground hover:text-primary">
-                <User className="h-5 w-5" />
-              </Button>
-            </Link>
-
-            {/* Mobile menu button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="lg:hidden text-foreground hover:text-primary"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
-          </div>
-        </div>
-
-        {/* Mobile Search Bar */}
-        {isSearchOpen && (
-          <div className="lg:hidden pb-4">
-            <SearchBar allProducts={allProducts} className="w-full" />
-          </div>
-        )}
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="lg:hidden border-t border-border py-4">
-            <nav className="space-y-4">
-              {categories.map((category) => (
-                <div key={category.id}>
+      <div className="bg-background border-b border-border">
+        <div className="container-avirva">
+          <div className="flex items-center justify-between py-6">
+            {/* Left Navigation */}
+            <nav className="hidden lg:flex items-center space-x-8">
+              {categories.slice(0, 2).map((category) => (
+                <div key={category.id} className="relative group">
                   <button
-                    className="block w-full text-left font-medium text-foreground hover:text-primary py-2"
+                    className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors py-2 font-medium tracking-wide"
                     onClick={() => handleCategoryClick(category.id)}
                   >
-                    {category.name}
+                    <span>{category.name}</span>
+                    <ChevronDown className="h-3 w-3 transition-transform group-hover:rotate-180" />
                   </button>
-                  <div className="ml-4 space-y-2">
-                    {category.subcategories.map((subcategory) => (
-                      <button
-                        key={subcategory}
-                        className="block text-sm text-muted-foreground hover:text-primary py-1"
-                        onClick={() => handleSubcategoryClick(category.id, subcategory)}
-                      >
-                        {subcategory}
-                      </button>
-                    ))}
+                  
+                  {/* Hover dropdown */}
+                  <div className="absolute left-0 top-full mt-2 w-48 bg-card border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    <div className="py-2">
+                      {category.subcategories.map((subcategory) => (
+                        <button
+                          key={subcategory}
+                          className="block w-full text-left px-4 py-2 text-sm text-card-foreground hover:bg-muted hover:text-primary transition-colors"
+                          onClick={() => handleSubcategoryClick(category.id, subcategory)}
+                        >
+                          {subcategory}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               ))}
             </nav>
+
+            {/* Center Logo */}
+            <div className="flex-1 flex justify-center">
+              <div className="text-center">
+                <Link to="/" className="block">
+                  <div className="font-playfair text-3xl font-bold tracking-wider text-foreground mb-1">
+                    GLOWING
+                  </div>
+                  <div className="text-xs tracking-[0.2em] text-muted-foreground font-medium">
+                    BEAUTY STORE
+                  </div>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Navigation */}
+            <nav className="hidden lg:flex items-center space-x-8">
+              {categories.slice(2).map((category) => (
+                <div key={category.id} className="relative group">
+                  <button
+                    className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors py-2 font-medium tracking-wide"
+                    onClick={() => handleCategoryClick(category.id)}
+                  >
+                    <span>{category.name}</span>
+                    <ChevronDown className="h-3 w-3 transition-transform group-hover:rotate-180" />
+                  </button>
+                  
+                  {/* Hover dropdown */}
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-card border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    <div className="py-2">
+                      {category.subcategories.map((subcategory) => (
+                        <button
+                          key={subcategory}
+                          className="block w-full text-left px-4 py-2 text-sm text-card-foreground hover:bg-muted hover:text-primary transition-colors"
+                          onClick={() => handleSubcategoryClick(category.id, subcategory)}
+                        >
+                          {subcategory}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </nav>
+
+            {/* Right side actions */}
+            <div className="flex items-center space-x-4 absolute right-4 lg:right-0">
+              {/* Search button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-foreground hover:text-primary"
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
+              >
+                <Search className="h-5 w-5" />
+              </Button>
+
+              {/* Wishlist */}
+              <Link to="/wishlist">
+                <Button variant="ghost" size="icon" className="relative text-foreground hover:text-primary">
+                  <Heart className="h-5 w-5" />
+                  {wishlistCount > 0 && (
+                    <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center text-xs bg-primary text-primary-foreground rounded-full">
+                      {wishlistCount}
+                    </Badge>
+                  )}
+                </Button>
+              </Link>
+
+              {/* Cart */}
+              <Link to="/cart">
+                <Button variant="ghost" size="icon" className="relative text-foreground hover:text-primary">
+                  <ShoppingCart className="h-5 w-5" />
+                  {cartItemCount > 0 && (
+                    <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center text-xs bg-primary text-primary-foreground rounded-full">
+                      0
+                    </Badge>
+                  )}
+                  <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center text-xs bg-foreground text-background rounded-full">
+                    0
+                  </Badge>
+                </Button>
+              </Link>
+
+              {/* Profile */}
+              <Link to="/account">
+                <Button variant="ghost" size="icon" className="text-foreground hover:text-primary">
+                  <User className="h-5 w-5" />
+                </Button>
+              </Link>
+
+              {/* Mobile menu button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden text-foreground hover:text-primary"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </Button>
+            </div>
           </div>
-        )}
+
+          {/* Mobile Search Bar */}
+          {isSearchOpen && (
+            <div className="pb-4">
+              <SearchBar allProducts={allProducts} className="w-full" />
+            </div>
+          )}
+
+          {/* Mobile Navigation */}
+          {isMenuOpen && (
+            <div className="lg:hidden border-t border-border py-4">
+              <nav className="space-y-4">
+                {categories.map((category) => (
+                  <div key={category.id}>
+                    <button
+                      className="block w-full text-left font-medium text-foreground hover:text-primary py-2 tracking-wide"
+                      onClick={() => handleCategoryClick(category.id)}
+                    >
+                      {category.name}
+                    </button>
+                    <div className="ml-4 space-y-2">
+                      {category.subcategories.map((subcategory) => (
+                        <button
+                          key={subcategory}
+                          className="block text-sm text-muted-foreground hover:text-primary py-1"
+                          onClick={() => handleSubcategoryClick(category.id, subcategory)}
+                        >
+                          {subcategory}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </nav>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
