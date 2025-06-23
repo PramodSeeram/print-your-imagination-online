@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart, User, ChevronDown, Search, Menu, X } from 'lucide-react';
@@ -69,19 +68,14 @@ const Header = () => {
       subcategories: ['Living Room', 'Bedroom', 'Kitchen', 'Bathroom']
     },
     {
-      name: 'SHOP',
-      id: 'miniatures',
-      subcategories: ['Furniture', 'Accessories', 'Figurines', 'Vehicles']
-    },
-    {
       name: 'PRODUCT',
       id: 'tech-gadgets',
       subcategories: ['Smart Home', 'Audio', 'Accessories', 'Gaming']
     },
     {
-      name: 'PAGES',
-      id: 'pages',
-      subcategories: ['About Us', 'Contact', 'FAQ', 'Terms']
+      name: 'SHOP',
+      id: 'miniatures',
+      subcategories: ['Furniture', 'Accessories', 'Figurines', 'Vehicles']
     },
     {
       name: 'BLOG',
