@@ -1,9 +1,6 @@
-
 import { Truck, Shield, RefreshCcw, Clock } from 'lucide-react';
-
 const FeaturesSection = () => {
-  return (
-    <section className="py-16 bg-white">
+  return <section className="py-16 bg-cyan-900">
       <div className="container-avirva">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="bg-stone-50 p-8 rounded-lg flex flex-col items-center text-center border border-stone-100 hover:shadow-lg transition-all duration-300">
@@ -39,8 +36,6 @@ const FeaturesSection = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default FeaturesSection;
