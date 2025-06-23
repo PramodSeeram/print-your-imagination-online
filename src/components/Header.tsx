@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart, User, ChevronDown, Search, Menu, X } from 'lucide-react';
@@ -111,9 +112,9 @@ const Header = () => {
       {/* Main header */}
       <div className="bg-background border-b border-border">
         <div className="container-avirva">
-          <div className="flex items-center justify-between py-4">
+          <div className="flex items-center justify-between py-3">
             {/* Left Navigation */}
-            <nav className="hidden lg:flex items-center space-x-6">
+            <nav className="hidden lg:flex items-center space-x-4 flex-1">
               {categories.slice(0, 2).map((category) => (
                 <div key={category.id} className="relative group">
                   <button
@@ -143,10 +144,10 @@ const Header = () => {
             </nav>
 
             {/* Center Logo */}
-            <div className="flex-1 flex justify-center">
+            <div className="flex justify-center flex-1">
               <div className="text-center">
                 <Link to="/" className="block">
-                  <div className="font-playfair text-2xl font-bold tracking-wider text-foreground">
+                  <div className="font-playfair text-xl font-bold tracking-wider text-foreground">
                     GLOWING
                   </div>
                   <div className="text-xs tracking-[0.2em] text-muted-foreground font-medium">
@@ -157,7 +158,7 @@ const Header = () => {
             </div>
 
             {/* Right Navigation */}
-            <nav className="hidden lg:flex items-center space-x-6">
+            <nav className="hidden lg:flex items-center space-x-4 flex-1 justify-center">
               {categories.slice(2).map((category) => (
                 <div key={category.id} className="relative group">
                   <button
@@ -186,13 +187,13 @@ const Header = () => {
               ))}
             </nav>
 
-            {/* Right side actions */}
-            <div className="flex items-center space-x-3 absolute right-4 lg:right-0">
+            {/* Right side actions - Fixed positioning */}
+            <div className="flex items-center space-x-2 flex-1 justify-end">
               {/* Search button */}
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-foreground hover:text-primary h-8 w-8"
+                className="text-foreground hover:text-primary h-8 w-8 shrink-0"
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
               >
                 <Search className="h-4 w-4" />
@@ -200,7 +201,7 @@ const Header = () => {
 
               {/* Wishlist */}
               <Link to="/wishlist">
-                <Button variant="ghost" size="icon" className="relative text-foreground hover:text-primary h-8 w-8">
+                <Button variant="ghost" size="icon" className="relative text-foreground hover:text-primary h-8 w-8 shrink-0">
                   <Heart className="h-4 w-4" />
                   {wishlistCount > 0 && (
                     <Badge className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center text-xs bg-primary text-primary-foreground rounded-full">
@@ -212,7 +213,7 @@ const Header = () => {
 
               {/* Cart */}
               <Link to="/cart">
-                <Button variant="ghost" size="icon" className="relative text-foreground hover:text-primary h-8 w-8">
+                <Button variant="ghost" size="icon" className="relative text-foreground hover:text-primary h-8 w-8 shrink-0">
                   <ShoppingCart className="h-4 w-4" />
                   {cartItemCount > 0 && (
                     <Badge className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center text-xs bg-foreground text-background rounded-full">
@@ -224,7 +225,7 @@ const Header = () => {
 
               {/* Profile */}
               <Link to="/account">
-                <Button variant="ghost" size="icon" className="text-foreground hover:text-primary h-8 w-8">
+                <Button variant="ghost" size="icon" className="text-foreground hover:text-primary h-8 w-8 shrink-0">
                   <User className="h-4 w-4" />
                 </Button>
               </Link>
@@ -233,7 +234,7 @@ const Header = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden text-foreground hover:text-primary h-8 w-8"
+                className="lg:hidden text-foreground hover:text-primary h-8 w-8 shrink-0"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
                 {isMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
