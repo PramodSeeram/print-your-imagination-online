@@ -102,7 +102,7 @@ const Header = () => {
       {/* Top bar */}
       <div className="bg-muted border-b border-border">
         <div className="container-avirva">
-          <div className="flex justify-center items-center py-3">
+          <div className="flex justify-center items-center py-2">
             <span className="text-sm text-muted-foreground">Free shipping on all U.S. orders $50+</span>
           </div>
         </div>
@@ -111,13 +111,13 @@ const Header = () => {
       {/* Main header */}
       <div className="bg-background border-b border-border">
         <div className="container-avirva">
-          <div className="flex items-center justify-between py-6">
+          <div className="flex items-center justify-between py-4">
             {/* Left Navigation */}
-            <nav className="hidden lg:flex items-center space-x-8">
+            <nav className="hidden lg:flex items-center space-x-6">
               {categories.slice(0, 2).map((category) => (
                 <div key={category.id} className="relative group">
                   <button
-                    className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors py-2 font-medium tracking-wide"
+                    className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors py-1 font-medium tracking-wide text-sm"
                     onClick={() => handleCategoryClick(category.id)}
                   >
                     <span>{category.name}</span>
@@ -125,7 +125,7 @@ const Header = () => {
                   </button>
                   
                   {/* Hover dropdown */}
-                  <div className="absolute left-0 top-full mt-2 w-48 bg-card border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  <div className="absolute left-0 top-full mt-1 w-48 bg-card border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                     <div className="py-2">
                       {category.subcategories.map((subcategory) => (
                         <button
@@ -146,7 +146,7 @@ const Header = () => {
             <div className="flex-1 flex justify-center">
               <div className="text-center">
                 <Link to="/" className="block">
-                  <div className="font-playfair text-3xl font-bold tracking-wider text-foreground mb-1">
+                  <div className="font-playfair text-2xl font-bold tracking-wider text-foreground">
                     GLOWING
                   </div>
                   <div className="text-xs tracking-[0.2em] text-muted-foreground font-medium">
@@ -157,11 +157,11 @@ const Header = () => {
             </div>
 
             {/* Right Navigation */}
-            <nav className="hidden lg:flex items-center space-x-8">
+            <nav className="hidden lg:flex items-center space-x-6">
               {categories.slice(2).map((category) => (
                 <div key={category.id} className="relative group">
                   <button
-                    className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors py-2 font-medium tracking-wide"
+                    className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors py-1 font-medium tracking-wide text-sm"
                     onClick={() => handleCategoryClick(category.id)}
                   >
                     <span>{category.name}</span>
@@ -169,7 +169,7 @@ const Header = () => {
                   </button>
                   
                   {/* Hover dropdown */}
-                  <div className="absolute right-0 top-full mt-2 w-48 bg-card border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  <div className="absolute right-0 top-full mt-1 w-48 bg-card border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                     <div className="py-2">
                       {category.subcategories.map((subcategory) => (
                         <button
@@ -187,23 +187,23 @@ const Header = () => {
             </nav>
 
             {/* Right side actions */}
-            <div className="flex items-center space-x-4 absolute right-4 lg:right-0">
+            <div className="flex items-center space-x-3 absolute right-4 lg:right-0">
               {/* Search button */}
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-foreground hover:text-primary"
+                className="text-foreground hover:text-primary h-8 w-8"
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
               >
-                <Search className="h-5 w-5" />
+                <Search className="h-4 w-4" />
               </Button>
 
               {/* Wishlist */}
               <Link to="/wishlist">
-                <Button variant="ghost" size="icon" className="relative text-foreground hover:text-primary">
-                  <Heart className="h-5 w-5" />
+                <Button variant="ghost" size="icon" className="relative text-foreground hover:text-primary h-8 w-8">
+                  <Heart className="h-4 w-4" />
                   {wishlistCount > 0 && (
-                    <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center text-xs bg-primary text-primary-foreground rounded-full">
+                    <Badge className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center text-xs bg-primary text-primary-foreground rounded-full">
                       {wishlistCount}
                     </Badge>
                   )}
@@ -212,23 +212,20 @@ const Header = () => {
 
               {/* Cart */}
               <Link to="/cart">
-                <Button variant="ghost" size="icon" className="relative text-foreground hover:text-primary">
-                  <ShoppingCart className="h-5 w-5" />
+                <Button variant="ghost" size="icon" className="relative text-foreground hover:text-primary h-8 w-8">
+                  <ShoppingCart className="h-4 w-4" />
                   {cartItemCount > 0 && (
-                    <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center text-xs bg-primary text-primary-foreground rounded-full">
-                      0
+                    <Badge className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center text-xs bg-foreground text-background rounded-full">
+                      {cartItemCount}
                     </Badge>
                   )}
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center text-xs bg-foreground text-background rounded-full">
-                    0
-                  </Badge>
                 </Button>
               </Link>
 
               {/* Profile */}
               <Link to="/account">
-                <Button variant="ghost" size="icon" className="text-foreground hover:text-primary">
-                  <User className="h-5 w-5" />
+                <Button variant="ghost" size="icon" className="text-foreground hover:text-primary h-8 w-8">
+                  <User className="h-4 w-4" />
                 </Button>
               </Link>
 
@@ -236,10 +233,10 @@ const Header = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden text-foreground hover:text-primary"
+                className="lg:hidden text-foreground hover:text-primary h-8 w-8"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
-                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                {isMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
               </Button>
             </div>
           </div>
