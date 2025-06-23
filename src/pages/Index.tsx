@@ -11,6 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { ChevronRight, X } from 'lucide-react';
+
 interface Product {
   id: number;
   name: string;
@@ -272,7 +273,7 @@ const Index = () => {
             {/* Right side - Content */}
             <div className="bg-primary text-primary-foreground flex items-center justify-center p-8 md:p-16">
               <div className="max-w-lg text-center md:text-left">
-                <p className="font-playfair italic text-xl md:text-2xl mb-6 text-secondary">Avirva Collections</p>
+                <p className="font-playfair italic text-xl md:text-2xl mb-6 text-black">Avirva Collections</p>
                 <h1 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-medium mb-6 leading-tight text-secondary">
                   LET'S FIND YOUR DREAM DECOR
                 </h1>
