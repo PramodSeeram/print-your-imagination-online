@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -26,89 +26,87 @@ import AdminMobileNavigation from '@/components/AdminMobileNavigation';
 import AdminStatCard from '@/components/AdminStatCard';
 import RecentOrdersTable from '@/components/RecentOrdersTable';
 import TopSellingProducts from '@/components/TopSellingProducts';
+import { supabase } from "@/integrations/supabase/client";
 
-// Mock data for recent orders
-const RECENT_ORDERS = [
-  {
-    id: "#ORD-2305",
-    customer: "Rahul Mehta",
-    amount: "₹2,499",
-    status: "Delivered" as const,
-    date: "18 May 2023"
-  },
-  {
-    id: "#ORD-2304",
-    customer: "Sneha Jain",
-    amount: "₹1,899",
-    status: "Shipped" as const,
-    date: "17 May 2023"
-  },
-  {
-    id: "#ORD-2303",
-    customer: "Kiran Reddy",
-    amount: "₹3,750",
-    status: "Processing" as const,
-    date: "16 May 2023"
-  },
-  {
-    id: "#ORD-2302",
-    customer: "Anish Varma",
-    amount: "₹899",
-    status: "Delivered" as const,
-    date: "15 May 2023"
-  },
-  {
-    id: "#ORD-2301",
-    customer: "Meera Nair",
-    amount: "₹1,250",
-    status: "Delivered" as const,
-    date: "15 May 2023"
-  }
-];
+interface Order {
+  id: string;
+  user_id?: string;
+  created_at: string;
+  total_amount: number;
+  status: string;
+  order_items?: {
+    quantity: number;
+    price: number;
+    products: {
+      name: string;
+    };
+  }[];
+}
 
-// Mock data for top selling products
-const TOP_SELLING_PRODUCTS = [
-  {
-    id: "1",
-    name: "Customizable Desk Organizer",
-    price: "₹699",
-    sold: 152,
-    imageUrl: "https://images.unsplash.com/photo-1544376798-76d0953d1506?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-  },
-  {
-    id: "2",
-    name: "Miniature Taj Mahal",
-    price: "₹799",
-    sold: 127,
-    imageUrl: "https://images.unsplash.com/photo-1564507592333-c60657eea523?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-  },
-  {
-    id: "3",
-    name: "Family Name Plate",
-    price: "₹999",
-    sold: 98,
-    imageUrl: "https://images.unsplash.com/photo-1557180295-76eee20ae8aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-  },
-  {
-    id: "4",
-    name: "Geometric Plant Holder",
-    price: "₹599",
-    sold: 87,
-    imageUrl: "https://images.unsplash.com/photo-1545194445-dddb8f4487c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-  },
-  {
-    id: "5",
-    name: "Geometric Lamp Shade",
-    price: "₹1,499",
-    sold: 75,
-    imageUrl: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-  }
-];
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  image_url: string | null;
+  stock_quantity: number | null;
+}
 
 const Admin = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [recentOrders, setRecentOrders] = useState<Order[]>([]);
+  const [topProducts, setTopProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      
+      // Fetch recent orders
+      const { data: ordersData, error: ordersError } = await supabase
+        .from('orders')
+        .select(`
+          *,
+          order_items (
+            quantity,
+            price,
+            products (name)
+          )
+        `)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (ordersError) {
+        console.error('Error fetching orders:', ordersError);
+      } else {
+        setRecentOrders(ordersData || []);
+      }
+
+      // Fetch top products
+      const { data: productsData, error: productsError } = await supabase
+        .from('products')
+        .select('*')
+        .eq('is_active', true)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (productsError) {
+        console.error('Error fetching products:', productsError);
+      } else {
+        setTopProducts(productsData || []);
+      }
+
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleViewAllOrders = () => {
     navigate('/admin/orders');
@@ -173,6 +171,15 @@ const Admin = () => {
       });
     }
   };
+
+  // Transform products data for TopSellingProducts component
+  const transformedProducts = topProducts.map(product => ({
+    id: product.id,
+    name: product.name,
+    price: `₹${product.price}`,
+    sold: product.stock_quantity || 0,
+    imageUrl: product.image_url || "https://images.unsplash.com/photo-1544376798-76d0953d1506?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+  }));
 
   return (
     <div className="min-h-screen flex bg-background">
@@ -350,8 +357,8 @@ const Admin = () => {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
             <AdminStatCard
               title="Total Sales"
-              value="₹1,24,568"
-              trendValue="12.5%"
+              value="₹0"
+              trendValue="0%"
               trend="from last month"
               trendIsPositive={true}
               icon={BarChart3}
@@ -360,8 +367,8 @@ const Admin = () => {
             />
             <AdminStatCard
               title="Orders"
-              value="284"
-              trendValue="8.2%"
+              value={recentOrders.length.toString()}
+              trendValue="0"
               trend="from last month"
               trendIsPositive={true}
               icon={ShoppingBag}
@@ -370,8 +377,8 @@ const Admin = () => {
             />
             <AdminStatCard
               title="Products"
-              value="156"
-              trendValue="24"
+              value={topProducts.length.toString()}
+              trendValue="0"
               trend="new this month"
               trendIsPositive={true}
               icon={Package}
@@ -380,8 +387,8 @@ const Admin = () => {
             />
             <AdminStatCard
               title="Tickets"
-              value="42"
-              trendValue="7"
+              value="0"
+              trendValue="0"
               trend="open tickets"
               trendIsPositive={false}
               icon={MessageSquare}
@@ -393,14 +400,14 @@ const Admin = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
               <RecentOrdersTable 
-                orders={RECENT_ORDERS} 
+                orders={recentOrders} 
                 onViewAllClick={handleViewAllOrders} 
               />
             </div>
             
             <div>
               <TopSellingProducts 
-                products={TOP_SELLING_PRODUCTS} 
+                products={transformedProducts} 
                 onViewAllClick={handleViewAllProducts} 
               />
             </div>

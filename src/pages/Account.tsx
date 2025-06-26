@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { User, Settings, ShoppingBag, Heart, LogOut } from 'lucide-react';
@@ -76,7 +75,7 @@ const Account = () => {
     try {
       setLoading(true);
       
-      // Fetch user profile
+      // Fetch user profile with addresses
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select(`
@@ -92,7 +91,7 @@ const Account = () => {
         setUserProfile(profile);
       }
 
-      // Fetch user orders
+      // Fetch user orders with order items and product details
       const { data: ordersData, error: ordersError } = await supabase
         .from('orders')
         .select(`
