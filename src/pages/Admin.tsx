@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -55,6 +54,9 @@ const Admin = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [recentOrders, setRecentOrders] = useState<Order[]>([]);
   const [topProducts, setTopProducts] = useState<Product[]>([]);
+  const [totalSales, setTotalSales] = useState(0);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [totalOrders, setTotalOrders] = useState(0);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -87,7 +89,18 @@ const Admin = () => {
         setRecentOrders(ordersData || []);
       }
 
-      // Fetch top products
+      // Fetch all orders for statistics
+      const { data: allOrdersData, error: allOrdersError } = await supabase
+        .from('orders')
+        .select('total_amount');
+
+      if (!allOrdersError && allOrdersData) {
+        setTotalOrders(allOrdersData.length);
+        const sales = allOrdersData.reduce((sum, order) => sum + Number(order.total_amount), 0);
+        setTotalSales(sales);
+      }
+
+      // Fetch products
       const { data: productsData, error: productsError } = await supabase
         .from('products')
         .select('*')
@@ -100,6 +113,14 @@ const Admin = () => {
       } else {
         setTopProducts(productsData || []);
       }
+
+      // Get total products count
+      const { count: productsCount } = await supabase
+        .from('products')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_active', true);
+
+      setTotalProducts(productsCount || 0);
 
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
@@ -158,7 +179,7 @@ const Admin = () => {
   const handleNotifications = () => {
     toast({
       title: "Notifications",
-      description: "You have 3 new notifications.",
+      description: "You have 0 new notifications.",
     });
   };
 
@@ -282,9 +303,6 @@ const Admin = () => {
                 onClick={handleNotifications}
               >
                 <Bell className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  3
-                </span>
               </Button>
               <div className="hidden md:block border-l border-gray-300 h-6 mx-2" />
               <div className="hidden md:flex items-center">
@@ -353,11 +371,11 @@ const Admin = () => {
             </Button>
           </div>
           
-          {/* Statistics */}
+          {/* Statistics with real data */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
             <AdminStatCard
               title="Total Sales"
-              value="₹0"
+              value={`₹${totalSales.toFixed(2)}`}
               trendValue="0%"
               trend="from last month"
               trendIsPositive={true}
@@ -367,7 +385,7 @@ const Admin = () => {
             />
             <AdminStatCard
               title="Orders"
-              value={recentOrders.length.toString()}
+              value={totalOrders.toString()}
               trendValue="0"
               trend="from last month"
               trendIsPositive={true}
@@ -377,7 +395,7 @@ const Admin = () => {
             />
             <AdminStatCard
               title="Products"
-              value={topProducts.length.toString()}
+              value={totalProducts.toString()}
               trendValue="0"
               trend="new this month"
               trendIsPositive={true}

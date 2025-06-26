@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { User, Settings, ShoppingBag, Heart, LogOut } from 'lucide-react';
+import { User, Settings, ShoppingBag, Heart, LogOut, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -43,7 +44,6 @@ const Account = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [wishlistItems, setWishlistItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -110,10 +110,6 @@ const Account = () => {
       } else {
         setOrders(ordersData || []);
       }
-
-      // Load wishlist from localStorage for now
-      const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
-      setWishlistItems(wishlist);
 
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -260,6 +256,17 @@ const Account = () => {
                     onClick={() => setActiveTab("wishlist")}
                   >
                     <Heart className="mr-2 h-5 w-5" /> Wishlist
+                  </Button>
+                  <Button 
+                    variant={activeTab === "support" ? "default" : "ghost"} 
+                    className={`w-full justify-start ${
+                      activeTab === "support" 
+                        ? 'bg-black text-white hover:bg-gray-800' 
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                    onClick={() => setActiveTab("support")}
+                  >
+                    <MessageSquare className="mr-2 h-5 w-5" /> Support
                   </Button>
                   <Button 
                     variant={activeTab === "settings" ? "default" : "ghost"} 
@@ -409,38 +416,45 @@ const Account = () => {
                     <div className="p-6 border-b border-gray-200">
                       <h2 className="text-lg font-semibold text-black">My Wishlist</h2>
                     </div>
-                    {wishlistItems.length === 0 ? (
-                      <div className="p-6 text-center">
-                        <p className="text-gray-600">Your wishlist is empty</p>
-                        <Button asChild className="mt-4 bg-black hover:bg-gray-800 text-white">
-                          <Link to="/">Browse Products</Link>
+                    <div className="p-6 text-center">
+                      <p className="text-gray-600">Your wishlist is empty</p>
+                      <Button asChild className="mt-4 bg-black hover:bg-gray-800 text-white">
+                        <Link to="/">Browse Products</Link>
+                      </Button>
+                    </div>
+                  </div>
+                )}
+                
+                {activeTab === "support" && (
+                  <div>
+                    <div className="p-6 border-b border-gray-200">
+                      <h2 className="text-lg font-semibold text-black">Customer Support</h2>
+                    </div>
+                    <div className="p-6">
+                      <div className="text-center mb-6">
+                        <MessageSquare className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-black mb-2">Need Help?</h3>
+                        <p className="text-gray-600 mb-6">
+                          Submit a support ticket and our team will get back to you as soon as possible.
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <Button asChild className="w-full bg-black hover:bg-gray-800 text-white">
+                          <Link to="/tickets">
+                            <MessageSquare className="mr-2 h-5 w-5" />
+                            Create Support Ticket
+                          </Link>
                         </Button>
+                        
+                        <div className="text-center text-sm text-gray-500">
+                          <p>Or contact us directly:</p>
+                          <p className="font-medium text-gray-700 mt-1">
+                            support@avirva.com | +1 (800) 123-4567
+                          </p>
+                        </div>
                       </div>
-                    ) : (
-                      <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {wishlistItems.map((item) => (
-                          <div key={item.id} className="flex border border-gray-200 rounded-lg overflow-hidden bg-white">
-                            <img 
-                              src={item.imageUrl} 
-                              alt={item.name} 
-                              className="w-24 h-24 object-cover"
-                            />
-                            <div className="p-3 flex-1">
-                              <h3 className="font-medium text-black">{item.name}</h3>
-                              <p className="text-lg font-semibold mt-1 text-black">₹{item.price}</p>
-                              <div className="flex gap-2 mt-2">
-                                <Button size="sm" className="bg-black hover:bg-gray-800 text-white">
-                                  Add to Cart
-                                </Button>
-                                <Button variant="outline" size="sm" className="border-gray-300 text-gray-700 hover:bg-gray-50">
-                                  Remove
-                                </Button>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                    </div>
                   </div>
                 )}
                 
